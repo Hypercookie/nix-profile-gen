@@ -68,14 +68,16 @@
             
             # Add macprofile scope if it doesn't exist
             if ! grep -q '\[scopes.macprofile\]' "$OPTNIX_CONFIG" 2>/dev/null; then
+              PYTHON_PATH="${pkgs.python3}/bin/python3"
+              SCRIPT_PATH="${./list-macprofile-options.py}"
               cat >> "$OPTNIX_CONFIG" << EOF
 
             [scopes.macprofile]
             description = "macOS Profile Generator Options"
             # Use Python script to list option names (one per line)
-            options-list-command = "${pkgs.python3}/bin/python3 ${./list-macprofile-options.py} --optnix 2>/dev/null || echo ''"
+            options-list-command = "$PYTHON_PATH $SCRIPT_PATH --optnix 2>/dev/null || echo ''"
             # Try home-manager-options first, fallback to Python script
-            evaluator = "home-manager-options '{{ .Option }}' 2>/dev/null || ${pkgs.python3}/bin/python3 ${./list-macprofile-options.py} '{{ .Option }}' 2>/dev/null || echo 'Option not found'"
+            evaluator = "home-manager-options '{{ .Option }}' 2>/dev/null || $PYTHON_PATH $SCRIPT_PATH '{{ .Option }}' 2>/dev/null || echo 'Option not found'"
             EOF
               echo "✅ Added macprofile scope to optnix config"
             fi
