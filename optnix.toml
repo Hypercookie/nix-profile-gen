@@ -1,0 +1,14 @@
+default_scope = "nix-darwin"
+[scopes.nix-darwin]
+description = "nix-darwin flake configuration for Jannes"
+options-list-cmd = '''
+nix eval ".#darwinConfigurations.aarch64-darwin" --json --apply 'input: let
+  inherit (input) options pkgs;
+
+  optionsList = builtins.filter
+    (v: v.visible && !v.internal)
+    (pkgs.lib.optionAttrSetToDocList options);
+in
+  optionsList'
+'''
+evaluator = "nix eval .#darwinConfigurations.aarch64-darwin.config.{{ .Option }}"
