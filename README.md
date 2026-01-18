@@ -1,6 +1,9 @@
 # macOS Configuration Profile Generator for Nix/Home Manager
+> Home Manager modules from Apple ProfileManifests for managing macOS configuration profiles declaratively.
 
-Generate NixOS/Home Manager modules from Apple ProfileManifests for managing macOS configuration profiles declaratively.
+The current issue with nix-darwin is that settings written by the `defaults` system are happily overwritten by applications. Enforcing these settings via the mdm tools apple allready offers fixes that. 
+This module generates a provisioning profile at a given path, which can then be installed (automatic install TBD) and enforces the settings defined in it at a system level. Furthermore this module provides all possible settings (they are found via community effort) as nix options, making the process declarative and typesafe. 
+
 
 ## Features
 
@@ -8,7 +11,6 @@ Generate NixOS/Home Manager modules from Apple ProfileManifests for managing mac
 - 🔧 Generates `.mobileconfig` files from Nix configuration
 - 📋 Supports all Apple payload types (Apple, ManagedPreferences, etc.)
 - 🔍 Browse options interactively with optnix
-- 🚀 Easy development workflow with devshell
 
 ## Quick Start
 
