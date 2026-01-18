@@ -32,7 +32,7 @@ with lib;
 
     AllowCLIBiometricAuthentication = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Specifies whether to allow biometric authentication in the PrivilegesCLI to obtain administrator privileges";
     };
 
@@ -44,25 +44,25 @@ with lib;
 
     PostChangeActionOnGrantOnly = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the application or script, specified in PostChangeExecutablePath, will only be executed if administrator privileges are granted to a user, but not the privileges are revoked.";
     };
 
     RevokePrivilegesAtLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the user's administrator privileges are revoked at login";
     };
 
     HideOtherWindows = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "By default, Privileges hides open windows to show the desktop and ensure that only the Privileges window is visible on the screen";
     };
 
     EnforcePrivileges = lib.mkOption {
       type = types.nullOr (types.enum [ "admin" "user" "none" ]);
-      default = "admin";
+      default = null;
       description = "Enforces certain privileges. Whenever Privileges.app or the PrivilegesCLI command line tool are launched, the corresponding privileges are set.";
     };
 
@@ -98,13 +98,13 @@ with lib;
 
     ReasonMaxLength = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 250;
+      default = null;
       description = "Specifies the maximum number of characters the user can enter as the reason for becoming an admin";
     };
 
     ReasonMinLength = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 10;
+      default = null;
       description = "Specifies the minimum number of characters the user has to enter as the reason for becoming an admin.";
     };
 
@@ -144,31 +144,31 @@ with lib;
 
     ReasonCheckingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the text the user enters for a reason is roughly parsed for valid words";
     };
 
     HideSettingsButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the Settings button is no longer displayed in the app";
     };
 
     HideSettingsFromDockMenu = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the Settings menu item is no longer displayed in the Dock tile's menu";
     };
 
     HideSettingsFromStatusItem = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the Settings menu item is no longer displayed in the status item's menu.";
     };
 
     ShowInMenuBar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, a Privileges status item is displayed in the Menu Bar.";
     };
 
@@ -192,7 +192,7 @@ with lib;
           };
           EnableTCP = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If set to true, the log messages are sent via TCP instead of UDP. By default, messages are sent via UDP.";
           };
           SyslogOptions = lib.mkOption {
@@ -200,22 +200,22 @@ with lib;
               options = {
                 LogFacility = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 ]);
-                  default = 4;
+                  default = null;
                   description = "Configure syslog facility.";
                 };
                 LogSeverity = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 4 5 6 7 ]);
-                  default = 6;
+                  default = null;
                   description = "Configure syslog severity.";
                 };
                 ServerPort = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 514;
+                  default = null;
                   description = "The port of the logging server.";
                 };
                 MaximumMessageSize = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 480;
+                  default = null;
                   description = "Specify the maximum size of the syslog message (header + event message). If the syslog message is larger than the specified maximum, the message will be truncated at the end.";
                 };
               };

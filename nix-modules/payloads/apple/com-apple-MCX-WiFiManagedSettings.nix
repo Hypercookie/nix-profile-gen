@@ -20,19 +20,19 @@ with lib;
 
     RequireAdminToTurnAirPortOnOff = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', requires administrator authorization to turn Wi-Fi on or off.";
     };
 
     RequireAdminForAirPortNetworkChange = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', requires administrator authorization for network changes.";
     };
 
     RequireAdminForIBSS = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', requires administrator authorization to enable IBSS.";
     };
 

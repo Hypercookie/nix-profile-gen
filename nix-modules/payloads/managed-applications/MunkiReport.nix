@@ -20,7 +20,7 @@ with lib;
 
     BaseUrl = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "http://yourserver/munkireport/";
+      default = null;
       description = "BaseUrl tells MunkiReport where to find the MunkiReport server. It contains the full url to the server - and subdirectory - ending in a slash - /. Note: BaseUrl is set automatically when installing MunkiReport via the command line or a package.";
     };
 

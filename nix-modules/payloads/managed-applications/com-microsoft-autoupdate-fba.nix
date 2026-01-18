@@ -20,7 +20,7 @@ with lib;
 
     SendAllTelemetryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls wether diagnostic data transmission is on or off.";
     };
 

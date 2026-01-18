@@ -91,7 +91,7 @@ with lib;
 
     LDAPOverSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Determines if NoMAD Login uses LDAP over SSL.";
     };
 
@@ -172,13 +172,13 @@ with lib;
 
     EULAPath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/var/db/NoMADLogin/";
+      default = null;
       description = "Path to save acceptance records to.";
     };
 
     CreateAdminUser = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Will place any local user created at login by NoMAD Login in the local admin group.";
     };
 
@@ -208,19 +208,19 @@ with lib;
 
     DemobilizeUsers = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Will convert a previously cached mobile account from AD into a regular local user account on login.";
     };
 
     DemobilizeSaveAltSecurityIdentities = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If true, the AltSecurityIdentities user record attribute should be preserved, useful when moving from mobile accounts with smart card mapping implemented.";
     };
 
     DemobilizeForcePasswordCheck = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If true, a password input at the NoMAD login window will be required to demobilize";
     };
 
@@ -312,13 +312,13 @@ with lib;
 
     EnableFDE = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "On systems using the APFS filesystem, this key will enable FileVault encryption as the user is signing in for the first time.";
     };
 
     EnableFDERecoveryKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Write the output of the fdesetup command to /var/db/.NoMADFDESetup";
     };
 
@@ -360,7 +360,7 @@ with lib;
 
     LoginLogoAlpha = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 3 4 5 6 7 8 9 10 ]);
-      default = 8;
+      default = null;
       description = "Alpha value of the logo image.";
     };
 
@@ -378,13 +378,13 @@ with lib;
 
     BackgroundImageAlpha = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 3 4 5 6 7 8 9 10 ]);
-      default = 8;
+      default = null;
       description = "Alpha value of the background image.";
     };
 
     AllowNetworkSelection = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled, the network selection button is shown";
     };
 
@@ -396,19 +396,19 @@ with lib;
 
     PowerControlDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to yes, hides the shutdown and restart buttons";
     };
 
     ManageSecureTokens = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This key will enable SecureToken management capabilites in NomadLogin 1.4. This utilizes a service account which can be modified from default using the below optional preferences.";
     };
 
     SecureTokenManagementEnableOnlyAdminUsers = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled, the SecureToken service account will only enable administrative users created with NoMAD Login.";
     };
 
@@ -420,7 +420,7 @@ with lib;
 
     SecureTokenManagementOnlyEnableFirstUser = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled, NoMAD Login will only enable the first user that is eligable for a SecureToken, and delete the service account afterwards.";
     };
 
@@ -444,7 +444,7 @@ with lib;
 
     SecureTokenManagementPasswordLength = lib.mkOption {
       type = types.nullOr (types.enum [ 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26 27 28 29 30 31 32 ]);
-      default = 16;
+      default = null;
       description = "Defines a custom SecureToken service account password length.";
     };
 

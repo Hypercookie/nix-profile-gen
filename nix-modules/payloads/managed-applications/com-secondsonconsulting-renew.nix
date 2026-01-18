@@ -52,7 +52,7 @@ with lib;
         options = {
           NotificationActionEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If enabled, interacting with the notification will initiate a restart. Defaults to true.";
           };
           Title = lib.mkOption {

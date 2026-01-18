@@ -23,7 +23,7 @@ with lib;
         options = {
           Hide = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system hides this item in the Users & Groups login items list.";
           };
           Path = lib.mkOption {

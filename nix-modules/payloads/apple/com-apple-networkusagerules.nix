@@ -28,12 +28,12 @@ with lib;
           };
           AllowCellularData = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', disables cellular data for all matching managed apps.";
           };
           AllowRoamingCellularData = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', disables cellular data while roaming for all matching managed apps.";
           };
         };

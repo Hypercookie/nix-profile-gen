@@ -121,19 +121,19 @@ with lib;
 
     OPPreferencesWhatsNewDialogDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled, on app launch following an update a What's New dialog box is presented to the user.";
     };
 
     CheckForSoftwareUpdatesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enforces whether to automatically check for available updates.";
     };
 
     AutoInstallSoftwareUpdatesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Should 1Password attempt to automatically install updates?";
     };
 

@@ -38,17 +38,17 @@ with lib;
           };
           hourlyCheck = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether Zappl should check for updates and attempt to silently install them once every hour. Uncheck this option to prevent Zappl from checking for new updates once every hour (not recommended).";
           };
           updatePrompts = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether Zappl should prompt users to install pending cached updates on a recurring interval. Uncheck this option to disable all recurring update prompts (not recommended). To configure the behaviour of recurring update prompts, use the options under the Scheduled Updates section of this profile.";
           };
           autoUpdate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether Zappl automatically updates itself when new major and point releases are available. Uncheck this option if you prefer to manually update Zappl.";
           };
           allowedAppInstalls = lib.mkOption {
@@ -85,42 +85,42 @@ with lib;
               options = {
                 runType = lib.mkOption {
                   type = types.nullOr (types.enum [ "specifyFrequency" "specifyPatchDay" ]);
-                  default = "specifyFrequency";
+                  default = null;
                   description = "This defines when to prompt users to install any pending updates. You can either limit user prompts to a specified weekly patch day, or alternatively select a frequency to prompt the users, e.g. once every 2 weeks.";
                 };
                 frequencyOption = lib.mkOption {
                   type = types.nullOr (types.enum [ "oneDay" "oneWeek" "twoWeeks" "threeWeeks" "fourWeeks" ]);
-                  default = "oneWeek";
+                  default = null;
                   description = "A recurring update frequency time window which determines how often users are prompted to install pending updates, e.g. Once every week.";
                 };
                 frequencyElapsedMode = lib.mkOption {
                   type = types.nullOr (types.enum [ "singlePromptMode" "recurringPromptMode" ]);
-                  default = "singlePromptMode";
+                  default = null;
                   description = "Determines how frequently users should be prompted if they defer the update once the configured patch frequency time has elapsed. Deferring updates with Single Prompt Mode enabled causes update prompts to be postponed until the patch frequency has elapsed again. Recurring Prompt Mode ensures users are prompted to update on a regular recurring interval after deferring until they update, and the patch frequency will only be reactivated after the updates are installed.";
                 };
                 deferralWindow = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 60;
+                  default = null;
                   description = "When using recurring prompt mode, use this setting to define the amount of time in minutes a user can defer the update.";
                 };
                 patchDay = lib.mkOption {
                   type = types.nullOr (types.enum [ 2 3 4 5 6 7 1 ]);
-                  default = 3;
+                  default = null;
                   description = "The day of the week to prompt users to install cached updates.";
                 };
                 patchDayFrequency = lib.mkOption {
                   type = types.nullOr (types.enum [ "singlePromptMode" "recurringPromptMode" ]);
-                  default = "singlePromptMode";
+                  default = null;
                   description = "Determines how often users should be prompted to update on the configured patch day if they defer the update. Use the Single Prompt Mode to carry the deferral to the following weekly patch day, or alternatively, use Recurring Prompt Mode to continue to prompt users to update on a recurring interval on the configured patch day if they defer the update.";
                 };
                 patchDayDeferralWindow = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 60;
+                  default = null;
                   description = "When using recurring prompt mode, use this setting to define the amount of time in minutes a user can defer the update before being prompted again.";
                 };
                 missedUpdatePrompt = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "When enabled, Zappl will prompt the user to update whenever the device comes back online if it was offline on the defined patch day, or if the user deferred all update prompts when using Recurring Prompt Mode. Alternatively, leave this unchecked to wait until the next patch day to prompt the user if their device was offline on the previous patch day.";
                 };
               };
@@ -133,107 +133,107 @@ with lib;
               options = {
                 monday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Mondays.";
                 };
                 mondayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Mondays, use to define the time on a Monday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 mondayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Mondays, use to define the time on a Monday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 tuesday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Tuesdays.";
                 };
                 tuesdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Tuesdays, use to define the time on a Tuesday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 tuesdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Tuesdays, use to define the time on a Tuesday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 wednesday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Wednesdays.";
                 };
                 wednesdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Wednesdays, use to define the time on a Wednesday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 wednesdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Wednesdays, use to define the time on a Wednesday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 thursday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Thursdays.";
                 };
                 thursdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Thursdays, use to define the time on a Thursday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 thursdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Thursdays, use to define the time on a Thursday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 friday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Fridays.";
                 };
                 fridayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Fridays, use to define the time on a Friday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 fridayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Fridays, use to define the time on a Friday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 saturday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Saturdays.";
                 };
                 saturdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Saturdays, use to define the time on a Saturday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 saturdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Saturdays, use to define the time on a Saturday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 sunday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Sundays.";
                 };
                 sundayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Sundays, use to define the time on a Sunday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 sundayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Sundays, use to define the time on a Sunday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
               };
@@ -246,12 +246,12 @@ with lib;
               options = {
                 deferralOption = lib.mkOption {
                   type = types.nullOr (types.enum [ "disableDeferralLimit" "specifyDeferralLimit" "disableDeferrals" ]);
-                  default = "specifyDeferralLimit";
+                  default = null;
                   description = "Use to define behaviour around update deferrals. To allow the user to continue deferring with no limit and force the update on-demand, select Disable Deferral Limit. To set a limit on the amount of allowed deferrals, select Specify Deferral Limit. Alternatively, you can disable deferrals completely by selecting Disable Deferrals, which will only allow a grace period for updates.";
                 };
                 specifyLimit = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 2;
+                  default = null;
                   description = "Specify a custom deferral limit. The default deferral limit if not specified is 2.";
                 };
               };
@@ -261,7 +261,7 @@ with lib;
           };
           gracePeriodMinutes = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 15;
+            default = null;
             description = "The amount of time a user is given to save work before updates are installed automatically when there are no remaining deferrals. Default is 15 minutes.";
           };
           customIcon = lib.mkOption {
@@ -279,12 +279,12 @@ with lib;
               options = {
                 promptHeight = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 330;
+                  default = null;
                   description = "Use to customise the height of the initial prompt displayed to users when they can either defer or update. Only use to define a custom height in points for the prompts shown to users, e.g. 330.";
                 };
                 promptWidth = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 640;
+                  default = null;
                   description = "Use to customise the width of the initial prompt displayed to users when they can either defer or update. Only use to define a custom width in points for the prompts shown to users, e.g. 640.";
                 };
               };
@@ -297,12 +297,12 @@ with lib;
               options = {
                 promptHeight = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 330;
+                  default = null;
                   description = "Use to customise the height of the grace period timer prompt displayed to users when they have no remaining deferrals. Only use to define a custom height in points for the prompts shown to users, e.g. 330.";
                 };
                 promptWidth = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 640;
+                  default = null;
                   description = "Use to customise the width of the grace period timer prompt displayed to users when they have no remaining deferrals. Only use to define a custom width in points for the prompts shown to users, e.g. 640.";
                 };
               };
@@ -315,12 +315,12 @@ with lib;
               options = {
                 promptHeight = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 330;
+                  default = null;
                   description = "Use to customise the height of the prompt displayed to users when they initiate a Self Service update. Only use to define a custom height in points for the prompts shown to users, e.g. 330.";
                 };
                 promptWidth = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 640;
+                  default = null;
                   description = "Use to customise the width of the prompt displayed to users when they initiate a Self Service update. Only use to define a custom width in points for the prompts shown to users, e.g. 640.";
                 };
               };
@@ -390,7 +390,7 @@ with lib;
           };
           refreshInterval = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 20;
+            default = null;
             description = "The amount of time in seconds the user prompts refresh. The prompts require a refresh to pull focus if the user swipes away to ignore the prompt and ensures they either select defer or update. The default value is 20 seconds. The minimum allowed value is 10 seconds.";
           };
           acceptableAppBundleIDs = lib.mkOption {
@@ -405,27 +405,27 @@ with lib;
           };
           acceptableDNDMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if Do Not Disturb mode is detected.";
           };
           acceptableCameraUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if the camera is in use. Note: Apple Silicon Macs running macOS 12 (Monterey) do not accurately report camera usage, therefore this setting will be ignored. Upgrading to macOS 13 (Ventura) will resolve this issue for Apple Silicon Macs.";
           };
           acceptableScreenSharing = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if Screen Sharing is in use.";
           };
           updateProgressPosition = lib.mkOption {
             type = types.nullOr (types.enum [ "topright" "right" "bottomright" "topleft" "left" "bottomleft" "top" "center/centre" "bottom" ]);
-            default = "topright";
+            default = null;
             description = "The position on the screen of the prompt which displays the progress of an update. The default position is top right.";
           };
           updateProgressPrompt = lib.mkOption {
             type = types.nullOr (types.enum [ "noFocusPrompt" "focusPrompt" "noPrompt" ]);
-            default = "noFocusPrompt";
+            default = null;
             description = "Determines the behaviour of the prompt shown when updates are in progress. You can either select a prompt that does not take focus over other running Apps (default), a prompt that does take focus over all other running Apps, or disable the progress prompt completely. If you chose to show no prompt, you can still enable the \\\"Display Complete Message\\\" setting to inform users when the update has finished.";
           };
           updateProgressOverlayIcon = lib.mkOption {
@@ -435,12 +435,12 @@ with lib;
           };
           autoRelaunchApps = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether Zappl automatically relaunches apps that were running prior to updating once the update completes.";
           };
           displayCompletePrompt = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether a prompt is displayed to the user to inform them that the updates are complete. The prompt will inherit the same window position as the Update Progress prompt. Default is true.";
           };
         };
@@ -457,107 +457,107 @@ with lib;
               options = {
                 monday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Mondays.";
                 };
                 mondayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Mondays, use to define the time on a Monday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 mondayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Mondays, use to define the time on a Monday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 tuesday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Tuesdays.";
                 };
                 tuesdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Tuesdays, use to define the time on a Tuesday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 tuesdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Tuesdays, use to define the time on a Tuesday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 wednesday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Wednesdays.";
                 };
                 wednesdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Wednesdays, use to define the time on a Wednesday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 wednesdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Wednesdays, use to define the time on a Wednesday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 thursday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Thursdays.";
                 };
                 thursdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Thursdays, use to define the time on a Thursday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 thursdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Thursdays, use to define the time on a Thursday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 friday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Fridays.";
                 };
                 fridayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Fridays, use to define the time on a Friday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 fridayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Fridays, use to define the time on a Friday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 saturday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Saturdays.";
                 };
                 saturdayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Saturdays, use to define the time on a Saturday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 saturdayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Saturdays, use to define the time on a Saturday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 sunday = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If selected, update prompts will be allowed on Sundays.";
                 };
                 sundayStartTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "00:00";
+                  default = null;
                   description = "If you allowed updates on Sundays, use to define the time on a Sunday Zappl is permitted to start prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
                 sundayEndTime = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "23:59";
+                  default = null;
                   description = "If you allowed updates on Sundays, use to define the time on a Sunday Zappl should stop prompting users to install pending updates. This should be in 24 hour format, e.g., 09:00 for 9am, or 21:00 for 9pm.";
                 };
               };
@@ -580,12 +580,12 @@ with lib;
               options = {
                 promptHeight = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 330;
+                  default = null;
                   description = "Use to customise the height of the initial prompt displayed to users when they can either defer or update. Only use to define a custom height in points for the prompts shown to users, e.g. 330.";
                 };
                 promptWidth = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 640;
+                  default = null;
                   description = "Use to customise the width of the initial prompt displayed to users when they can either defer or update. Only use to define a custom width in points for the prompts shown to users, e.g. 640.";
                 };
               };
@@ -598,12 +598,12 @@ with lib;
               options = {
                 promptHeight = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 330;
+                  default = null;
                   description = "Use to customise the height of the grace period timer prompt displayed to users when they have no remaining deferrals. Only use to define a custom height in points for the prompts shown to users, e.g. 330.";
                 };
                 promptWidth = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 640;
+                  default = null;
                   description = "Use to customise the width of the grace period timer prompt displayed to users when they have no remaining deferrals. Only use to define a custom width in points for the prompts shown to users, e.g. 640.";
                 };
               };
@@ -638,7 +638,7 @@ with lib;
           };
           refreshInterval = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 20;
+            default = null;
             description = "The amount of time in seconds the user prompts refresh when deferrals have been configured for forced updates. The prompts require a refresh to pull focus if the user swipes away to ignore the prompt and ensures they either select defer or update. The default value is 20 seconds. The minimum allowed value is 10 seconds.";
           };
           acceptableAppBundleIDs = lib.mkOption {
@@ -653,27 +653,27 @@ with lib;
           };
           acceptableDNDMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if Do Not Disturb mode is detected.";
           };
           acceptableCameraUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if the camera is in use. Note: Apple Silicon Macs running macOS 12 (Monterey) do not accurately report camera usage, therefore this setting will be ignored. Upgrading to macOS 13 (Ventura) will resolve this issue for Apple Silicon Macs.";
           };
           acceptableScreenSharing = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Setting as True will prevent Zappl from prompting users if Screen Sharing is in use.";
           };
           updateProgressPosition = lib.mkOption {
             type = types.nullOr (types.enum [ "topright" "right" "bottomright" "topleft" "left" "bottomleft" "top" "center/centre" "bottom" ]);
-            default = "topright";
+            default = null;
             description = "The position on the screen of the prompt which displays the progress of an update. The default position is top right.";
           };
           updateProgressPrompt = lib.mkOption {
             type = types.nullOr (types.enum [ "noFocusPrompt" "focusPrompt" "noPrompt" ]);
-            default = "noFocusPrompt";
+            default = null;
             description = "Determines the behaviour of the prompt shown when updates are in progress. You can either select a prompt that does not take focus over other running Apps (default), a prompt that does take focus over all other running Apps, or disable the progress prompt completely. If you chose to show no prompt, you can still enable the \\\"Display Complete Message\\\" setting to inform users when the update has finished.";
           };
           updateProgressOverlayIcon = lib.mkOption {
@@ -683,12 +683,12 @@ with lib;
           };
           autoRelaunchApps = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether Zappl automatically relaunches apps that were running prior to updating once the update completes.";
           };
           displayCompletePrompt = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether a prompt is displayed to the user to inform them that the updates are complete. The prompt will inherit the same window position as the Update Progress prompt. Default is true.";
           };
         };

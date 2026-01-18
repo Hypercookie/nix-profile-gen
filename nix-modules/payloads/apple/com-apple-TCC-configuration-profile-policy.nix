@@ -45,7 +45,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -83,7 +83,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -174,7 +174,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -212,7 +212,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False ]);
+                  type = types.nullOr (types.enum [ false ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -250,7 +250,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -288,7 +288,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -325,7 +325,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False ]);
+                  type = types.nullOr (types.enum [ false ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -362,7 +362,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -399,7 +399,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False ]);
+                  type = types.nullOr (types.enum [ false ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -437,7 +437,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -475,7 +475,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -513,7 +513,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -551,7 +551,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -589,7 +589,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False ]);
+                  type = types.nullOr (types.enum [ false ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -626,7 +626,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -663,7 +663,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -700,7 +700,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -737,7 +737,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -774,7 +774,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -811,7 +811,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -848,7 +848,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };
@@ -944,7 +944,7 @@ with lib;
                   description = "If set to true, statically validate the code requirement. Used only if the process invalidates its dynamic code signature.";
                 };
                 Allowed = lib.mkOption {
-                  type = types.nullOr (types.enum [ False True ]);
+                  type = types.nullOr (types.enum [ false true ]);
                   default = null;
                   description = "If set to true, access is granted. Otherwise the process does not have access. The user is not prompted and cannot change this value.";
                 };

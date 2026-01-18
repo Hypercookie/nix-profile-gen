@@ -20,7 +20,7 @@ with lib;
 
     useDLC = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', use the DLC for all volumes.";
     };
 

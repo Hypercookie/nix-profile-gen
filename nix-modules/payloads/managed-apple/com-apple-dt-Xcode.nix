@@ -20,19 +20,19 @@ with lib;
 
     IDEProhibitOnDeviceModelInteraction = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls whether Xcode Predictive Code Completion is allowed.";
     };
 
     IDEProhibitRemoteModelInteraction = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls whether Swift Assist is allowed.";
     };
 
     CodingAssistantAllowExternalIntegrations = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls whether the coding assistant is allowed.";
     };
 

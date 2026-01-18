@@ -38,7 +38,7 @@ with lib;
 
     CertTemplate = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "User";
+      default = null;
       description = "The certificate template for your environment. The default user certificate value is \\'User\\'. The default computer certificate value is \\'Machine\\'.";
     };
 
@@ -50,19 +50,19 @@ with lib;
 
     CertificateRenewalTimeInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 14;
+      default = null;
       description = "The number of days in advance of certificate expiration that the notification center notifies the user.";
     };
 
     Keysize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 2048;
+      default = null;
       description = "The RSA key size for the certificate signing request (CSR). Available in macOS 10.11 and later.";
     };
 
     PromptForCredentials = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prompts the user for credentials when is installs the profile. This key applies only to user certificates with the Manual Download profile delivery method. Omit this key for computer certificates. Available in macOS 10.8 and later.";
     };
 
@@ -80,19 +80,19 @@ with lib;
 
     AllowAllAppsAccess = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', gives apps access to the private key. Available in macOS 10.10 and later.";
     };
 
     KeyIsExtractable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system allows exporting the private key. Available in macOS 10.10 and later.";
     };
 
     EnableAutoRenewal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the certificate obtained with this payload attempts auto-renewal. Auto-renewal can only be used with device Active Directory certificate payloads. Available in macOS 10.13.4 and later.";
     };
 

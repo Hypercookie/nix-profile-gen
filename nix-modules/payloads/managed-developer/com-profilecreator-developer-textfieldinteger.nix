@@ -44,7 +44,7 @@ with lib;
 
     TextFieldInteger05 = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 99;
+      default = null;
       description = "TextFieldInteger with a default value.";
     };
 
@@ -73,19 +73,19 @@ with lib;
 
     TextFieldInteger10 = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 98;
+      default = null;
       description = "TextFieldInteger with a max value of: 99";
     };
 
     TextFieldInteger11 = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 2;
+      default = null;
       description = "TextFieldInteger with a min value of: 1";
     };
 
     TextFieldInteger12 = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 2;
+      default = null;
       description = "TextFieldInteger with a min value of: 1 and max value of: 99";
     };
 

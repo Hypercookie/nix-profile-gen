@@ -17,15 +17,14 @@ from typing import Any
 
 
 def sanitize_nix_identifier(name: str) -> str:
-    """Convert a plist key name to a valid Nix identifier."""
-    # Replace invalid characters with underscores
-    sanitized = re.sub(r'[^a-zA-Z0-9_]', '_', name)
-    # Ensure it doesn't start with a digit
+    # Allow dots to remain
+    sanitized = re.sub(r'[^a-zA-Z0-9_.]', '_', name)
     if sanitized and sanitized[0].isdigit():
         sanitized = '_' + sanitized
-    # Handle reserved words
     if sanitized in ('if', 'then', 'else', 'let', 'in', 'with', 'rec', 'inherit', 'or', 'and'):
         sanitized = sanitized + '_'
+    if "." in sanitized:
+        sanitized = f'"{sanitized}"'
     return sanitized
 
 def escape_nix_string(s: str) -> str:
@@ -35,7 +34,7 @@ def escape_nix_string(s: str) -> str:
     # - ${ needs to become ''${
     # - Single ' followed by anything other than ' is fine
     result = s.replace("''", "'''")
-    result = result.replace("${", "''${")
+    result = result.replace("${", "''\${")
     return result
 
 def nix_value(value: Any) -> str:
@@ -87,13 +86,20 @@ def pfm_type_to_nix_type(pfm_type: str, subkeys: list | None = None, range_list:
         return 'types.attrsOf types.anything'
 
     if range_list:
-        # Create an enum type
-        if all(isinstance(v, str) for v in range_list):
-            enum_values = ' '.join(f'"{v}"' for v in range_list)
-            return f'types.enum [ {enum_values} ]'
-        elif all(isinstance(v, int) for v in range_list):
-            enum_values = ' '.join(str(v) for v in range_list)
-            return f'types.enum [ {enum_values} ]'
+    # Create an enum type
+     if all(isinstance(v, bool) for v in range_list):
+        enum_values = ' '.join('true' if v else 'false' for v in range_list)
+        return f'types.enum [ {enum_values} ]'
+
+     if all(isinstance(v, str) for v in range_list):
+        escaped_values = [escape_nix_string(v) for v in range_list]
+        enum_values = ' '.join(f'"{v}"' for v in escaped_values)
+        return f'types.enum [ {enum_values} ]'
+
+     if all(isinstance(v, int) for v in range_list):
+        enum_values = ' '.join(str(v) for v in range_list)
+        return f'types.enum [ {enum_values} ]'
+
 
     return type_mapping.get(pfm_type, 'types.anything')
 
@@ -177,10 +183,7 @@ def generate_option(subkey: dict, indent: int = 4, seen_names: set = None) -> st
         # For simple types, always use nullOr to make everything optional
         # Only set a real default if one was specified in the manifest
         lines.append(f'{ind}  type = types.nullOr ({nix_type});')
-        if has_default:
-            lines.append(f'{ind}  default = {nix_value(default)};')
-        else:
-            lines.append(f'{ind}  default = null;')
+        lines.append(f'{ind}  default = null;')
 
     # Description - use double-quoted string for safety
     if description:

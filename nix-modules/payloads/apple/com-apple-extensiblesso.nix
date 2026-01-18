@@ -62,7 +62,7 @@ with lib;
 
     ScreenLockedBehavior = lib.mkOption {
       type = types.nullOr (types.enum [ "Cancel" "DoNotHandle" ]);
-      default = "Cancel";
+      default = null;
       description = "If set to 'Cancel', the system cancels authentication requests when the screen is locked. If set to 'DoNotHandle', the request continues without SSO instead. This doesn't apply to requests where 'userInterfaceEnabled' is 'false', or for background 'URLSession' requests. Available in iOS 15 and later, and macOS 12 and later.";
     };
 
@@ -71,27 +71,27 @@ with lib;
         options = {
           allowAutomaticLogin = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', the system doesn't allow saving passwords in the keychain.";
           };
           allowPasswordChange = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', the system disables password changes. Available in macOS 10.15 and later.";
           };
           usePlatformSSOTGT = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system requires this configuration uses a TGT from Platform SSO instead of requesting a new one. Available in macOS 13 and later.";
           };
           allowPlatformSSOAuthFallback = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true' and 'usePlatformSSOTGT' is 'true', the system allows the user to manually sign in. Available in macOS 13 and later.";
           };
           performKerberosOnly = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the Kerberos Extension handles Kerberos requests only. It doesn't check for password expiration, show the password expiration in the menu, check for external password changes, perform password sync, or retrieve the home directory. Available in macOS 13 and later.";
           };
           cacheName = lib.mkOption {
@@ -111,7 +111,7 @@ with lib;
           };
           credentialUseMode = lib.mkOption {
             type = types.nullOr (types.enum [ "always" "whenNotSpecified" "kerberosDefault" ]);
-            default = "always";
+            default = null;
             description = "This setting affects how other processes use the Kerberos Extension credential. Allowed values:\n\n- 'always': The system always uses the credential if the SPN matches the Kerberos Extension 'Hosts' array and the caller hasn't specified another credential. However, the system won't use the credential if the calling app isn't in the 'credentialBundleIDACL'.\n- 'whenNotSpecified': The system only uses the extension credential if the SPN matches the Kerberos Extension 'Hosts' array. However, the system won't use the credential if the calling app isn't in the 'credentialBundleIDACL'.\n- 'kerberosDefault': The system uses the default Kerberos processes to select credentials, and normally uses the default Kerberos credential. This is the same as turning off this capability.\n\nAvailable in macOS 11 and later.";
           };
           customUsernameLabel = lib.mkOption {
@@ -121,7 +121,7 @@ with lib;
           };
           delayUserSetup = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system doesn't prompt the user to setup the Kerberos extension until either the administrator enables it with the 'app-sso' tool or the system receives a Kerberos challenge. Available in macOS 11 and later.";
           };
           helpText = lib.mkOption {
@@ -131,22 +131,22 @@ with lib;
           };
           isDefaultRealm = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Specifies whether this is the default realm if there's more than one Kerberos extension configuration.";
           };
           includeManagedAppsInBundleIdACL = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the Kerberos extension allows only managed apps to access and use the credential. This is in addition to the 'credentialBundleIDACL', if you specify that value. Available in iOS 14 and later, and macOS 12 and later.";
           };
           includeKerberosAppsInBundleIdACL = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the Kerberos extension allows the standard Kerberos utilities including 'TicketViewer' and 'klist' to access and use the credential. This is in addition to 'includeManagedAppsInBundleIdACL' or the 'credentialBundleIdACL', if you specify those values. Available in macOS 12 and later.";
           };
           monitorCredentialsCache = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', the system requests the credential on the next matching Kerberos challenge or network state change. If the credential is expired or missing, the system creates a new one. Available in macOS 11 and later.";
           };
           principalName = lib.mkOption {
@@ -166,7 +166,7 @@ with lib;
           };
           pwNotificationDays = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 15;
+            default = null;
             description = "The number of days prior to password expiration when the system sends a notification of password expiration to the user. Available in macOS 10.15 and later.";
           };
           pwExpireOverride = lib.mkOption {
@@ -176,7 +176,7 @@ with lib;
           };
           pwReqComplexity = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system requires passwords to meet Active Directory's definition of \"complex\". Available in macOS 10.15 and later.";
           };
           pwReqHistory = lib.mkOption {
@@ -206,17 +206,17 @@ with lib;
           };
           replicationTime = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 900;
+            default = null;
             description = "The time, in seconds, required to replicate changes in the Active Directory domain. The Kerberos extension uses this when checking password age after a change. Available in macOS 11 and later.";
           };
           requireTLSForLDAP = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Require that LDAP connections use TLS. Available in macOS 11 and later.";
           };
           requireUserPresence = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system requires the user to provide Touch ID, Face ID or their passcode to access the keychain entry.";
           };
           siteCode = lib.mkOption {
@@ -226,12 +226,12 @@ with lib;
           };
           syncLocalPassword = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'false', the system disables password sync. Note that this will not work if the user is logged in with a mobile account. Available in macOS 10.15 and later.";
           };
           useSiteAutoDiscovery = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'false', the Kerberos extension doesn't automatically use LDAP and DNS to determine its AD site name.";
           };
           domainRealmMapping = lib.mkOption {
@@ -249,7 +249,7 @@ with lib;
           };
           Enable_SSO_On_All_ManagedApps = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "Enable SSO on All Managed Apps";
           };
           AppAllowList = lib.mkOption {
@@ -274,22 +274,22 @@ with lib;
           };
           browser_sso_interaction_enabled = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "Allow Users to Sign in from Unknown Applications using the Safari Browser";
           };
           browser_sso_disable_mfa = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "Disable Asking for MFA During Initial Bootstrapping";
           };
           disable_explicit_app_prompt = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "Disable OAuth2 Application Prompts";
           };
           disable_explicit_app_prompt_and_autologin = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "Disable OAuth2 Application Prompts and Autologin";
           };
           identityIssuerAutoSelectFilter = lib.mkOption {
@@ -299,17 +299,17 @@ with lib;
           };
           allowSmartCard = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', allow the user to switch the user interface to SmartCard mode. Available in macOS 15 and later.";
           };
           allowPassword = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', allow the user to switch the user interface to Password mode. Available in macOS 15 and later.";
           };
           startInSmartCardMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the user interface will start in SmartCard mode. Available in macOS 15 and later.";
           };
         };
@@ -334,7 +334,7 @@ with lib;
           };
           UseSharedDeviceKeys = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system uses the same signing and encryption keys for all users. Only supported on the device channel.";
           };
           AccountDisplayName = lib.mkOption {
@@ -344,17 +344,17 @@ with lib;
           };
           LoginFrequency = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 64800;
+            default = null;
             description = "The duration, in seconds, until the system requires a full login instead of a refresh. The default value is 64,800 (18 hours). The minimum value is 3600 (1 hour).";
           };
           EnableCreateUserAtLogin = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Enables creating users at the Login Window with an 'AuthenticationMethod' of either 'Password' or 'SmartCard'. Requires that 'UseSharedDeviceKeys' is 'true'.";
           };
           EnableAuthorization = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Enables using identity provider accounts at authorization prompts. Requires that 'UseSharedDeviceKeys' is 'true'. The system assigns groups using 'AdministratorGroups', 'AdditionalGroups', or 'AuthorizationGroups'.";
           };
           TokenToUserMapping = lib.mkOption {
@@ -444,12 +444,12 @@ with lib;
           };
           AllowDeviceIdentifiersInAttestation = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system includes the device UDID and serial number in Platform SSO attestations.";
           };
           EnableCreateFirstUserDuringSetup = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', the device uses Platform SSO to create the first user account on the Mac during 'Setup Assistant'.";
           };
           NewUserAuthenticationMethods = lib.mkOption {
@@ -474,22 +474,22 @@ with lib;
           };
           AllowAccessKeyExpressMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system uses the access key in express mode, and doesn't require authentication before use.";
           };
           SynchronizeProfilePicture = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system requests the user's profile picture from the SSO extension.";
           };
           TemporarySessionQuickLogin = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system uses a quicker Authenticated Guest Mode login to Mac behavior. The system erases user data from only select locations in the user home directory after each session completes. Once every eight hours the system erases the full user home directory after a session completes. Turn this on for shared environments that have a high frequency of short sessions.";
           };
           EnableRegistrationDuringSetup = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system enables the PlatformSSO registration process during Setup Assistant on devices running macOS 26 and later. Set this key to 'true' when configuring PlatformSSO before enrollment using the 'com.apple.psso.required' error response.";
           };
         };

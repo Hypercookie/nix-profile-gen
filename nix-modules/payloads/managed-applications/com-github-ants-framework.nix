@@ -28,62 +28,62 @@ with lib;
         options = {
           git_repository = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "https://github.com/ANTS-Framework/playbook.git";
+            default = null;
             description = "URL of the repository that contains your Ansible playbooks.";
           };
           branch = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "master";
+            default = null;
             description = "Git branch to check out from your Git repository.";
           };
           ssh_key = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "/etc/ants/id_ants";
+            default = null;
             description = "Absolute path to a SSH key with permission to access your Git repository.";
           };
           destination = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "~root/.ants_playbook";
+            default = null;
             description = "Absolute path on the local machine to check out your Git repository.";
           };
           inventory_script = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "inventory_default";
+            default = null;
             description = "Relative or absolute path to an ansible inventory script.";
           };
           wait_interval = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 900;
+            default = null;
             description = "The number of seconds to wait in between ansible-pull runs.";
           };
           ansible_playbook = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "main.yml";
+            default = null;
             description = "File name of the primary Ansible playbook to run relative to your <Destination> directory.";
           };
           log_dir = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "/var/log/ants";
+            default = null;
             description = "Absolute path of where to store log files from runs.";
           };
           ssh_stricthostkeychecking = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Whether or not to use strict host key checking when running Git commands.";
           };
           ansible_pull_exe = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "";
+            default = null;
             description = "Absolute path to a different ansible-pull binary installed on the local machine.";
           };
           tags = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "";
+            default = null;
             description = "Limit the Ansible playbook run to a comma separated list of tags.";
           };
           skip_tags = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "";
+            default = null;
             description = "Run the Ansible playbook on all tags except the provided comma separated list.";
           };
         };
@@ -97,47 +97,47 @@ with lib;
         options = {
           ldap_user = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "ldap\\changeme";
+            default = null;
             description = "User name to use to connect to LDAP.";
           };
           ldap_pw = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "changeme";
+            default = null;
             description = "Password to use to connect to LDAP.";
           };
           ldap_host = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "LDAP.PRETENDCORP.COM";
+            default = null;
             description = "LDAP server to connect to for inventory purposes.";
           };
           ldap_ou_computers = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "DC=ldap,DC=pretendcorp,DC=com";
+            default = null;
             description = "LDAP location of computer objects.";
           };
           ldap_ou_groups = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "OU=ants,OU=Groups,DC=ldap,DC=pretendcorp,DC=com";
+            default = null;
             description = "LDAP location of group objects.";
           };
           cache_file = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "/etc/ants/inventory_cache.json";
+            default = null;
             description = "Absolute path to a cache file of Active Directory results.";
           };
           group_prefix = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "ants-";
+            default = null;
             description = "Group prefix used to filter groups from Active Directory.";
           };
           common_group = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "ants-common";
+            default = null;
             description = "A common group to put all computers in.";
           };
           common_ad_connected = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "common_ad_connected";
+            default = null;
             description = "A common group that computers are put in when the inventory script actively connects to Active Directory.";
           };
         };

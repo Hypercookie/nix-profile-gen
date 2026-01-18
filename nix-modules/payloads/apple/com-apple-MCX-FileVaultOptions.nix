@@ -20,19 +20,19 @@ with lib;
 
     dontAllowFDEDisable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system won't disable FileVault.";
     };
 
     dontAllowFDEEnable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system won't enable FileVault.";
     };
 
     DestroyFVKeyOnStandby = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system won't store th FileVault key across restarts.";
     };
 

@@ -20,7 +20,7 @@ with lib;
 
     SoftwareRepoURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "http://munki/repo";
+      default = null;
       description = "Base URL for Munki repository.";
     };
 
@@ -37,7 +37,7 @@ with lib;
 
     ManagedInstallDir = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/Library/Managed Installs";
+      default = null;
       description = "Folder where Munki keeps its data on the client.";
     };
 
@@ -49,37 +49,37 @@ with lib;
 
     SuppressAutoInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Munki will not automatically install or remove items.";
     };
 
     SuppressLoginwindowInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Munki will not install items while idle at the loginwindow except for those marked for unattended_install or unattended_uninstall.";
     };
 
     InstallAppleSoftwareUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Install updates from an Apple Software Update server, in addition to \"regular\" Munki updates.";
     };
 
     AppleSoftwareUpdatesOnly = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Only install updates from an Apple Software Update server. No Munki repository is needed or used.";
     };
 
     UnattendedAppleUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Updates that declare no \"must-close\" applications, or have one or more \"must-close\" applications, none of which is running, and do not require a logout or restart will be installed as part of a normal periodic background run without notifying the user.";
     };
 
     PerformAuthRestarts = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Munki will attempt to perform a filevault auth restart.";
     };
 
@@ -97,43 +97,43 @@ with lib;
 
     SuppressUserNotification = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Managed Software Center will never notify the user of available updates.";
     };
 
     SuppressStopButtonOnInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Managed Software Center will hide the stop button while installing or removing software, preventing users from interrupting the install.";
     };
 
     InstallRequiresLogout = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Managed Software Center will require a logout for all installs or removals.";
     };
 
     ShowRemovalDetail = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Managed Software Center will display detail for scheduled removals.";
     };
 
     ShowOptionalInstallsForHigherOSVersions = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Managed Software Center.app will show optional installs and updates that apply to macOS versions higher than the currently installed version.";
     };
 
     DaysBetweenNotifications = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1;
+      default = null;
       description = "Number of days between user notifications from Managed Software Center. Set to 0 to have Managed Software Center notify every time a background check runs if there are available updates.";
     };
 
     UseNotificationCenterDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "Number of days Notification Center notifications should be used before switching to launching Managed Software Center.";
     };
 
@@ -157,7 +157,7 @@ with lib;
 
     IgnoreSystemProxies = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "HTTP and/or HTTPS proxies set system-wide will be ignored, connections will be made directly.";
     };
 
@@ -217,13 +217,13 @@ with lib;
 
     UseClientCertificate = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Use an SSL client certificate when communicating with the Munki server. Requires an https:// URL for the Munki repo.";
     };
 
     UseClientCertificateCNAsClientIdentifier = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Use the CN of the client certificate as the Client Identifier. Used in combination with the UseClientCertificate key.";
     };
 
@@ -253,31 +253,31 @@ with lib;
 
     LogFile = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/Library/Managed Installs/Logs/ManagedSoftwareUpdate.log";
+      default = null;
       description = "Primary log is written to this file. Other logs are written into the same directory as this file.";
     };
 
     LogToSyslog = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Log to syslog in addition to ManagedSoftwareUpdate.log.";
     };
 
     LoggingLevel = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1;
+      default = null;
       description = "Higher values cause more detail to be written to the primary log.";
     };
 
     MSULogEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Log user actions in the GUI.";
     };
 
     MSUDebugLogEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Debug logging for Managed Software Center.";
     };
 
@@ -312,13 +312,13 @@ with lib;
 
     IgnoreMiddleware = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If true, Munki will ignore installed middleware. Useful for when moving away from middleware.";
     };
 
     AggressiveUpdateNotificationDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 14;
+      default = null;
       description = "This preference controls how many days after one or more pending updates are ignored that aggressive user notification begins. Setting this to 0 never triggers this aggressive behavior.";
     };
 

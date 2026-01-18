@@ -90,7 +90,7 @@ with lib;
           };
           disabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', this app isn't added to the allow list.";
           };
         };

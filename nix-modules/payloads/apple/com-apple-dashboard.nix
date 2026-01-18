@@ -29,7 +29,7 @@ with lib;
         options = {
           Type = lib.mkOption {
             type = types.nullOr (types.enum [ "bundleID" ]);
-            default = "bundleID";
+            default = null;
             description = "The type of allow list item. Set to 'bundleID' to use a widget's bundle ID as its main ID.";
           };
           ID = lib.mkOption {

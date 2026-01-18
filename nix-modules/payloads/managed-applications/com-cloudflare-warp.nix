@@ -38,19 +38,19 @@ with lib;
 
     service_mode = lib.mkOption {
       type = types.nullOr (types.enum [ "1dot1" "warp" ]);
-      default = "warp";
+      default = null;
       description = "Allows you to choose the operational mode of the client.";
     };
 
     onboarding = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls the visibility of the onboarding screens that ask the user to review the privacy policy during an application's first launch.";
     };
 
     switch_locked = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allows the user to turn off the WARP switch and disconnect the client.";
     };
 

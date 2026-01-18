@@ -20,19 +20,19 @@ with lib;
 
     dontAllowPasswordResetUI = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables user changes to the password.";
     };
 
     dontAllowLockMessageUI = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables user changes to the lock message.";
     };
 
     dontAllowFireWallUI = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables user changes to the firewall settings.";
     };
 

@@ -26,19 +26,19 @@ with lib;
 
     startAtLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Starts the Twingate Client upon user login";
     };
 
     PresentedDataPrivacy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Suppresses the first run Data Privacy screen";
     };
 
     PresentedEducation = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Suppresses the first run Education screens";
     };
 

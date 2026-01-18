@@ -20,7 +20,7 @@ with lib;
 
     AllowUserOverrides = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', restricts users from approving additional system extensions that configuration profiles don't explicitly allow.";
     };
 

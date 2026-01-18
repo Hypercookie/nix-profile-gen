@@ -99,25 +99,25 @@ with lib;
 
     SUEnableAutomaticChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls automatic update checks.";
     };
 
     SUScheduledCheckInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 86400;
+      default = null;
       description = "Controls the automatic update check interval. The default is 1 day (86400 seconds). Setting to 0 disables updates.";
     };
 
     SUAllowsAutomaticUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls the automatic update install prompt. When enabled, presents users with the option to allow automatic download and install of available updates. If disabled, disallows automatic updates and requires manual installation every time.";
     };
 
     SUAutomaticallyUpdate = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls automatic silent updates. If enabled, users will not be informed about updates and updates will be silently installed when the app quits.";
     };
 

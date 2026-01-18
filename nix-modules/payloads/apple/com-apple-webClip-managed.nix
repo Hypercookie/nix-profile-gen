@@ -32,7 +32,7 @@ with lib;
 
     IsRemovable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system enables removing the web clip.";
     };
 
@@ -44,19 +44,19 @@ with lib;
 
     Precomposed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prevents SpringBoard from adding shine to the icon.";
     };
 
     FullScreen = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system launches the web clip as a full-screen web app.";
     };
 
     IgnoreManifestScope = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', a full screen web clip can navigate to an external web site without showing Safari UI. Otherwise, Safari UI appears when navigating away from the web clip's URL. This key has no effect when 'FullScreen' is 'false'. Available in iOS 14 and later.";
     };
 

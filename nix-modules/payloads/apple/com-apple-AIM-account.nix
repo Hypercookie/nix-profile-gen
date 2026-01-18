@@ -44,19 +44,19 @@ with lib;
 
     AIMHostName = lib.mkOption {
       type = types.nullOr (types.enum [ "slogin.oscar.aol.com" ]);
-      default = "slogin.oscar.aol.com";
+      default = null;
       description = "The server address.";
     };
 
     AIMPort = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5190;
+      default = null;
       description = "The connection port for the server.";
     };
 
     AIMUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', enables SSL.";
     };
 

@@ -87,7 +87,7 @@ with lib;
 
     OIDCRedirectURI = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "nomadoauth://oauth-callback/okta";
+      default = null;
       description = "The Redirect URI the user is sent to after successful authentication.";
     };
 
@@ -131,13 +131,13 @@ with lib;
 
     EULATitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "End User License Agreement";
+      default = null;
       description = "Title of the end user license agreement";
     };
 
     EULASubTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Terms and Conditions";
+      default = null;
       description = "Subtitle of the end user license agreement";
     };
 

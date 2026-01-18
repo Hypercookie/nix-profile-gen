@@ -20,7 +20,7 @@ with lib;
 
     EnterprisePoliciesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable policy support on macOS.";
     };
 
@@ -85,11 +85,11 @@ with lib;
               options = {
                 NTLM = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                 };
                 SPNEGO = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                 };
               };
             });
@@ -101,11 +101,11 @@ with lib;
               options = {
                 NTLM = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                 };
                 SPNEGO = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                 };
               };
             });
@@ -480,42 +480,42 @@ with lib;
         options = {
           Search = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Search";
           };
           TopSites = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "TopSites";
           };
           SponsoredTopSites = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Sponsored Top Sites";
           };
           Highlights = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Highlights";
           };
           Pocket = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Pocket";
           };
           SponsoredPocket = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Sponsored Pocket";
           };
           Snippets = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Snippets";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Locked";
           };
         };
@@ -529,27 +529,27 @@ with lib;
         options = {
           Enabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Controls whether generative AI features are enabled by default";
           };
           Chatbot = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Controls access to AI chatbots in the sidebar";
           };
           LinkPreviews = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Controls whether AI is used to generate link previews";
           };
           TabGroups = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Controls whether AI is used to suggest names and tabs for tab groups";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Prevents the user from changing generative AI preferences";
           };
         };
@@ -578,7 +578,7 @@ with lib;
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, prevents the user from changing homepage preferences.";
           };
         };
@@ -589,7 +589,7 @@ with lib;
 
     ShowHomeButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show the home button on the toolbar.";
     };
 
@@ -657,42 +657,42 @@ with lib;
         options = {
           Cache = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
           Cookies = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
           Downloads = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
           FormData = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Form Data";
           };
           History = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
           Sessions = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
           SiteSettings = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Site Settings";
           };
           OfflineApps = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Offline Apps";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
           };
         };
       });
@@ -702,7 +702,7 @@ with lib;
 
     SearchBar = lib.mkOption {
       type = types.nullOr (types.enum [ "separate" "unified" ]);
-      default = "separate";
+      default = null;
       description = "Set whether or not search bar is displayed.";
     };
 
@@ -767,7 +767,7 @@ with lib;
                 };
                 Encoding = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "UTF-8";
+                  default = null;
                   description = "The query charset for the engine.";
                 };
               };
@@ -966,7 +966,7 @@ with lib;
         options = {
           Enabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Enable DNS over HTTPS.";
           };
           ProviderURL = lib.mkOption {
@@ -976,7 +976,7 @@ with lib;
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, DNS over HTTPS preferences cannot be changed.";
           };
           ExcludedDomains = lib.mkOption {
@@ -1000,17 +1000,17 @@ with lib;
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this preference is enabled, Proxy preferences cannot be changed.";
           };
           AutoLogin = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this preference is enabled, do not prompt for authentication if password is saved.";
           };
           UseProxyForDNS = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this preference is enabled, you will use Proxy DNS when using SOCKS v5.";
           };
           HTTPProxy = lib.mkOption {
@@ -1020,7 +1020,7 @@ with lib;
           };
           UseHTTPProxyForAllProtocols = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this preference is enabled, use the HTTP proxy server for all protocols.";
           };
           SSLProxy = lib.mkOption {
@@ -1045,7 +1045,7 @@ with lib;
           };
           Passthrough = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "localhost, 127.0.0.1";
+            default = null;
             description = "Proxy bypass URLs.";
           };
           AutoConfigURL = lib.mkOption {
@@ -1107,7 +1107,7 @@ with lib;
           };
           Default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "This sets the default value for \"Accept cookies from websites\".";
           };
           AcceptThirdParty = lib.mkOption {
@@ -1117,17 +1117,17 @@ with lib;
           };
           ExpireAtSessionEnd = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "This determines when cookies expire.";
           };
           RejectTracker = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Only reject trackers.";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, cookies preferences cannot be changed.";
           };
         };
@@ -1138,19 +1138,19 @@ with lib;
 
     DisableFormHistory = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Turn off saving information on web forms and the search bar.";
     };
 
     DisablePasswordReveal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Do not allow passwords to be shown in saved logins";
     };
 
     DisableTelemetry = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Prevent the upload of telemetry data.";
     };
 
@@ -1159,22 +1159,22 @@ with lib;
         options = {
           Value = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If Value is set to false, tracking protection is disabled and locked in both the regular browser and private browsing. If Value is set to true, tracking protection is enabled by default in both the regular browser and private browsing.";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, Tracking Protection preferences cannot be changed.";
           };
           Cryptomining = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If Cryptomining is set to true, cryptomining scripts on websites are blocked.";
           };
           Fingerprinting = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If Fingerprinting is set to true, fingerprinting scripts on websites are blocked.";
           };
         };
@@ -1198,12 +1198,12 @@ with lib;
           };
           Default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, Flash preferences cannot be changed. If this is false, Flash is never activated on websites even if they are in the specified in the Allow list.";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, Flash preferences cannot be changed.";
           };
         };
@@ -1222,7 +1222,7 @@ with lib;
           };
           Default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is set to false, add-ons cannot be installed by the user.";
           };
         };
@@ -1233,19 +1233,19 @@ with lib;
 
     OfferToSaveLogins = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Control whether or not Firefox offers to save passwords.";
     };
 
     OfferToSaveLoginsDefault = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Sets the default value of signon.rememberSignons without locking it.";
     };
 
     PasswordManagerEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Remove access to the password manager via preferences and blocks about:logins on Firefox 70.";
     };
 
@@ -1267,12 +1267,12 @@ with lib;
                 };
                 BlockNewRequests = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If this preference is enabled, sites that are not in the Allow preference will not be allowed to ask permission to access the camera. If this preference is disabled or not configured, any site that is not in the Block preference can ask permission to access the camera.";
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, camera preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their camera preferences.";
                 };
               };
@@ -1295,12 +1295,12 @@ with lib;
                 };
                 BlockNewRequests = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If this preference is enabled, sites that are not in the Allow preference will not be allowed to ask permission to access the microphone. If this preference is disabled or not configured, any site that is not in the Block preference can ask permission to access the microphone.";
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, microphone preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their microphone preferences.";
                 };
               };
@@ -1323,12 +1323,12 @@ with lib;
                 };
                 BlockNewRequests = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If this preference is enabled, sites that are not in the Allow preference will not be allowed to ask permission to access location. If this preference is disabled or not configured, any site that is not in the Block preference can ask permission to access the location.";
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, location preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their location preferences.";
                 };
               };
@@ -1351,12 +1351,12 @@ with lib;
                 };
                 BlockNewRequests = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If this preference is enabled, sites that are not in the Allow preference will not be allowed to ask permission to send notifications. If this preference is disabled or not configured, any site that is not in the Block preference can ask permission to send notifications.";
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, notification preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their notification preferences.";
                 };
               };
@@ -1384,7 +1384,7 @@ with lib;
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, autoplay preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their autoplay preferences.";
                 };
               };
@@ -1407,12 +1407,12 @@ with lib;
                 };
                 BlockNewRequests = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = true;
+                  default = null;
                   description = "If this preference is enabled, sites that are not in the Allow preference will not be allowed to ask permission to access virtual reality. If this preference is disabled or not configured, any site that is not in the Block preference can ask permission to access virtual reality.";
                 };
                 Locked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If this preference is enabled, virtual reality preferences cannot be changed by the user. If this preference is disabled or not configured, the user can change their virtual reality preferences.";
                 };
               };
@@ -1436,12 +1436,12 @@ with lib;
           };
           Default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If this is false, pop-up windows are allowed by default.";
           };
           Locked = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If this is true, pop-up blocking preferences cannot be changed.";
           };
         };
@@ -1455,7 +1455,7 @@ with lib;
         options = {
           ImportEnterpriseRoots = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If this preference is enabled, Firefox will read certificates from the macOS keychain. If this preference is disabled or not configured, Firefox will not read certificates from the macOS keychain.";
           };
           Install = lib.mkOption {
@@ -1474,12 +1474,12 @@ with lib;
         options = {
           InvalidCertificate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Prevents adding an exception when an invalid certificate is shown. If this preference is enabled, the \"Add Exception\" button is not available when a certificate is invalid. This prevents the user from overriding the certificate error. If this preference is disabled or not configured, certificate errors can be overridden.";
           };
           SafeBrowsing = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Prevents selecting \"ignore the risk\" and visiting a harmful site anyway. If this preference is enabled, a user cannot bypass the warning and visit a harmful site. If this preference is disabled or not configured, a user can choose to visit a harmful site.";
           };
         };
@@ -1604,242 +1604,242 @@ with lib;
     Preferences = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
-          accessibility_force_disabled = lib.mkOption {
+          "accessibility.force_disabled" = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 ]);
-            default = 0;
+            default = null;
             description = "If set to 1, platform accessibility is disabled.";
           };
-          app_update_auto = lib.mkOption {
+          "app.update.auto" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, Firefox doesn't automatically install update.";
           };
-          browser_bookmarks_autoExportHTML = lib.mkOption {
+          "browser.bookmarks.autoExportHTML" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, bookmarks are exported on shutdown.";
           };
-          browser_bookmarks_file = lib.mkOption {
+          "browser.bookmarks.file" = lib.mkOption {
             type = types.nullOr (types.str);
             default = null;
             description = " If set, the name of the file where bookmarks are exported and imported.";
           };
-          browser_bookmarks_restore_default_bookmarks = lib.mkOption {
+          "browser.bookmarks.restore_default_bookmarks" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, bookmarks are restored to their defaults.";
           };
-          browser_cache_disk_enable = lib.mkOption {
+          "browser.cache.disk.enable" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, don't store cache on the hard drive.";
           };
-          browser_cache_disk_parent_directory = lib.mkOption {
+          "browser.cache.disk.parent_directory" = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "Profile temporary directory";
+            default = null;
             description = "If set, changes the location of the disk cache.";
           };
-          browser_fixup_dns_first_for_single_words = lib.mkOption {
+          "browser.fixup.dns_first_for_single_words" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, single words are sent to DNS, not directly to search.";
           };
-          browser_newtabpage_activity_stream_default_sites = lib.mkOption {
+          "browser.newtabpage.activity_stream.default.sites" = lib.mkOption {
             type = types.nullOr (types.listOf (types.str));
             default = null;
             description = "If set, a list of URLs to use as the default top sites on the new tab page.";
           };
-          browser_places_importBookmarksHTML = lib.mkOption {
+          "browser.places.importBookmarksHTML" = lib.mkOption {
             type = types.nullOr (types.bool);
             default = null;
             description = "If true, bookmarks are always imported on startup.";
           };
-          browser_safebrowsing_malware_enabled = lib.mkOption {
+          "browser.safebrowsing.malware.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, malware protection is not enabled (Not recommended)";
           };
-          browser_safebrowsing_phishing_enabled = lib.mkOption {
+          "browser.safebrowsing.phishing.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, phishing protection is not enabled (Not recommended)";
           };
-          browser_search_update = lib.mkOption {
+          "browser.search.update" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, updates for search engines are not checked.";
           };
-          browser_slowStartup_notificationDisabled = lib.mkOption {
+          "browser.slowStartup.notificationDisabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = " If true, a notification isn't shown if startup is slow.";
           };
-          browser_tabs_warnOnClose = lib.mkOption {
+          "browser.tabs.warnOnClose" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, there is no warning when the browser is closed.";
           };
-          browser_taskbar_previews_enable = lib.mkOption {
+          "browser.taskbar.previews.enable" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, tab previews are shown in the Windows taskbar.";
           };
-          browser_urlbar_suggest_bookmark = lib.mkOption {
+          "browser.urlbar.suggest.bookmark" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, bookmarks aren't suggested when typing in the URL bar.";
           };
-          browser_urlbar_suggest_history = lib.mkOption {
+          "browser.urlbar.suggest.history" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, history isn't suggested when typing in the URL bar.";
           };
-          browser_urlbar_suggest_openpage = lib.mkOption {
+          "browser.urlbar.suggest.openpage" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, open tabs aren't suggested when typing in the URL bar.";
           };
-          datareporting_policy_dataSubmissionPolicyBypassNotification = lib.mkOption {
+          "datareporting.policy.dataSubmissionPolicyBypassNotification" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, don't show the privacy policy tab on first run.";
           };
-          dom_allow_scripts_to_close_windows = lib.mkOption {
+          "dom.allow_scripts_to_close_windows" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, web page can close windows.";
           };
-          dom_disable_window_flip = lib.mkOption {
+          "dom.disable_window_flip" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, web pages can focus and activate windows.";
           };
-          dom_disable_window_move_resize = lib.mkOption {
+          "dom.disable_window_move_resize" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, web pages can't move or resize windows.";
           };
-          dom_event_contextmenu_enabled = lib.mkOption {
+          "dom.event.contextmenu.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, web pages can't override context menus.";
           };
-          dom_keyboardevent_keypress_hack_dispatch_non_printable_keys_addl = lib.mkOption {
+          "dom.keyboardevent.keypress.hack.dispatch_non_printable_keys.addl" = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "";
+            default = null;
             description = "See https://support.mozilla.org/en-US/kb/dom-events-changes-introduced-firefox-66";
           };
-          dom_keyboardevent_keypress_hack_use_legacy_keycode_and_charcode_addl = lib.mkOption {
+          "dom.keyboardevent.keypress.hack.use_legacy_keycode_and_charcode.addl" = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "";
+            default = null;
             description = "See https://support.mozilla.org/en-US/kb/dom-events-changes-introduced-firefox-66";
           };
-          extensions_blocklist_enabled = lib.mkOption {
+          "extensions.blocklist.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, the extensions blocklist is not used (Not recommended)";
           };
-          extensions_getAddons_showPane = lib.mkOption {
+          "extensions.getAddons.showPane" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If false, the Recommendations tab is not displayed in the Add-ons Manager.";
           };
-          extensions_htmlaboutaddons_recommendations_enabled = lib.mkOption {
+          "extensions.htmlaboutaddons.recommendations.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, recommendations are not shown on the Extensions tab in the Add-ons Manager.";
           };
-          geo_enabled = lib.mkOption {
+          "geo.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, the geolocation API is disabled.";
           };
-          intl_accept_languages = lib.mkOption {
+          "intl.accept_languages" = lib.mkOption {
             type = types.nullOr (types.str);
             default = null;
             description = "If set, preferred language for web pages.";
           };
-          media_eme_enabled = lib.mkOption {
+          "media.eme.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, Encrypted Media Extensions are not enabled.";
           };
-          media_gmp_gmpopenh264_enabled = lib.mkOption {
+          "media.gmp_gmpopenh264.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, the OpenH264 plugin is not downloaded.";
           };
-          media_gmp_widevinecdm_enabled = lib.mkOption {
+          "media.gmp_widevinecdm.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, the Widevine plugin is not downloaded.";
           };
-          media_peerconnection_enabled = lib.mkOption {
+          "media.peerconnection.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, WebRTC is disabled";
           };
-          media_peerconnection_ice_obfuscate_host_addresses_blocklist = lib.mkOption {
+          "media.peerconnection.ice.obfuscate_host_addresses.blocklist" = lib.mkOption {
             type = types.nullOr (types.listOf (types.str));
             default = null;
             description = "If set, a list of domains for which mDNS hostname obfuscation is disabled.";
           };
-          network_dns_disableIPv6 = lib.mkOption {
+          "network.dns.disableIPv6" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, IPv6 DNS lokoups are disabled.";
           };
-          network_IDN_show_punycode = lib.mkOption {
+          "network.IDN_show_punycode" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, display the punycode version of internationalized domain names.";
           };
-          places_history_enabled = lib.mkOption {
+          "places.history.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, history is not enabled.";
           };
-          print_save_print_settings = lib.mkOption {
+          "print.save_print_settings" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, print settings are not saved between jobs.";
           };
-          security_default_personal_cert = lib.mkOption {
+          "security.default_personal_cert" = lib.mkOption {
             type = types.nullOr (types.enum [ "Ask Every Time" "Select Automatically" ]);
-            default = "Ask Every Time";
+            default = null;
             description = "If set to \"Select Automatically\", Firefox automatically chooses the default personal certificate. Other possible option is \"Ask Every Time\".";
           };
-          security_mixed_content_block_active_content = lib.mkOption {
+          "security.mixed_content.block_active_content" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, mixed active content (HTTP and HTTPS) is not blocked.";
           };
-          security_osclientcerts_autoload = lib.mkOption {
+          "security.osclientcerts.autoload" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, client certificates are loaded from the operating system certificate store.";
           };
-          security_ssl_errorReporting_enabled = lib.mkOption {
+          "security.ssl.errorReporting.enabled" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, SSL errors cannot be sent to Mozilla.";
           };
-          security_tls_hello_downgrade_check = lib.mkOption {
+          "security.tls.hello_downgrade_check" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, the TLS 1.3 downgrade check is disabled.";
           };
-          security_tls_enable_0rtt_data = lib.mkOption {
+          "security.tls.enable_0rtt_data" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If false, TLS early data is turned off.";
           };
-          security_tls_version_enable_deprecated = lib.mkOption {
+          "security.tls.version.enable_deprecated" = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If true, browser will accept TLS 1.0. and TLS 1.1.";
           };
-          widget_content_gtk_theme_override = lib.mkOption {
+          "widget.content.gtk_theme_override" = lib.mkOption {
             type = types.nullOr (types.str);
             default = null;
             description = "If set, overrides the GTK theme for widgets.";
@@ -1876,7 +1876,7 @@ with lib;
 
     MicrosoftEntraSSO = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to true, Firefox will use credentials stored in the Company Portal to sign in to Microsoft Entra accounts. Affects `network.http.microsoft-entra-sso.enabled`.";
     };
 

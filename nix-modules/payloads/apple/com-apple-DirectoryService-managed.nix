@@ -50,73 +50,73 @@ with lib;
 
     ADCreateMobileAccountAtLoginFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADCreateMobileAccountAtLogin' key.";
     };
 
     ADCreateMobileAccountAtLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system creates a mobile account at login.";
     };
 
     ADWarnUserBeforeCreatingMAFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADWarnUserBeforeCreatingMA' key.";
     };
 
     ADWarnUserBeforeCreatingMA = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the warning before creating the mobile account.";
     };
 
     ADForceHomeLocalFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADForceHomeLocal' key.";
     };
 
     ADForceHomeLocal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system forces a local home directory.";
     };
 
     ADUseWindowsUNCPathFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADUseWindowsUNCPath' key.";
     };
 
     ADUseWindowsUNCPath = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system uses the UNC path from Active Directory to derive the network home location.";
     };
 
     ADMountStyle = lib.mkOption {
       type = types.nullOr (types.enum [ "afp" "smb" ]);
-      default = "smb";
+      default = null;
       description = "The network home protocol to use: 'afp' or 'smb'.";
     };
 
     ADDefaultUserShellFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADDefaultUserShell' key.";
     };
 
     ADDefaultUserShell = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/bin/bash";
+      default = null;
       description = "The default user shell.";
     };
 
     ADMapUIDAttributeFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADMapUIDAttribute' key.";
     };
 
@@ -128,7 +128,7 @@ with lib;
 
     ADMapGIDAttributeFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADMapGIDAttribute' key.";
     };
 
@@ -140,7 +140,7 @@ with lib;
 
     ADMapGGIDAttributeFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADMapGGIDAttributeFlag' key.";
     };
 
@@ -152,7 +152,7 @@ with lib;
 
     ADPreferredDCServerFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADPreferredDCServer' key.";
     };
 
@@ -164,7 +164,7 @@ with lib;
 
     ADDomainAdminGroupListFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADDomainAdminGroupList' key.";
     };
 
@@ -176,55 +176,55 @@ with lib;
 
     ADAllowMultiDomainAuthFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADAllowMultiDomainAuth' key.";
     };
 
     ADAllowMultiDomainAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system allows authentication from any domain in the namespace.";
     };
 
     ADNamespaceFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADNamespace' key.";
     };
 
     ADNamespace = lib.mkOption {
       type = types.nullOr (types.enum [ "domain" "forest" ]);
-      default = "domain";
+      default = null;
       description = "The primary user account naming convention; either 'forest' or 'domain'.";
     };
 
     ADPacketSignFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADPacketSign' key.";
     };
 
     ADPacketSign = lib.mkOption {
       type = types.nullOr (types.enum [ "allow" "disable" "require" ]);
-      default = "allow";
+      default = null;
       description = "The packet signing policy.";
     };
 
     ADPacketEncryptFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADPacketEncrypt' key.";
     };
 
     ADPacketEncrypt = lib.mkOption {
       type = types.nullOr (types.enum [ "allow" "disable" "require" "ssl" ]);
-      default = "allow";
+      default = null;
       description = "The packet encryption policy.";
     };
 
     ADRestrictDDNSFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADRestrictDDNS' key.";
     };
 
@@ -236,13 +236,13 @@ with lib;
 
     ADTrustChangePassIntervalDaysFlag = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the 'ADTrustChangePassIntervalDays' key.";
     };
 
     ADTrustChangePassIntervalDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 14;
+      default = null;
       description = "The number of days before requiring a change of the computer trust account password. Set to '0' to disable the feature.";
     };
 

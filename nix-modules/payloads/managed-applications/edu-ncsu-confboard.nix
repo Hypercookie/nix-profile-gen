@@ -20,19 +20,19 @@ with lib;
 
     baseURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "https://storage.googleapis.com/confboard";
+      default = null;
       description = "The base URL to the folder containing the images.txt file or JSON information. Do NOT include trailing backslash.";
     };
 
     shouldUseJSON = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Base URL is a JSON file or feed not text list of URIs.";
     };
 
     shouldDisplayName = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show name of device on screen";
     };
 
@@ -44,13 +44,13 @@ with lib;
 
     reloadContentTimer = lib.mkOption {
       type = types.nullOr (types.enum [ 30 60 120 240 480 720 1440 ]);
-      default = 720;
+      default = null;
       description = "Time between reloading the list of image links";
     };
 
     rotateImageTimer = lib.mkOption {
       type = types.nullOr (types.enum [ 10 30 60 120 300 ]);
-      default = 10;
+      default = null;
       description = "Time each image will stay on screen.";
     };
 

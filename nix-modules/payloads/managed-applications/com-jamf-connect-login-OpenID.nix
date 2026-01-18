@@ -20,13 +20,13 @@ with lib;
 
     OIDCProvider = lib.mkOption {
       type = types.nullOr (types.enum [ "Azure" "GoogleID" "IBMCI" "OneLogin" "PingFederate" "Custom" ]);
-      default = "Azure";
+      default = null;
       description = "Specifies the IdP provider integrated with Jamf Connect Login.";
     };
 
     OIDCRedirectURI = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "https://127.0.0.1/jamfconnect";
+      default = null;
     };
 
     OIDCClientID = lib.mkOption {
@@ -74,7 +74,7 @@ with lib;
 
     OIDCNewPassword = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If set to true, the user must create a new password on the computer\nIf set to false, the user must validate with their existing IdP password, which will also become the local password.";
     };
 
@@ -150,13 +150,13 @@ with lib;
 
     EULATitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "End User License Agreement";
+      default = null;
       description = "Title of the end user license agreement";
     };
 
     EULASubTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Terms and Conditions";
+      default = null;
       description = "Subtitle of the end user license agreement";
     };
 

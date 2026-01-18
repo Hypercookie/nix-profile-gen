@@ -20,7 +20,7 @@ with lib;
 
     DisablePersonalSync = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Prevents users from adding or syncing personal accounts.";
     };
 
@@ -87,7 +87,7 @@ with lib;
 
     SharePointOnPremPrioritizationPolicy = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Determines whether or not the sync app should set up sync for SharePoint Server on-premises or SharePoint in Microsoft 365 first during the first-run scenario when the account is the same for both SharePoint Server and SharePoint in Microsoft 365 in a hybrid scenario.";
     };
 
@@ -141,7 +141,7 @@ with lib;
 
     EnableSyncAdminReports = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "This setting lets the OneDrive sync app report device and health data that's to be included in sync admin reports. You must enable this setting on the devices you want to get reports from.";
     };
 
@@ -153,7 +153,7 @@ with lib;
 
     DisableAutoConfig = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Determines whether or not the sync app can automatically sign in.\n\nIf you enable this setting, the sync app is prevented from automatically signing with an existing Microsoft Entra credential that is made available to Microsoft applications.";
     };
 

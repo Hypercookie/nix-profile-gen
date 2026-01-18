@@ -20,61 +20,61 @@ with lib;
 
     autostart = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the app will be launched on user-login.";
     };
 
     canChangeAutostart = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Optional. If set to false, the user can not change the Autostart option.";
     };
 
     enableAutoUpdater = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Turns the auto update framework on or off, so the App can update itself.";
     };
 
     helpURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "https://www.anleitungen.rrze.fau.de/betriebssysteme/apple-macos-und-ios/macos/#networksharemounter";
+      default = null;
       description = "Configure a help URL to help users interact with the application.";
     };
 
     unmountOnExit = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configure a help URL to help users interact with the application.";
     };
 
     useNewDefaultLocation = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "With version 3 the old default mount path (~/Netzlaufwerke/) is deprecated. New default is (/Volumes). This key allows administrators to adopt this default value ahead of the official release. This option is provided to ease the transition for administrators.";
     };
 
     location = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "";
+      default = null;
       description = "Path where network shares will be mounted. Leave blank for the default value (highly recommended).";
     };
 
     cleanupLocationDirectory = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, the mount location will be cleaned up from obstructing files and directories. Please read the wiki before enabling this option and use it with caution!";
     };
 
     canQuit = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show exit button in the menu bar.";
     };
 
     kerberosRealm = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "";
+      default = null;
       description = "Kerberos/AD Domain for user authentication. If set, automatic AD/Kerberos authentication and ticket renewal will be enabled.";
     };
 
@@ -88,7 +88,7 @@ with lib;
           };
           authType = lib.mkOption {
             type = types.nullOr (types.enum [ "krb" "password" "guest" ]);
-            default = "krb";
+            default = null;
             description = "Authentication type for the share, it can be either through Kerberos (krb) or using a username/password (auth). Default: Kerberos.";
           };
           username = lib.mkOption {

@@ -26,13 +26,13 @@ with lib;
 
     wait_for_network = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enable or disable wait for network";
     };
 
     network_timeout = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 180;
+      default = null;
       description = "Specify how long Outset waits for network activity";
     };
 
@@ -55,7 +55,7 @@ with lib;
 
     verbose_logging = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enable or disable verbose logging";
     };
 

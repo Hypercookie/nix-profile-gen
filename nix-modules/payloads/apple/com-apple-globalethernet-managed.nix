@@ -44,7 +44,7 @@ with lib;
           };
           OneTimeUserPassword = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If set, the user will be prompted for a password each time they connect to the network.";
           };
           TLSTrustedServerNames = lib.mkOption {
@@ -54,12 +54,12 @@ with lib;
           };
           TLSAllowTrustExceptions = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Allows a dynamic trust decision by the user.";
           };
           TTLSInnerAuthentication = lib.mkOption {
             type = types.nullOr (types.enum [ "PAP" "EAP" "CHAP" "MSCHAP" "MSCHAPv2" ]);
-            default = "MSCHAPv2";
+            default = null;
             description = "Specifies the inner authentication used by the TTLS module.";
           };
           OuterIdentity = lib.mkOption {
@@ -69,32 +69,32 @@ with lib;
           };
           TLSMinimumVersion = lib.mkOption {
             type = types.nullOr (types.enum [ "1.0" "1.1" "1.2" "1.3" ]);
-            default = "1.0";
+            default = null;
             description = "TLS Minimum Version";
           };
           TLSMaximumVersion = lib.mkOption {
             type = types.nullOr (types.enum [ "1.0" "1.1" "1.2" "1.3" ]);
-            default = "1.2";
+            default = null;
             description = "TLS Maximum Version";
           };
           EAPFASTUsePAC = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If set, the device will use an existing PAC if it's present. Otherwise the server must present its identity using a certificate.";
           };
           EAPFASTProvisionPAC = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If set, allows PAC provisioning.";
           };
           EAPFASTProvisionPACAnonymously = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If set, provisions the device anonymously. Note that there are known man-in-the-middle attacks for anonymous provisioning.";
           };
           EAPSIMNumberOfRANDs = lib.mkOption {
             type = types.nullOr (types.enum [ 2 3 ]);
-            default = 3;
+            default = null;
             description = "The minimum number of RAND values accepted from the server. 3 is the default, and 2 is allowed, but offers less security.";
           };
           SystemModeCredentialsSource = lib.mkOption {
@@ -104,7 +104,7 @@ with lib;
           };
           SystemModeUseOpenDirectoryCredentials = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "This indicates if the connection should try to use the OpenDirectory machine credentials.";
           };
           TLSTrustedCertificates = lib.mkOption {

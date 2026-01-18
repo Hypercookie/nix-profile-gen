@@ -26,7 +26,7 @@ with lib;
 
     IsHotspot = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device treats the network as a hotspot.";
     };
 
@@ -38,37 +38,37 @@ with lib;
 
     HIDDEN_NETWORK = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', defines this network as hidden.";
     };
 
     AutoJoin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the device joins the network automatically.\n\nIf 'false', the user must tap the network name to join it.";
     };
 
     CaptiveBypass = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system bypasses Captive Network detection when the device connects to the network.";
     };
 
     DisableAssociationMACRandomization = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true,' disables MAC address randomization for a Wi-Fi network while associated with that network. This feature also shows a privacy warning in Settings indicating that the network has reduced privacy protections.\n\nIf 'false', then the system enables MAC address randomization on iOS, watchOS, and visionOS.\n\nThis value is only locked when MDM installs the profile. If the profile is manually installed, the system sets the value but the user can change it.";
     };
 
     EnableIPv6 = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', enables IPv6 on this interface.";
     };
 
     ProxyType = lib.mkOption {
       type = types.nullOr (types.enum [ "None" "Manual" "Auto" ]);
-      default = "None";
+      default = null;
       description = "The proxy type, if any, to use. If you choose the manual proxy type, you need the proxy server address, including its port and optionally a user name and password into the proxy server. If you choose the auto proxy type, you can enter a proxy autoconfiguration (PAC) URL.";
     };
 
@@ -104,13 +104,13 @@ with lib;
 
     ProxyPACFallbackAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', allows connecting directly to the destination if the PAC file is unreachable.";
     };
 
     EncryptionType = lib.mkOption {
       type = types.nullOr (types.enum [ "WEP" "WPA" "WPA2" "WPA3" "Any" "None" ]);
-      default = "Any";
+      default = null;
       description = "The encryption type for the network.\n\nIf set to anything except 'None', the payload may contain the following three keys: 'Password', 'PayloadCertificateUUID', or 'EAPClientConfiguration'.\n\nAs of iOS 16, tvOS 16, watchOS 9, and macOS 13:\n\n- 'WPA' allows joining WPA or WPA2 networks\n- 'WPA2' allows joining WPA2 or WPA3 networks\n- 'WPA3' allows joining WPA3 networks only\n- 'Any' allows joining WPA, WPA2, WPA3, and WEP networks\n\nPrior to iOS 16, tvOS 16, and watchOS 9, specifying 'WPA', 'WPA2', and 'WPA3' were equivalent and would allow joining any WPA network.\n\nPrior to macOS 13, the encryption type, if specified explicitly, needed to match the encryption type of the network exactly.";
     };
 
@@ -134,7 +134,7 @@ with lib;
 
     ServiceProviderRoamingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', allows connection to roaming service providers.";
     };
 
@@ -188,7 +188,7 @@ with lib;
           };
           OneTimeUserPassword = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the user receives a prompt for a password each time they connect to the network.";
           };
           TLSTrustedServerNames = lib.mkOption {
@@ -198,12 +198,12 @@ with lib;
           };
           TLSAllowTrustExceptions = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', allows a dynamic trust decision by the user. The dynamic trust is the certificate dialogue that appears when the system doesn't trust a certificate.\nIf 'false', the authentication fails if the system doesn't already trust the certificate.\nAs of iOS 8, Apple no longer supports this key.";
           };
           TTLSInnerAuthentication = lib.mkOption {
             type = types.nullOr (types.enum [ "PAP" "EAP" "CHAP" "MSCHAP" "MSCHAPv2" ]);
-            default = "MSCHAPv2";
+            default = null;
             description = "The inner authentication that the TTLS module uses.";
           };
           OuterIdentity = lib.mkOption {
@@ -213,32 +213,32 @@ with lib;
           };
           TLSMinimumVersion = lib.mkOption {
             type = types.nullOr (types.enum [ "1.0" "1.1" "1.2" "1.3" ]);
-            default = "1.0";
+            default = null;
             description = "The minimum TLS version for EAP authentication.";
           };
           TLSMaximumVersion = lib.mkOption {
             type = types.nullOr (types.enum [ "1.0" "1.1" "1.2" "1.3" ]);
-            default = "1.2";
+            default = null;
             description = "The maximum TLS version for EAP authentication.";
           };
           EAPFASTUsePAC = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the device uses an existing PAC if it's present. Otherwise, the server must present its identity using a certificate.";
           };
           EAPFASTProvisionPAC = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', allows PAC provisioning.\n\nThis value is only applicable if 'EAPFASTUsePAC' is 'true'. This value must be 'true' for EAP-FAST PAC usage to succeed because there's no other way to provision a PAC.";
           };
           EAPFASTProvisionPACAnonymously = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', provisions the device anonymously. Note that there are known machine-in-the-middle attacks for anonymous provisioning.";
           };
           EAPSIMNumberOfRANDs = lib.mkOption {
             type = types.nullOr (types.enum [ 2 3 ]);
-            default = 3;
+            default = null;
             description = "The minimum number of RAND values to accept from the server.\nFor use with EAP-SIM only.";
           };
           SystemModeCredentialsSource = lib.mkOption {
@@ -248,7 +248,7 @@ with lib;
           };
           SystemModeUseOpenDirectoryCredentials = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system mode connection tries to use the Open Directory credentials.\nIf using this property, you can't use 'SystemModeCredentialsSource'.";
           };
           TLSTrustedCertificates = lib.mkOption {
@@ -258,7 +258,7 @@ with lib;
           };
           TLSCertificateIsRequired = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', allows for two-factor authentication for EAP-TTLS, PEAP, or EAP-FAST. If 'false', allows for zero-factor authentication for EAP-TLS.\nIf you don't specify a value, the default is 'true' for EAP-TLS, and 'false' for other EAP types.";
           };
         };
@@ -272,12 +272,12 @@ with lib;
         options = {
           QoSMarkingEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', disables L3 marking and only uses L2 marking for traffic that goes to the Wi-Fi network.\n\n\n\nIf 'false', the system behaves as if Wi-Fi doesn't have an association with a Cisco QoS fast lane network.";
           };
           QoSMarkingAppleAudioVideoCalls = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', adds audio and video traffic of built-in audio or video services, such as FaceTime and Wi-Fi Calling, to the allow list for L2 and L3 marking for traffic that goes to the Wi-Fi network.";
           };
           QoSMarkingAllowListAppIdentifiers = lib.mkOption {
@@ -298,7 +298,7 @@ with lib;
 
     TLSCertificateRequired = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', allows for two-factor authentication for EAP-TTLS, PEAP, or EAP-FAST. If 'false', allows for zero-factor authentication for EAP-TLS.";
     };
 

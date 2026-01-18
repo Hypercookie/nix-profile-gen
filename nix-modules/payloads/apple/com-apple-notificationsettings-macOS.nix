@@ -23,7 +23,7 @@ with lib;
         options = {
           NotificationsEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', enables notifications for this app.\n\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
           };
           BundleIdentifier = lib.mkOption {
@@ -33,32 +33,32 @@ with lib;
           };
           ShowInNotificationCenter = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', enables notifications in the notification center for this app.\n\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
           };
           ShowInLockScreen = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', enables notifications on the Lock Screen for this app.\n\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
           };
           SoundsEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', enables sounds for this app.";
           };
           BadgesEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If 'true', enables badges for this app.\n\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
           };
           AlertType = lib.mkOption {
             type = types.nullOr (types.enum [ 0 1 2 ]);
-            default = 1;
+            default = null;
             description = "The type of alert for notifications for this app:\n\n- '0': None\n- '1': Temporary Banner\n- '2': Persistent Banner\n\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
           };
           CriticalAlertEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', enables critical alerts that can ignore Do Not Disturb and ringer settings for this app.\n\nAvailable in iOS 12 and later and macOS 10.15 and later.";
           };
         };

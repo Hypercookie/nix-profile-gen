@@ -20,7 +20,7 @@ with lib;
 
     TMAFirstLaunchVersion = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 99999;
+      default = null;
       description = "Suppress Welcome Dialog";
     };
 

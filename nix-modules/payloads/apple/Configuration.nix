@@ -56,13 +56,13 @@ with lib;
 
     HasRemovalPasscode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set to 'true' if there's a removal passcode.";
     };
 
     TargetDeviceType = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 3 4 5 6 ]);
-      default = 0;
+      default = null;
       description = "The type of platform of the target device. Specifying the platform type helps prevent unintended installations.\n\nFor interactive installations on iOS devices, specifying a target platform avoids interstitial alerts that prompt the user to choose a profile target when multiple targets are eligible.\n\nAllowed values:\n\n- '0': Any/unspecified\n- '1': iPhone/iPad/iPod Touch\n- '2': Apple Watch\n- '3': HomePod\n- '4': Apple TV\n- '5': Mac\n- '6': Vision Pro";
     };
 

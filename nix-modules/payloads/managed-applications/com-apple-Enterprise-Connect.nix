@@ -31,13 +31,13 @@ with lib;
 
     launchAtLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determines if Enterprise Connect should set itself as a login item.";
     };
 
     runPeriodicStateCheck = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable or Disable periodic state checking. Customers who expose their DNS to the public Internet will need to disable periodic state checking.";
     };
 
@@ -61,37 +61,37 @@ with lib;
 
     setupReminderNagInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 86400;
+      default = null;
       description = "The interval, in seconds, between setup notifications.";
     };
 
     getRenewableTGT = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Acquire a renewable Kerberos TGT.";
     };
 
     showMenuExtra = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determines whether the Enterprise Connect menu extra is loaded.";
     };
 
     checkShowLegacyCertificates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Automatically check the \"Show Legacy Certificates\" option in the certificate chooser window.";
     };
 
     showKeychainIdentities = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Automatically check the \"Show Legacy Certificates\" option in the certificate chooser window.";
     };
 
     disableQuitMenu = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables the Quit menu item from Enterprise Connect.";
     };
 
@@ -103,7 +103,7 @@ with lib;
 
     debugMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enables debugging mode.";
     };
 
@@ -115,13 +115,13 @@ with lib;
 
     pwReqComplexity = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Tells Enterprise Connect that passwords should meet Active Directory's definition of complexity. Used to enable and configure live password testing.";
     };
 
     pwReqComplexityDisableUnicode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables the \"Has a Unicode character\" password test from live password testing.";
     };
 
@@ -151,7 +151,7 @@ with lib;
 
     disablePasswordFunctions = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable Enterprise Connect's password management abilities, including expiration notices and the \"Change Password\" menu item. This is useful for customers who don't change their passwords in AD.";
     };
 
@@ -163,7 +163,7 @@ with lib;
 
     runPasswordChangeScriptOnLocalPasswordSync = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determines if Enterprise Connect should run the password change script upon a local password sync.";
     };
 
@@ -187,13 +187,13 @@ with lib;
 
     passwordNotificationDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Determines the amount of days before password expiration that the user receives expiration notifications.";
     };
 
     checkForNetworkType = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Check for a host in your organization's network.";
     };
 
@@ -205,7 +205,7 @@ with lib;
 
     connectDelay = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Delay starting the connection process when your organization's network is detected. This may be useful for customers who use Cisco NAC and need to delay connection while host checks are performed.";
     };
 
@@ -217,13 +217,13 @@ with lib;
 
     connectReminderNagInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 86400;
+      default = null;
       description = "The interval, in seconds, between connection reminders.";
     };
 
     dailyReconnectTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 86400;
+      default = null;
       description = "The interval, in seconds, that Enterprise Connect should attempt its daily reconnect. Set this to 0 to disable the daily reconnect.";
     };
 
@@ -281,25 +281,25 @@ with lib;
 
     shareMountWaitSeconds = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Delay the mounting of network shares when your organization's network is detected. This may be useful for customers who use Cisco NAC and need to delay connection while host checks are performed.";
     };
 
     smartCardMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Determines whether smart card mode should be enabled.";
     };
 
     showUsernameWithSmartcard = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Determines if Enterprise Connect should display the username field if smart card mode is enabled.";
     };
 
     destroyKerbTicketUponCardRemoval = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
     };
 
   };

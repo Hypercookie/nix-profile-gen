@@ -50,13 +50,13 @@ with lib;
 
     JabberPort = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5222;
+      default = null;
       description = "The server's port.";
     };
 
     JabberUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables SSL.";
     };
 

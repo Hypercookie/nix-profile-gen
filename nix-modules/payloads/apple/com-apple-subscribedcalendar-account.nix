@@ -20,7 +20,7 @@ with lib;
 
     SubCalAccountDescription = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "My Subscribed Calendar";
+      default = null;
       description = "The description of the account.";
     };
 
@@ -44,7 +44,7 @@ with lib;
 
     SubCalAccountUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables SSL.";
     };
 

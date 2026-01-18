@@ -238,7 +238,7 @@ with lib;
         options = {
           default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
           };
           protocol = lib.mkOption {
             type = types.nullOr (types.str);
@@ -495,37 +495,37 @@ with lib;
 
     BlockExternalExtensions = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Blocks external extensions from being installed.";
     };
 
     ExtensionAllowInsecureUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allow insecure algorithms in integrity checks on extension updates and installs.";
     };
 
     EnableMediaRouter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or is not set, Google Cast will be enabled, and users will be able to launch it from the app menu, page context menus, media controls on Cast-enabled websites, and (if shown) the Cast toolbar icon.";
     };
 
     ShowCastIconInToolbar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to true, the Cast toolbar icon will always be shown on the toolbar or the overflow menu, and users will not be able to remove it.";
     };
 
     AllowCrossOriginAuthPrompt = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls whether third-party sub-content on a page is allowed to pop-up an HTTP Basic Auth dialog box.";
     };
 
     AuthNegotiateDelegateByKdcPolicy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Use KDC policy to delegate credentials. Controls whether approval by KDC policy is respected to decide whether to delegate Kerberos tickets.";
     };
 
@@ -567,25 +567,25 @@ with lib;
 
     DisableAuthNegotiateCnameLookup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Specifies whether the generated Kerberos SPN is based on the canonical DNS name or the original name entered.";
     };
 
     EnableAuthNegotiatePort = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Specifies whether the generated Kerberos SPN should include a non-standard port.";
     };
 
     NtlmV2Enabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls whether NTLMv2 is enabled.";
     };
 
     BrowserSwitcherEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy controls whether to enable Legacy Browser Support. When this policy is set to true, Chrome will attempt to launch some URLs in an alternate browser.";
     };
 
@@ -596,7 +596,7 @@ with lib;
     };
 
     AlternativeBrowserPath = lib.mkOption {
-      type = types.nullOr (types.enum [ "${safari}" "${firefox}" "${opera}" "${ie}" ]);
+      type = types.nullOr (types.enum [ "''\${safari}" "''\${firefox}" "''\${opera}" "''\${ie}" ]);
       default = null;
       description = "This policy controls which command to use to open URLs in an alternative browser.";
     };
@@ -609,7 +609,7 @@ with lib;
 
     BrowserSwitcherKeepLastChromeTab = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy controls whether to close Chrome completely when the last tab would switch to another browser.";
     };
 
@@ -639,7 +639,7 @@ with lib;
 
     AbusiveExperienceInterventionEnforce = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to set whether sites with abusive experiences should be prevented from opening new windows or tabs.";
     };
 
@@ -657,7 +657,7 @@ with lib;
 
     LocalNetworkAccessRestrictionsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "A policy to control whether users are prompted to allow sites to ask for Local Network Access.";
     };
 
@@ -675,43 +675,43 @@ with lib;
 
     PrivacySandboxAdMeasurementEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "A policy to control whether the Privacy Sandbox Ad measurement setting can be disabled for your users.";
     };
 
     PrivacySandboxAdTopicsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "A policy to control whether the Privacy Sandbox Ad measurement setting can be disabled for your users.";
     };
 
     PrivacySandboxPromptEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "A policy to control whether your users see the Privacy Sandbox prompt.";
     };
 
     PrivacySandboxSiteEnabledAdsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "A policy to control whether the Privacy Sandbox Site-suggested ads setting can be disabled for your users.";
     };
 
     AdvancedProtectionAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable additional protections for users enrolled in the Advanced Protection program.";
     };
 
     AdvancedProtectionDeepScanningEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy controls whether users enrolled in the Advanced Protection program are allowed to send their downloads to Google for malware scanning. If set to True or not set, enrolled users will be be prompted to send their files to Google for deep scanning. If the user selects 'Scan', their download will be sent to Google. If set to False, users will not be prompted and their downloads will not be sent to Google.";
     };
 
     AllowDeletingBrowserHistory = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables deleting browser history and download history in Google Chrome and prevents users from changing this setting.";
     };
 
@@ -723,7 +723,7 @@ with lib;
 
     AllowFileSelectionDialogs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows access to local files on the machine by allowing Google Chrome to display file selection dialogs.";
     };
 
@@ -735,13 +735,13 @@ with lib;
 
     AllowPopupsDuringPageUnload = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy allows an admin to specify that a page may show popups during its unloading.";
     };
 
     AllowSyncXHRInPageDismissal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy allows an admin to specify that a page may send synchronous XHR requests during page dismissal.";
     };
 
@@ -759,7 +759,7 @@ with lib;
 
     AlwaysOpenPdfExternally = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables the internal PDF viewer in Google Chrome. Instead it treats it as download and allows the user to open PDF files with the default application.";
     };
 
@@ -777,7 +777,7 @@ with lib;
 
     AudioCaptureAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled or not configured (default), the user will be prompted for audio capture access except for URLs configured in the AudioCaptureAllowedUrls list which will be granted access without prompting.";
     };
 
@@ -795,7 +795,7 @@ with lib;
 
     AutoFillEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable AutoFill. This policy is deprecated in M70, please use AutofillAddressEnabled and AutofillCreditCardEnabled instead.";
     };
 
@@ -832,13 +832,13 @@ with lib;
 
     AutofillAddressEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Google Chrome's AutoFill feature and allows users to auto complete address information in web forms using previously stored information.";
     };
 
     AutofillCreditCardEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Google Chrome's AutoFill feature and allows users to auto complete credit card information in web forms using previously stored information.";
     };
 
@@ -850,25 +850,25 @@ with lib;
 
     BrowserAddPersonEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or not configured, Google Chrome will allow Add Person from the user manager.";
     };
 
     BrowserGuestModeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or not configured, Google Chrome will enable guest logins. Guest logins are Google Chrome profiles where all windows are in incognito mode.";
     };
 
     BrowserGuestModeEnforced = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to enabled, Google Chrome will enforce guest sessions and prevents profile logins. Guest logins are Google Chrome profiles where all windows are in incognito mode.";
     };
 
     BrowserNetworkTimeQueriesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Setting this policy to false stops Google Chrome from occasionally sending queries to a Google server to retrieve an accurate timestamp. These queries will be enabled if this policy is set to True or is not set.";
     };
 
@@ -910,13 +910,13 @@ with lib;
 
     ChromeVariations = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 ]);
-      default = 0;
+      default = null;
       description = "Determine the availability of variations.";
     };
 
     ClickToCallEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable the Click to Call Feature.";
     };
 
@@ -928,31 +928,31 @@ with lib;
 
     CloudManagementEnrollmentMandatory = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to True, cloud management enrollment is mandatory and blocks Chrome launch process if failed.";
     };
 
     CloudPolicyOverridesPlatformPolicy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If the policy is set to true, cloud policy takes precedence if it conflicts with platform policy. If the policy is set to false or not configured, platform policy takes precedence if it conflicts with cloud policy.";
     };
 
     CommandLineFlagSecurityWarningsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If disabled, prevents security warnings from appearing when Chrome is launched with some potentially dangerous command-line flags.";
     };
 
     ComponentUpdatesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables component updates for all components in Google Chrome when not set or set to True.";
     };
 
     CorsLegacyModeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Use the legacy CORS implementation rather than new CORS.";
     };
 
@@ -964,7 +964,7 @@ with lib;
 
     DNSInterceptionChecksEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy configures a local switch that can be used to disable DNS interception checks. The checks attempt to discover whether the browser is behind a proxy that redirects unknown host names.";
     };
 
@@ -982,7 +982,7 @@ with lib;
 
     DefaultSearchProviderContextMenuAccessAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow default search provider context menu search access.";
     };
 
@@ -994,19 +994,19 @@ with lib;
 
     Disable3DAPIs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enabling this setting prevents web pages from accessing the graphics processing unit (GPU). Specifically, web pages can not access the WebGL API and plugins can not use the Pepper 3D API.";
     };
 
     DisableSafeBrowsingProceedAnyway = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "The Safe Browsing service shows a warning page when users navigate to sites that are flagged as potentially malicious. Enabling this setting prevents users from proceeding anyway from the warning page to the malicious site.";
     };
 
     DisableScreenshots = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled, screenshots cannot be taken using keyboard shortcuts or extension APIs.";
     };
 
@@ -1066,7 +1066,7 @@ with lib;
 
     EditBookmarksEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If you enable this setting, bookmarks can be added, removed or modified. This is the default also when this policy is not set.";
     };
 
@@ -1084,7 +1084,7 @@ with lib;
 
     EnableOnlineRevocationChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "In light of the fact that soft-fail, online revocation checks provide no effective security benefit, they are disabled by default in Google Chrome version 19 and later. By setting this policy to true, the previous behavior is restored and online OCSP/CRL checks will be performed.";
     };
 
@@ -1096,7 +1096,7 @@ with lib;
 
     EnterpriseHardwarePlatformAPIEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When this policy is set to enabled, extensions installed by enterprise policy are allowed to use the Enterprise Hardware Platform API.";
     };
 
@@ -1108,43 +1108,43 @@ with lib;
 
     ExternalProtocolDialogShowAlwaysOpenCheckbox = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show an \"Always open\" checkbox in external protocol dialog.";
     };
 
     ForceBrowserSignin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to true, user has to sign in to Google Chrome with their profile before using the browser. And the default value of BrowserGuestModeEnabled will be set to false. Note that existing unsigned profiles will be locked and inaccessible after enabling this policy. For more information, see help center article. This policy is deprecated, consider using BrowserSignin instead.";
     };
 
     ForceEphemeralProfiles = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to enabled this policy forces the profile to be switched to ephemeral mode. If this policy is specified as an OS policy (e.g. GPO on Windows) it will apply to every profile on the system; if the policy is set as a Cloud policy it will apply only to a profile signed in with a managed account.";
     };
 
     ForceGoogleSafeSearch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Forces queries in Google Web Search to be done with SafeSearch set to active and prevents users from changing this setting.";
     };
 
     ForceSafeSearch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy is deprecated, please use ForceGoogleSafeSearch and ForceYouTubeRestrict instead. This policy is ignored if either the ForceGoogleSafeSearch, the ForceYouTubeRestrict or the (deprecated) ForceYouTubeSafetyMode policies are set.";
     };
 
     ForceLegacyDefaultReferrerPolicy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This enterprise policy is for short-term adaptation and will be removed in M82.";
     };
 
     GloballyScopeHTTPAuthCacheEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy configures a single global per profile cache with HTTP server authentication credentials.";
     };
 
@@ -1162,25 +1162,25 @@ with lib;
 
     ForceYouTubeSafetyMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy is deprecated. Consider using ForceYouTubeRestrict, which overrides this policy and allows more fine-grained tuning.\n\nForces YouTube Moderate Restricted Mode and prevents users from changing this setting.";
     };
 
     HardwareAccelerationModeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or left unset, hardware acceleration will be enabled unless a certain GPU feature is blacklisted.";
     };
 
     HideWebStoreIcon = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hide the Chrome Web Store app and footer link from the New Tab Page and Google Chrome OS app launcher.";
     };
 
     Http09OnNonDefaultPortsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy enables HTTP/0.9 on ports other than 80 for HTTP and 443 for HTTPS.";
     };
 
@@ -1192,7 +1192,7 @@ with lib;
 
     ImportBookmarks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy forces bookmarks to be imported from the current default browser if enabled. If enabled, this policy also affects the import dialog.";
     };
 
@@ -1222,7 +1222,7 @@ with lib;
 
     IncognitoEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy is deprecated. Please, use IncognitoModeAvailability instead. Enables Incognito mode in Google Chrome.\n\nIf this setting is enabled or not configured, users can open web pages in incognito mode.";
     };
 
@@ -1246,7 +1246,7 @@ with lib;
 
     JavascriptEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy is deprecated, please use DefaultJavaScriptSetting instead.\n\nCan be used to disabled JavaScript in Google Chrome.";
     };
 
@@ -1289,13 +1289,13 @@ with lib;
 
     MaxConnectionsPerProxy = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 32;
+      default = null;
       description = "Specifies the maximal number of simultaneous connections to the proxy server.";
     };
 
     MaxInvalidationFetchDelay = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5000;
+      default = null;
       description = "Specifies the maximum delay in milliseconds between receiving a policy invalidation and fetching the new policy from the device management service.";
     };
 
@@ -1325,7 +1325,7 @@ with lib;
 
     NTPCustomBackgroundEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow users to customize the background on the New Tab page";
     };
 
@@ -1343,13 +1343,13 @@ with lib;
 
     PaymentMethodQueryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to set whether websites are allowed to check if the user has payment methods saved.";
     };
 
     PolicyAtomicGroupsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables the concept of policy atomic groups.";
     };
 
@@ -1367,7 +1367,7 @@ with lib;
 
     PolicyRefreshRate = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 10800000;
+      default = null;
       description = "Refresh rate for user policy. Specifies the period in milliseconds at which the device management service is queried for user policy information. Setting this policy overrides the default value of 3 hours. Valid values for this policy are in the range from 1800000 (30 minutes) to 86400000 (1 day).";
     };
 
@@ -1379,7 +1379,7 @@ with lib;
 
     PromotionalTabsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to control the presentation of full-tab promotional and/or educational content in Google Chrome.";
     };
 
@@ -1425,7 +1425,7 @@ with lib;
 
     QuicAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or not set usage of QUIC protocol in Google Chrome is allowed.\nIf this policy is set to false usage of QUIC protocol is disallowed.";
     };
 
@@ -1449,13 +1449,13 @@ with lib;
 
     RunAllFlashInAllowMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this setting, all Flash content embedded on websites that have been set to allow Flash in content settings -- either by the user or by enterprise policy -- will be run, including content from other origins or small content.";
     };
 
     SSLErrorOverrideAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Chrome shows a warning page when users navigate to sites that have SSL errors. By default or when this policy is set to true, users are allowed to click through these warning pages.\nSetting this policy to false disallows users to click through any warning page.";
     };
 
@@ -1473,19 +1473,19 @@ with lib;
 
     SavingBrowserHistoryDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables saving browser history in Google Chrome and prevents users from changing this setting.";
     };
 
     ScreenCaptureAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled or not configured (default), a Web page can use screen-share APIs (e.g., getDisplayMedia() or the Desktop Capture extension API) to prompt the user to select a tab, window or desktop to capture.";
     };
 
     ScrollToTextFragmentEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This feature allows for hyperlinks and address bar URL navigations to target specific text within a web page, which will be scrolled to once the loading of the web page is complete.";
     };
 
@@ -1503,7 +1503,7 @@ with lib;
 
     SharedClipboardEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables the Shared Clipboard feature which allows users to send text between Chrome Desktops and an Android device when Sync is enabled and the user is Signed-in.";
     };
 
@@ -1521,7 +1521,7 @@ with lib;
 
     SignedHTTPExchangeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable support for Signed HTTP Exchange (SXG).";
     };
 
@@ -1557,7 +1557,7 @@ with lib;
 
     StricterMixedContentTreatmentEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy controls the treatment for mixed content (HTTP content in HTTPS sites) in the browser. If the policy is set to true or unset, audio and video mixed content will be autoupgraded to HTTPS (i.e. the URL will be rewritten as HTTPS, without a fallback if the resource is not available over HTTPS) and a 'Not Secure' warning will be shown in the URL bar for image mixed content. If the policy is set to false, autoupgrades will be disabled for audio and video, and no warning will be shown for images. This policy does not affect other types of mixed content other than audio, video, and images. This policy will no longer take effect starting in Google Chrome 84.";
     };
 
@@ -1581,19 +1581,19 @@ with lib;
 
     TLS13HardeningForLocalAnchorsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable a TLS 1.3 security feature for local trust anchors. This policy controls a security feature in TLS 1.3 which protects connections against downgrade attacks. It is backwards-compatible and will not affect connections to compliant TLS 1.2 servers or proxies. However, older versions of some TLS-intercepting proxies have an implementation flaw which causes them to be incompatible.";
     };
 
     TargetBlankImpliesNoOpener = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Setting the policy to Disabled allows popups targeting _blank to access (via JavaScript) the page that requested to open the popup. Setting the policy to Enabled or leaving it unset causes the window.opener property to be set to null unless the anchor specifies rel=\"opener\".";
     };
 
     TaskManagerEndProcessEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If set to false, the 'End process' button is disabled in the Task Manager.";
     };
 
@@ -1653,7 +1653,7 @@ with lib;
 
     UserFeedbackAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow user feedback. If the policy is set to false, users can not send feedback to Google.";
     };
 
@@ -1665,13 +1665,13 @@ with lib;
 
     UserDataSnapshotRetentionLimit = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "Limits the number of user data snapshots retained for use in case of emergency rollback. If this policy is not set, the default value of 3 is used. If the policy is set to 0, no snapshots will be taken.";
     };
 
     VideoCaptureAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled or not configured (default), the user will be prompted for\nvideo capture access except for URLs configured in the\nVideoCaptureAllowedUrls list which will be granted access without prompting.";
     };
 
@@ -1683,7 +1683,7 @@ with lib;
 
     WPADQuickCheckEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows to turn off WPAD (Web Proxy Auto-Discovery) optimization in Google Chrome.";
     };
 
@@ -1746,13 +1746,13 @@ with lib;
 
     WebComponentsV0Enabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "The Web Components v0 APIs (Shadow DOM v0, Custom Elements v0, and HTML Imports) were deprecated in 2018, and have been disabled by default starting in M80. This policy allows these features to be selectively re-enabled until M84.";
     };
 
     WebDriverOverridesIncompatiblePolicies = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy allows users of the WebDriver feature to override policies which can interfere with its operation.";
     };
 
@@ -1824,13 +1824,13 @@ with lib;
 
     CloudPrintProxyEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Google Chrome to act as a proxy between Google Cloud Print and legacy printers connected to the machine.";
     };
 
     CloudPrintSubmitEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Google Chrome to submit documents to Google Cloud Print for printing.  NOTE: This only affects Google Cloud Print support in Google Chrome.  It does not prevent users from submitting print jobs on web sites.";
     };
 
@@ -1842,7 +1842,7 @@ with lib;
 
     DisablePrintPreview = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show the system print dialog instead of print preview.";
     };
 
@@ -1872,13 +1872,13 @@ with lib;
 
     PrintingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables printing in Google Chrome and prevents users from changing this setting.";
     };
 
     PrintPreviewUseSystemDefaultPrinter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Causes Google Chrome to use the system default printer as the default choice in Print Preview instead of the most recently used printer.";
     };
 
@@ -1946,7 +1946,7 @@ with lib;
 
     RemoteAccessHostAllowClientPairing = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this setting is enabled or not configured, then users can opt to pair clients and hosts at connection time, eliminating the need to enter a PIN every time.";
     };
 
@@ -1958,13 +1958,13 @@ with lib;
 
     RemoteAccessHostAllowGnubbyAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this setting is enabled, then gnubby authentication requests will be proxied across a remote host connection.";
     };
 
     RemoteAccessHostAllowRelayedConnection = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables usage of relay servers when remote clients are trying to establish a connection to this machine.";
     };
 
@@ -1994,19 +1994,19 @@ with lib;
 
     RemoteAccessHostFirewallTraversal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enables usage of STUN servers when remote clients are trying to establish a connection to this machine.";
     };
 
     RemoteAccessHostMatchUsername = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this setting is enabled, then the remote access host compares the name of the local user (that the host is associated with) and the name of the Google account registered as the host owner (i.e. \"johndoe\" if the host is owned by \"johndoe@example.com\" Google account).  The remote access host will not start if the name of the host owner is different from the name of the local user that the host is associated with.  RemoteAccessHostMatchUsername policy should be used together with RemoteAccessHostDomain to also enforce that the Google account of the host owner is associated with a specific domain (i.e. \"example.com\").";
     };
 
     RemoteAccessHostRequireCurtain = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enables curtaining of remote access hosts while a connection is in progress.";
     };
 
@@ -2072,7 +2072,7 @@ with lib;
 
     SafeBrowsingProtectionLevel = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 ]);
-      default = 1;
+      default = null;
       description = "Allows you to control whether Google Chrome's Safe Browsing feature is enabled and the mode it operates in. Safe Browsing 'enhanced' mode provides better security, but requires sharing more browsing information with Google.";
     };
 
@@ -2090,7 +2090,7 @@ with lib;
 
     SafeBrowsingExtendedReportingOptInAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This setting is deprecated, use SafeBrowsingExtendedReportingEnabled instead. Enabling or disabling SafeBrowsingExtendedReportingEnabled is equivalent to setting SafeBrowsingExtendedReportingOptInAllowed to False.";
     };
 
@@ -2144,7 +2144,7 @@ with lib;
 
     DeveloperToolsDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables the Developer Tools and the JavaScript console. This policy is deprecated in M68, please use DeveloperToolsAvailability instead.";
     };
 

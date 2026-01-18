@@ -26,67 +26,67 @@ with lib;
 
     SkipAppearance = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Choose Your Look pane.";
     };
 
     SkipCloudSetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Apple Account setup pane.";
     };
 
     SkipiCloudStorageSetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the iCloud Storage pane.";
     };
 
     SkipPrivacySetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Privacy consent pane.";
     };
 
     SkipSiriSetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Siri setup pane.";
     };
 
     SkipTrueTone = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the True Tone Display pane.";
     };
 
     SkipScreenTime = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Screen Time pane.";
     };
 
     SkipTouchIDSetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Touch ID setup pane.";
     };
 
     SkipUnlockWithWatch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Unlock With Apple Watch pane.";
     };
 
     SkipAccessibility = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Accessibility pane.";
     };
 
     SkipWallpaper = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system skips the Wallpaper selection window.";
     };
 

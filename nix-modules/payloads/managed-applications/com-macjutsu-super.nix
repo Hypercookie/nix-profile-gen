@@ -25,13 +25,13 @@ with lib;
 
     AuthAskUserToSavePassword = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Prompt the end user to save their password which can then be used to authenticate the local softwareupdate command";
     };
 
     AuthCredentialFailoverToUser = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If any managed automatic authentication method fails validation, then failover to local end user authentication";
     };
 
@@ -277,31 +277,31 @@ with lib;
 
     InstallJamfPolicyTriggersWithoutRestarting = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allows for installation of Jamf Pro Policies even if there are no available macOS updates/upgrades";
     };
 
     ScheduleZeroDateRelease = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Leverages the public MacAdmin's SOFA macOS machine readable JSON feed to discover release dates for use in workflows with deadline day options";
     };
 
     ScheduledInstallUserChoice = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Adds a Schedule button to the standard deferral dialog";
     };
 
     TestMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Mode to validate parameters, credentials, notifications, dialogs, deferrals, and deadline logic";
     };
 
     WorkflowInstallNow = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Kicks off the super workflow immediately, prompting user that an update has begun";
     };
 
@@ -421,13 +421,13 @@ with lib;
 
     InstallMacOSMajorUpgrades = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "With this option enabled super leverages built-in commands and the mist command to find compatible macOS major upgrade versions. If a newer macOS major upgrade is available then the super workflow attempts to download and install the upgrade. The default super workflow always selects the newest compatible macOS major upgrade version";
     };
 
     WorkflowRestartWithoutUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Force a restart even if Apple software updates do not need it";
     };
 
@@ -439,37 +439,37 @@ with lib;
 
     InstallNonSystemUpdatesWithoutRestarting = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If there are no pending restart-required macOS updates or upgrades, make the super workflow install non-system Apple software updates as soon as they become available";
     };
 
     InstallRapidSecurityResponses = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow the super workflow to install macOS Rapid Security Response (RSR) updates";
     };
 
     WorkflowDisableRelaunch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable the automatic relaunch of the super workflow when no macOS updates or upgrades are available or allowed";
     };
 
     WorkflowDisableUpdateCheck = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable the super workflow from checking for, downloading, or installing any Apple software updates or upgrades, even if they are available";
     };
 
     WorkflowOnlyDownload = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Download and prepare macOS updates or upgrades but do not start any installation workflow";
     };
 
     VerboseMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Mode to generate additional log output";
     };
 

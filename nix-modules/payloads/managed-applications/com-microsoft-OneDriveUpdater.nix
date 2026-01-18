@@ -20,7 +20,7 @@ with lib;
 
     Tier = lib.mkOption {
       type = types.nullOr (types.enum [ "Production" "Insiders" "Enterprise" ]);
-      default = "Production";
+      default = null;
       description = "Defines the update ring.";
     };
 

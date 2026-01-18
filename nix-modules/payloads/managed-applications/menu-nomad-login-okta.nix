@@ -85,7 +85,7 @@ with lib;
 
     OIDCRedirectURI = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "nomadoauth://oauth-callback/okta";
+      default = null;
     };
 
     OIDCSecondaryLoginClientID = lib.mkOption {

@@ -91,13 +91,13 @@ with lib;
 
     UIToggleEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the device allows the user to disable this network relay configuration.";
     };
 
     AllowDNSFailover = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device allows the relay to failover to the default system DNS resolver.";
     };
 

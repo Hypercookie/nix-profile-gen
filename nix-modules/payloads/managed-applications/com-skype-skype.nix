@@ -20,13 +20,13 @@ with lib;
 
     SKSilentUpgradeNoticeShown = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Surpress Upgrade Notification.";
     };
 
     SKAllowStealthUpgrade = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Supress installation prompt for Privilege Helper Tool.";
     };
 

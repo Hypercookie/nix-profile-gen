@@ -61,7 +61,7 @@ with lib;
 
     SUEnableAutomaticChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Automatically check for Platypus software updates.";
     };
 

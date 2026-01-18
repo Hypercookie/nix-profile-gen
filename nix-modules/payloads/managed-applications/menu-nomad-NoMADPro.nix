@@ -20,7 +20,7 @@ with lib;
 
     AuthServer = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "dev-660125.oktapreview.com";
+      default = null;
       description = "URL for the Okta server, note no preceding https: is required.";
     };
 
@@ -37,7 +37,7 @@ with lib;
 
     PeriodicUpdateTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Time in minutes between periodic background updates.";
     };
 
@@ -72,19 +72,19 @@ with lib;
 
     TitleSignIn = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Sign in to Okta";
+      default = null;
       description = "Title of the Sign In window.";
     };
 
     LabelUsername = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Corporate e-mail";
+      default = null;
       description = "The text label for the username field in the Sign In window.";
     };
 
     LabelPassword = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Corporate Password";
+      default = null;
       description = "The text label for the password field in the Sign In window.";
     };
 
@@ -96,19 +96,19 @@ with lib;
 
     AutoAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determines if web extensions automatically authenticate via the NoMAD Pro UI.";
     };
 
     CheckSafariExtension = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determines if the user is warned that the NoMAD Pro extension has not been enabled in Safari.";
     };
 
     MessagePluginDisabled = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enable the plugin in Safari.";
+      default = null;
       description = "Text to show when alerting the user that the Safari plugin has not been enabled.";
     };
 
@@ -150,13 +150,13 @@ with lib;
 
     KerberosShortNameAskMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enter your AD user name.";
+      default = null;
       description = "The message text when asking the user for their Kerberos short name.";
     };
 
     KerberosShortName = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "joel";
+      default = null;
       description = "The shortname to use for Kerberos tickets. If unset the sign in name is used.";
     };
 
@@ -180,7 +180,7 @@ with lib;
 
     LocalPasswordSyncMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enter your local user account password.";
+      default = null;
       description = "The alert dialog text that the user is presented with when asked to enter in his or her local password.";
     };
 
@@ -203,7 +203,7 @@ with lib;
 
     KeychainItemsDebug = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Updates keychain items on every sign in. Used for debugging.";
     };
 
@@ -226,7 +226,7 @@ with lib;
 
     ChangePasswordTimer = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "Time in minutes until the user is prompted to sign in again after a Password Change.";
     };
 
@@ -244,13 +244,13 @@ with lib;
 
     PasswordExpirationMenuDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Number of days remaining before the password expiration countdown is shown in the menu bar.";
     };
 
     ExpirationWarningDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5;
+      default = null;
       description = "Number of days remaining before sending notifications via the Notification Center.";
     };
 
@@ -307,7 +307,7 @@ with lib;
 
     Template = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "User Auth";
+      default = null;
       description = "Certificate template to request when using the Windows CA.";
     };
 
@@ -330,7 +330,7 @@ with lib;
 
     ActionsUpdateTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Number of minutes between updating the Actions Menu.";
     };
 
@@ -408,55 +408,55 @@ with lib;
 
     MessagePasswordChangePolicy = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please review the employee handbook.";
+      default = null;
       description = "Message text when changing password via Kerberos for the AD complexity policy.";
     };
 
     MenuAbout = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "This Application";
+      default = null;
       description = "Menu item text for the About item.";
     };
 
     MenuActions = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Quick Actions";
+      default = null;
       description = "Menu item text for the Actions item.";
     };
 
     MenuChangePassword = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Change network password";
+      default = null;
       description = "Menu item text for the Change Password item.";
     };
 
     MenuGetHelp = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "File ticket";
+      default = null;
       description = "Menu item text for the Get Help item.";
     };
 
     MenuGetSoftware = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Get Apps";
+      default = null;
       description = "Menu item text for the Get Software item.";
     };
 
     MenuLockScreen = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Screen Lock";
+      default = null;
       description = "Menu item text for the Lock Screen item.";
     };
 
     MenuPreferences = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Prefs";
+      default = null;
       description = "Menu item text for the Preferences item.";
     };
 
     MenuSignIn = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Login";
+      default = null;
       description = "Menu item text for the Sign In item.";
     };
 

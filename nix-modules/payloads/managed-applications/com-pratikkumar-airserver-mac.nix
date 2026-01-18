@@ -31,25 +31,25 @@ with lib;
 
     SUEnableAutomaticChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls automatic update checks.";
     };
 
     SUScheduledCheckInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 86400;
+      default = null;
       description = "Controls the automatic update check interval. The default is 1 day (86400 seconds). Setting to 0 disables updates.";
     };
 
     SUAllowsAutomaticUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls the automatic update install prompt. When enabled, presents users with the option to allow automatic download and install of available updates. If disabled, disallows automatic updates and requires manual installation every time.";
     };
 
     SUAutomaticallyUpdate = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls automatic silent updates. If enabled, users will not be informed about updates and updates will be silently installed when the app quits.";
     };
 
@@ -79,53 +79,53 @@ with lib;
 
     autoLaunch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Have AirServer launch on system startup.";
     };
 
-    com_airserverapp_audioBufferSize2 = lib.mkOption {
+    "com.airserverapp.audioBufferSize2" = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 0.5;
+      default = null;
       description = "Use this setting to tweak multi-room audio sync when streaming music from iTunes.";
     };
 
-    com_airserverapp_PasswordType = lib.mkOption {
+    "com.airserverapp.PasswordType" = lib.mkOption {
       type = types.nullOr (types.enum [ "Fixed Password" "Onscreen Code" "Ask me" ]);
       default = null;
       description = "Choose authentication method when connecting to AirServer. While a Fixed Password is an available setting, it's not possible to define this password via profile.";
     };
 
-    com_airserverapp_alwaysOnTop = lib.mkOption {
+    "com.airserverapp.alwaysOnTop" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enable this setting if you want AirServer windows to be on top of all other windows.";
     };
 
-    com_airserverapp_dualAirplay = lib.mkOption {
+    "com.airserverapp.dualAirplay" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "This option creates a second AirPort Expresss-like audio receiver suffixed with an Ex. Streaming music to this endpoint will force the iOS device to stream your music in lossless quality. Enabling this setting can also allow you to watch a video on your iOS device and send only the audiostream to the AirServer.";
     };
 
-    com_airserverapp_linkMasterVolume = lib.mkOption {
+    "com.airserverapp.linkMasterVolume" = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled, changing the volume on your iOS device will change the volume of your preferred output sound device; otherwise AirServer will lower the streaming music volume.";
     };
 
-    com_airserverapp_mirroringOptimizedFor2 = lib.mkOption {
+    "com.airserverapp.mirroringOptimizedFor2" = lib.mkOption {
       type = types.nullOr (types.enum [ "1080p" "720p" "iPad Retina" "iPhone 6/6s Plus Retina" "iPhone 6/6s Retina" "iPhone 5/5s Retina" "iPhone 4s Retina" "iPad" "iPhone 6/6s" "iPhone 5/5s" "iPhone 4s" "Target Display" "Projector 1024x768" "Projector 1600x1200" ]);
-      default = "1080p";
+      default = null;
       description = "Here you can set the mirroring resolution AirServer provides to your iOS device. 'Retina' is recommended for all users, but if you are having connection problems, try the 1080p option. Do not enable this preference if you wish use the default 'Retina - High Quality' resolution setting.";
     };
 
-    com_airserverapp_slowNetwork = lib.mkOption {
+    "com.airserverapp.slowNetwork" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enabling this setting will lower the mirroring quality by half but uses four times less bandwidth.";
     };
 
-    com_airserverapp_SoftwareDecoderOnly = lib.mkOption {
+    "com.airserverapp.SoftwareDecoderOnly" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enable this setting if your AirPlay device regularly freezes or if you notice green artifacts when using AirPlay mirroring. This is common on older Macs that do not properly support hardware-accelerated video encoding.";

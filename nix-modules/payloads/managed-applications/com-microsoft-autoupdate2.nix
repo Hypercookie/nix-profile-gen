@@ -25,37 +25,37 @@ with lib;
 
     AcknowledgedDataCollectionPolicy = lib.mkOption {
       type = types.nullOr (types.enum [ "RequiredDataOnly" "RequiredAndOptionalData" ]);
-      default = "RequiredDataOnly";
+      default = null;
       description = "The first time Version 4.12 or later of Microsoft AutoUpdate is launched, users will see a Required Data Notice dialog which provides them with information about what data from MAU is sent to Microsoft. If you don't want your users to see this Required Data Notice dialog for Microsoft AutoUpdate, you can set the following preference. Regardless of which value you set, the dialog won't be shown to your users. If you let your users see this dialog, then when the user chooses OK, the value RequiredDataOnly is used and the dialog is not shown to the user again.";
     };
 
     ChannelName = lib.mkOption {
       type = types.nullOr (types.enum [ "Production" "Current" "External" "Preview" "InsiderFast" "Beta" "Custom" ]);
-      default = "Production";
+      default = null;
       description = "Set the update channel that is used to check for updates. Click the documentation link for more information about which channel to use.";
     };
 
     DisableInsiderCheckbox = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set this option to disable the \"Join the Office Insider Program...\" checkbox.";
     };
 
     EnableCheckForUpdatesButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Disable this option to make the \"Check for Updates\" button in unavailable.";
     };
 
     ExtendedLogging = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enabled extended logging for Microsoft AutoUpdate operations.\nWrites logs to: /Library/Logs/Microsoft/autoupdate.log";
     };
 
     HowToCheck = lib.mkOption {
       type = types.nullOr (types.enum [ "Manual" "AutomaticCheck" "AutomaticDownload" ]);
-      default = "AutomaticCheck";
+      default = null;
       description = "Control how updates are checked for and handled.";
     };
 
@@ -67,19 +67,19 @@ with lib;
 
     SendAllTelemetryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set to false to send minimal heartbeat data, no application usage, and no environment details. Replaced by \"AcknowledgedDataCollectionPolicy\" in MAU 4.12.";
     };
 
     StartDaemonOnAppLaunch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable this option to trigger the MAU Daemon when other Office applications are launched.";
     };
 
     IgnoreUIOpenAfterInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enable this option to prevent MAU UI from launching after install.";
     };
 
@@ -91,37 +91,37 @@ with lib;
 
     UpdateCheckInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 780;
+      default = null;
       description = "Specifies the number of minutes between checking for updates. Default is set to check every 13 hours.";
     };
 
     UpdateCheckFrequency = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 720;
+      default = null;
       description = "Change how often the Microsoft AutoUpdate daemon will look for updates. The default is 720 minutes (12 hrs). By reducing this value MAU will look for updates sooner.";
     };
 
-    UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+    "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
       type = types.nullOr (types.int);
       default = null;
       description = "Force quit applications and update X number of days after MAU first detects the update on each computer.";
     };
 
-    UpdateDeadline_FinalCountDown = lib.mkOption {
+    "UpdateDeadline.FinalCountDown" = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 60;
+      default = null;
       description = "How many minutes is the final countdown timer once the update deadline is reached.";
     };
 
-    UpdateDeadline_StartAutomaticUpdates = lib.mkOption {
+    "UpdateDeadline.StartAutomaticUpdates" = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "How many days in advance of the deadline that Automatic Download and Install mode begins. Temporarily overrides \"HowToCheck\" with \"AutomaticDownload\" until all updates are applied.";
     };
 
     UpdaterOptimization = lib.mkOption {
       type = types.nullOr (types.enum [ "Size" "CPU" ]);
-      default = "Size";
+      default = null;
       description = "If you have a security agent like CrowdStrike installed and updates cause beachballs; Set UpdaterOptimization preference to \"CPU\" to prefer file-based delta updates (instead of binary deltas). The trade-off will be larger monthly updates.";
     };
 
@@ -179,20 +179,20 @@ with lib;
     Applications = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
-          _Library_Application_Support_Microsoft_MAU2_0_Microsoft_AutoUpdate_app = lib.mkOption {
+          "_Library_Application_Support_Microsoft_MAU2.0_Microsoft_AutoUpdate.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSau03" "MSau04" ]);
-                  default = "MSau04";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -202,20 +202,20 @@ with lib;
             default = null;
             description = "Register /Library/Application Support/Microsoft/MAU2.0/Microsoft AutoUpdate.app.";
           };
-          _Applications_Microsoft_Defender_app = lib.mkOption {
+          "_Applications_Microsoft_Defender.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "WDAV00" ]);
-                  default = "WDAV00";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -225,20 +225,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Defender.app.";
           };
-          _Applications_Microsoft_Edge_app = lib.mkOption {
+          "_Applications_Microsoft_Edge.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "EDGE01" ]);
-                  default = "EDGE01";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -248,20 +248,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Edge.app.";
           };
-          _Applications_Microsoft_Excel_app = lib.mkOption {
+          "_Applications_Microsoft_Excel.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "XCEL15" "XCEL2019" ]);
-                  default = "XCEL2019";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -271,20 +271,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Excel.app.";
           };
-          _Applications_Microsoft_OneNote_app = lib.mkOption {
+          "_Applications_Microsoft_OneNote.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "ONMC15" "ONMC2019" ]);
-                  default = "ONMC2019";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -294,20 +294,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft OneNote.app.";
           };
-          _Applications_Microsoft_Outlook_app = lib.mkOption {
+          "_Applications_Microsoft_Outlook.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "OPIM15" "OPIM2019" ]);
-                  default = "OPIM2019";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -317,20 +317,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Outlook.app.";
           };
-          _Applications_Microsoft_PowerPoint_app = lib.mkOption {
+          "_Applications_Microsoft_PowerPoint.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "PPT315" "PPT32019" ]);
-                  default = "PPT32019";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -340,20 +340,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft PowerPoint.app.";
           };
-          _Applications_Windows_App_app = lib.mkOption {
+          "_Applications_Windows_App.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSRD10" ]);
-                  default = "MSRD10";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -363,20 +363,20 @@ with lib;
             default = null;
             description = "Register /Applications/Windows App.app.";
           };
-          _Applications_Microsoft_Remote_Desktop_app = lib.mkOption {
+          "_Applications_Microsoft_Remote_Desktop.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSRD10" ]);
-                  default = "MSRD10";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -386,20 +386,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Remote Desktop.app.";
           };
-          _Applications_Microsoft_Teams_app = lib.mkOption {
+          "_Applications_Microsoft_Teams.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "TEAMS10" "TEAMS21" ]);
-                  default = "TEAMS10";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -409,20 +409,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Teams.app.";
           };
-          _Applications_Microsoft_Word_app = lib.mkOption {
+          "_Applications_Microsoft_Word.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSWD15" "MSWD2019" ]);
-                  default = "MSWD2019";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -432,20 +432,20 @@ with lib;
             default = null;
             description = "Register /Applications/Microsoft Word.app.";
           };
-          _Applications_Company_Portal_app = lib.mkOption {
+          "_Applications_Company_Portal.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "IMCP01" ]);
-                  default = "IMCP01";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -455,20 +455,20 @@ with lib;
             default = null;
             description = "Register /Applications/Company Portal.app.";
           };
-          _Applications_OneDrive_app = lib.mkOption {
+          "_Applications_OneDrive.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "ONDR18" ]);
-                  default = "ONDR18";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -478,20 +478,20 @@ with lib;
             default = null;
             description = "Register /Applications/OneDrive.app.";
           };
-          _Applications_Skype_for_Business_app = lib.mkOption {
+          "_Applications_Skype_for_Business.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSFB16" ]);
-                  default = "MSFB16";
+                  default = null;
                   description = "Application ID";
                 };
                 LCID = lib.mkOption {
                   type = types.nullOr (types.enum [ 1033 ]);
-                  default = 1033;
+                  default = null;
                   description = "Language Code ID";
                 };
-                UpdateDeadline_DaysBeforeForcedQuit = lib.mkOption {
+                "UpdateDeadline.DaysBeforeForcedQuit" = lib.mkOption {
                   type = types.nullOr (types.int);
                   default = null;
                   description = "Force quit this application and update X number of days after MAU first detects the update on each computer. Can be used in conjunction with the higher level option of the same setting for more restrictive per-application updating.";
@@ -507,15 +507,15 @@ with lib;
       description = "Register applications that Microsoft AutoUpdate should update. If this is not managed MAU might have issues finding updates for applications that a user has never opened. Language Code IDs are legacy and always \"1033\".";
     };
 
-    UpdateDeadline_ApplicationsForcedUpdateSchedule = lib.mkOption {
+    "UpdateDeadline.ApplicationsForcedUpdateSchedule" = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
-          _Library_Application_Support_Microsoft_MAU2_0_Microsoft_AutoUpdate_app = lib.mkOption {
+          "_Library_Application_Support_Microsoft_MAU2.0_Microsoft_AutoUpdate.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSau03" "MSau04" ]);
-                  default = "MSau04";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -533,12 +533,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft AutoUpdate.";
           };
-          _Applications_Microsoft_Defender_ATP_app = lib.mkOption {
+          "_Applications_Microsoft_Defender_ATP.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "WDAV00" ]);
-                  default = "WDAV00";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -556,12 +556,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Defender ATP.";
           };
-          _Applications_Microsoft_Edge_app = lib.mkOption {
+          "_Applications_Microsoft_Edge.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "EDGE01" ]);
-                  default = "EDGE01";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -579,12 +579,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Edge.";
           };
-          _Applications_Microsoft_Excel_app = lib.mkOption {
+          "_Applications_Microsoft_Excel.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "XCEL15" "XCEL2019" ]);
-                  default = "XCEL2019";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -602,12 +602,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Excel.";
           };
-          _Applications_Microsoft_OneNote_app = lib.mkOption {
+          "_Applications_Microsoft_OneNote.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "ONMC15" "ONMC2019" ]);
-                  default = "ONMC2019";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -625,12 +625,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft OneNote.";
           };
-          _Applications_Microsoft_Outlook_app = lib.mkOption {
+          "_Applications_Microsoft_Outlook.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "OPIM15" "OPIM2019" ]);
-                  default = "OPIM2019";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -648,12 +648,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Outlook.";
           };
-          _Applications_Microsoft_PowerPoint_app = lib.mkOption {
+          "_Applications_Microsoft_PowerPoint.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "PPT315" "PPT32019" ]);
-                  default = "PPT32019";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -671,12 +671,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft PowerPoint.";
           };
-          _Applications_Windows_App_app = lib.mkOption {
+          "_Applications_Windows_App.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSRD10" ]);
-                  default = "MSRD10";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -694,12 +694,12 @@ with lib;
             default = null;
             description = "Schedule an update for Windows App.";
           };
-          _Applications_Microsoft_Remote_Desktop_app = lib.mkOption {
+          "_Applications_Microsoft_Remote_Desktop.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSRD10" ]);
-                  default = "MSRD10";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -717,12 +717,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Remote Desktop.";
           };
-          _Applications_Microsoft_Teams_app = lib.mkOption {
+          "_Applications_Microsoft_Teams.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "TEAMS10" ]);
-                  default = "TEAMS10";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -740,12 +740,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Teams.";
           };
-          _Applications_Microsoft_Word_app = lib.mkOption {
+          "_Applications_Microsoft_Word.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSWD15" "MSWD2019" ]);
-                  default = "MSWD2019";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -763,12 +763,12 @@ with lib;
             default = null;
             description = "Schedule an update for Microsoft Word.";
           };
-          _Applications_Company_Portal_app = lib.mkOption {
+          "_Applications_Company_Portal.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "IMCP01" ]);
-                  default = "IMCP01";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -786,12 +786,12 @@ with lib;
             default = null;
             description = "Schedule an update for Company Portal.";
           };
-          _Applications_OneDrive_app = lib.mkOption {
+          "_Applications_OneDrive.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "ONDR18" ]);
-                  default = "ONDR18";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {
@@ -809,12 +809,12 @@ with lib;
             default = null;
             description = "Schedule an update for OneDrive.";
           };
-          _Applications_Skype_for_Business_app = lib.mkOption {
+          "_Applications_Skype_for_Business.app" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 Application_ID = lib.mkOption {
                   type = types.nullOr (types.enum [ "MSFB16" ]);
-                  default = "MSFB16";
+                  default = null;
                   description = "Application ID";
                 };
                 ForcedUpdateDate = lib.mkOption {

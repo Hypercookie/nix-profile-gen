@@ -20,13 +20,13 @@ with lib;
 
     AllowUserOverrides = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', users can approve additional kernel extensions that configuration profiles don't explicitly allow.";
     };
 
     AllowNonAdminUserApprovals = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', nonadministrative users can approve additional kernel extensions in the Security & Privacy preferences.\n\nAvailable in macOS 11 and later.";
     };
 

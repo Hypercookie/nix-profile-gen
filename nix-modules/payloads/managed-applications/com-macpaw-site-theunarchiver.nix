@@ -20,13 +20,13 @@ with lib;
 
     userAgreedToNewTOSAndPrivacy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enable this option to automatically accept the Privacy Policy and Terms of Service for users.";
     };
 
     SUEnableAutomaticChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Automatically check for The Unarchiver (Standalone) updates";
     };
 

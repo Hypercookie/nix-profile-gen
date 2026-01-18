@@ -20,19 +20,19 @@ with lib;
 
     FilterType = lib.mkOption {
       type = types.nullOr (types.enum [ "BuiltIn" "Plugin" ]);
-      default = "BuiltIn";
+      default = null;
       description = "The type of filter, built-in or plug-in. In macOS, the system only supports the plug-in value.";
     };
 
     FilterGrade = lib.mkOption {
       type = types.nullOr (types.enum [ "firewall" "inspector" ]);
-      default = "firewall";
+      default = null;
       description = "The system uses this value to derive the relative order of content filters. Filters with a grade of 'firewall' see network traffic before filters with a grade of 'inspector'. However, the system doesn't define the order of filters within a grade.";
     };
 
     AutoFilterEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables automatic filtering. Use when 'FilterType' is 'BuiltIn'.";
     };
 
@@ -44,7 +44,7 @@ with lib;
 
     FilterBrowsers = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables filtering WebKit traffic. Use when 'FilterType' is 'Plugin'.\n\nNote:\nAt least one of 'FilterBrowsers' or 'FilterSockets' needs to be 'true'.";
     };
 
@@ -136,7 +136,7 @@ with lib;
 
     FilterSockets = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables the filtering of socket traffic. Use when 'FilterType' is 'Plugin'.\n\nNote:\nAt least one of 'FilterBrowsers' or 'FilterSockets' needs to be 'true'.";
     };
 
@@ -154,7 +154,7 @@ with lib;
 
     FilterPackets = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true' and 'FilterType' is 'Plugin', the system enables filtering network packets. Use when 'FilterType' is 'Plugin'.\n\nNote:\nAt least one of 'FilterPackets' or 'FilterSockets' needs to be 'true'.";
     };
 
@@ -197,13 +197,13 @@ with lib;
 
     HideDenyListURLs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device hides the 'DenyListURLs' item in the profiles that display in Settings > General > VPN & Device Management.";
     };
 
     FilterURLs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system filters URL requests. Use when 'FilterType' is 'Plugin'. Available in iOS 26 and macOS 26, and later.";
     };
 
@@ -237,12 +237,12 @@ with lib;
           };
           URLFilterFailClosed = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system blocks URLs if the filter is enabled, but it fails to make any filtering decision; for example, if there's a communication failure with the PIR server. If 'false', the system allows URLs if the filter is enabled, but it fails to make any filtering decision.";
           };
           URLPrefilterFetchFrequency = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 86400;
+            default = null;
             description = "The time interval in seconds that the system uses to periodically run the 'NEURLFilterControlProvider' app extension. The default value is 86400 seconds (1 day). The minimum allowed value is 2700 seconds (45 minutes). The system allows 'NEURLFilterControlProvider' implementations to download prefilter Bloom filter data onto the device periodically at the specified interval. Implementations need to allow for a slight difference between the scheduled time and the actual runtime of the task, due to the scheduling mechanism on the system.";
           };
         };
@@ -253,7 +253,7 @@ with lib;
 
     SafariHistoryRetentionEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', this payload enforces a policy which requires retention of browsing history. This causes Safari to disable clearing of browsing history, and prevents the use of private browsing mode because that mode doesn't keep browsing history.";
     };
 

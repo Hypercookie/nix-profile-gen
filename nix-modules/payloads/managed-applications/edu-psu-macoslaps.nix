@@ -20,37 +20,37 @@ with lib;
 
     LocalAdminAccount = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "admin";
+      default = null;
       description = "Local Admin Account Username";
     };
 
     DaysTillExpiration = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 60;
+      default = null;
       description = "Days Till Password Expiration";
     };
 
     PasswordLength = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 12;
+      default = null;
       description = "Password Length";
     };
 
     PasswordGrouping = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Password Grouping";
     };
 
     PasswordSeparator = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "-";
+      default = null;
       description = "Password Separator";
     };
 
     RemoveKeyChain = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Remove Keychain";
     };
 
@@ -68,7 +68,7 @@ with lib;
 
     Method = lib.mkOption {
       type = types.nullOr (types.enum [ "AD" "Local" ]);
-      default = "AD";
+      default = null;
     };
 
     PreferredDC = lib.mkOption {
@@ -88,22 +88,22 @@ with lib;
         options = {
           Lowercase = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "The minimum number of lowercase letters in a generated password.";
           };
           Uppercase = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "The minimum number of uppercase letters in a generated password.";
           };
           Number = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "The minimum number of numeric characters in a generated password.";
           };
           Symbol = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "The minimum number of non-alphanumeric characters in a generated password.";
           };
         };

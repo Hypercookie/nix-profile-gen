@@ -18,19 +18,19 @@ with lib;
       description = "The payload domain (PayloadType) for this manifest.";
     };
 
-    ClientSettings_FirstRunExperienceLaunchedVersion = lib.mkOption {
+    "ClientSettings.FirstRunExperienceLaunchedVersion" = lib.mkOption {
       type = types.nullOr (types.enum [ "1" ]);
       default = null;
       description = "Disable the first run dialog \"Help us make your experience better\".";
     };
 
-    ClientSettings_DisableTelemetryUpload = lib.mkOption {
+    "ClientSettings.DisableTelemetryUpload" = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable upload of telemetry data.";
     };
 
-    ClientSettings_EnforceCredSSPSupport = lib.mkOption {
+    "ClientSettings.EnforceCredSSPSupport" = lib.mkOption {
       type = types.nullOr (types.enum [ "0" ]);
       default = null;
       description = "Support for all possible values of the \"EnableCredSspSupport\" and \"Authentication Level\" RDP file settings if this key is set to 0.";

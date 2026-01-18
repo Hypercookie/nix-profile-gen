@@ -207,7 +207,7 @@ with lib;
 
     ScreenObservationPermissionModificationAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system allows students enrolled in managed classes to modify their teacher's permissions for screen observation on their device.";
     };
 

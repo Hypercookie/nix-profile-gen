@@ -32,7 +32,7 @@ with lib;
 
     server_scheme = lib.mkOption {
       type = types.nullOr (types.enum [ "http" "https" ]);
-      default = "https";
+      default = null;
       description = "Server Scheme";
     };
 

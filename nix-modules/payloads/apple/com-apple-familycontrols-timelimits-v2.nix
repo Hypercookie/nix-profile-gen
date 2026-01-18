@@ -42,7 +42,7 @@ with lib;
                 };
                 rangeType = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 ]);
-                  default = 0;
+                  default = null;
                   description = "Range Type";
                 };
               };
@@ -70,7 +70,7 @@ with lib;
                 };
                 rangeType = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 ]);
-                  default = 0;
+                  default = null;
                   description = "Range Type";
                 };
               };
@@ -93,7 +93,7 @@ with lib;
                 };
                 rangeType = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 ]);
-                  default = 1;
+                  default = null;
                   description = "Range Type";
                 };
               };
@@ -121,7 +121,7 @@ with lib;
                 };
                 rangeType = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 ]);
-                  default = 1;
+                  default = null;
                   description = "Range Type";
                 };
               };

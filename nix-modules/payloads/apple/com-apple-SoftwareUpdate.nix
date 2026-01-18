@@ -32,43 +32,43 @@ with lib;
 
     AutomaticCheckEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', deselects the \"Check for updates\" option and prevents the user from changing the option.";
     };
 
     AutomaticDownload = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', deselects the \"Download new updates when available from the App Store\" option and prevents the user from changing the option.";
     };
 
     AutomaticallyInstallMacOSUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', restricts the \"Install macOS Updates\" option and prevents the user from changing the option.";
     };
 
     AutomaticallyInstallAppUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', deselects the \"Install app updates from the App Store\" option and prevents the user from changing the option.";
     };
 
     ConfigDataInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', restricts the automatic installation of configuration data.";
     };
 
     CriticalUpdateInstall = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', disables the automatic installation of critical updates and prevents the user from changing the \"Install system data files and security updates\" option.";
     };
 
     AllowPreReleaseInstallation = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', prerelease software can be installed on this computer.";
     };
 
@@ -80,13 +80,13 @@ with lib;
 
     restrict_software_update_require_admin_to_install = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', restrict app installations to admin users. This key has the same function as the  'restrict-store-require-admin-to-install' key in the 'com.apple.appstore' payload.";
     };
 
     ManagedDeferredInstallDelay = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 30;
+      default = null;
       description = "The duration that software updates will be delayed.";
     };
 

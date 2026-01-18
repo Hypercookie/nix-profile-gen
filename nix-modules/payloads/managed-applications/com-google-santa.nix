@@ -25,12 +25,12 @@ with lib;
 
     ClientMode = lib.mkOption {
       type = types.nullOr (types.enum [ 1 2 ]);
-      default = 1;
+      default = null;
     };
 
     FailClosed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Deny execution in LOCKDOWN mode if there is an error reading or processing an executable file.";
     };
 
@@ -54,19 +54,19 @@ with lib;
 
     EnableBadSignatureProtection = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Block binaries with a bad signing chain, unless explicitly allowed.";
     };
 
     EnablePageZeroProtection = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Block 32-bit binaries missing the __PAGEZERO segment, unless explicitly allowed.";
     };
 
     EnableSysxCache = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable secondary cache. Improves performance when multiple EndpointSecurity system extensions are installed.";
     };
 
@@ -125,7 +125,7 @@ with lib;
 
     SyncEnableCleanSyncEventUpload = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Upload events to the sync server even if a clean sync is requested.";
     };
 
@@ -200,48 +200,48 @@ with lib;
 
     EventLogType = lib.mkOption {
       type = types.nullOr (types.enum [ "syslog" "filelog" "protobuf" "" ]);
-      default = "filelog";
+      default = null;
       description = "syslog: Sent to ASL or ULS (if built with the 10.12 SDK or later); filelog: Sent to a file on disk. Use EventLogPath to specify a path.";
     };
 
     EventLogPath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/var/db/santa/santa.log";
+      default = null;
     };
 
     MailDirectory = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/var/db/santa/mail";
+      default = null;
       description = "The base directory used to save mail files.";
     };
 
     MailDirectoryFileSizeThresholdKB = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 100;
+      default = null;
       description = "Per-file size limit (KB) for files stored in the event log mail directory.";
     };
 
     MailDirectorySizeThresholdMB = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 500;
+      default = null;
       description = "Total file size limit (MB) for all files stored in the event log mail directory.";
     };
 
     MailDirectoryEventMaxFlushTimeSec = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5;
+      default = null;
       description = "Maximum time (seconds) events will stay buffered in memory before being flushed to disk.";
     };
 
     EnableMachineIDDecoration = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Appends the MachineID to the end of each log line if enabled.";
     };
 
     MetricFormat = lib.mkOption {
       type = types.nullOr (types.enum [ "rawjson" "monarchjson" "" ]);
-      default = "";
+      default = null;
       description = "The key to use on Machine ID Plist.";
     };
 
@@ -253,13 +253,13 @@ with lib;
 
     MetricExportInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 30;
+      default = null;
       description = "Time (seconds) between exporting metrics.";
     };
 
     MetricExportTimeout = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 30;
+      default = null;
       description = "Timeout (seconds) for exporting metrics.";
     };
 

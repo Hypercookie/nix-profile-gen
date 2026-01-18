@@ -29,7 +29,7 @@ with lib;
         options = {
           Algorithm = lib.mkOption {
             type = types.nullOr (types.enum [ "sha256" ]);
-            default = "sha256";
+            default = null;
             description = "The algorithm must be 'sha256'.";
           };
           Hash = lib.mkOption {

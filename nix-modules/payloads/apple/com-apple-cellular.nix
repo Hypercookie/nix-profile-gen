@@ -28,7 +28,7 @@ with lib;
           };
           AuthenticationType = lib.mkOption {
             type = types.nullOr (types.enum [ "CHAP" "PAP" ]);
-            default = "PAP";
+            default = null;
             description = "The authentication type for logging in.";
           };
           Username = lib.mkOption {
@@ -73,7 +73,7 @@ with lib;
           };
           EnableXLAT464 = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system enables XLAT464. Available in iOS 16 and later and watchOS 9 and later.";
           };
         };
@@ -92,7 +92,7 @@ with lib;
           };
           AuthenticationType = lib.mkOption {
             type = types.nullOr (types.enum [ "CHAP" "PAP" ]);
-            default = "PAP";
+            default = null;
             description = "The authentication type.";
           };
           Username = lib.mkOption {

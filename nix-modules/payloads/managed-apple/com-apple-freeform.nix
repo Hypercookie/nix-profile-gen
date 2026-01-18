@@ -20,7 +20,7 @@ with lib;
 
     CRLConnectICloudDialogShown = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 99999999;
+      default = null;
       description = "Enabling this preference and using the default value will suppress a prompt offering to sign in to iCloud.";
     };
 

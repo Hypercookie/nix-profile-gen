@@ -20,7 +20,7 @@ with lib;
 
     DisableLoginItemsSuppression = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prevents the user from disabling login item launches by using the Shift key.";
     };
 
@@ -29,17 +29,17 @@ with lib;
         options = {
           Hide = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Hide application at launch.";
           };
           AuthenticateAsLoginUserShortName = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Authenticate to the URL with the current users short name. Required if URL is specified, but not for Path";
           };
           MCX_NetworkHomeDirectoryItem = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Mount network home.";
           };
         };

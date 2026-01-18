@@ -20,19 +20,19 @@ with lib;
 
     InstallButtonLabel = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Install";
+      default = null;
       description = "The label of the install button.";
     };
 
     DeferButtonLabel = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Defer";
+      default = null;
       description = "The label of the defer button.";
     };
 
     DisablePostInstallAlert = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Whether to suppress the persistent alert to run updates.";
     };
 
@@ -44,43 +44,43 @@ with lib;
 
     SupportContact = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "IT";
+      default = null;
       description = "Contact information for technical support included in messaging alerts.";
     };
 
     DeferralPeriod = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 14400;
+      default = null;
       description = "Number of seconds between when the user clicks \"Defer\" and the next prompt appears.";
     };
 
     HardRestartDelay = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 300;
+      default = null;
       description = "Number of seconds to wait between attempting a soft restart and forcing a restart.";
     };
 
     MaxDeferralTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 259200;
+      default = null;
       description = "Number of seconds between the first script run and the updates being enforced.";
     };
 
     PromptTimeout = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3600;
+      default = null;
       description = "Number of seconds to wait before timing out the Install or Defer prompt.";
     };
 
     SkipDeferral = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Whether to bypass deferral time entirely and skip straight to update enforcement.";
     };
 
     UpdateDelay = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 600;
+      default = null;
       description = "Number of seconds to wait between displaying the \"install updates\" message and applying updates, then attempting a soft restart.";
     };
 
@@ -98,13 +98,13 @@ with lib;
 
     DiagnosticLog = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Whether to write to a persistent log file at /var/log/install-or-defer.log.";
     };
 
     ManualUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Whether to prompt users to run updates manually via System Preferences.";
     };
 

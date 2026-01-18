@@ -193,7 +193,7 @@ with lib;
 
     Version = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1;
+      default = null;
       description = "The numeric version of the preference file. Currently, only \"1\" is supported.";
     };
 

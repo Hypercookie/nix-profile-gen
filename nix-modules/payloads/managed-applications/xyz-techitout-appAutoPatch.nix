@@ -180,19 +180,19 @@ with lib;
 
     AppTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "App Auto-Patch";
+      default = null;
       description = "Allows you to customize the name of App Auto-Patch to something else";
     };
 
     ConvertAppsInHomeFolder = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "TRUE";
+      default = null;
       description = "This will convert any apps found in the users home folder to the /Applications folder";
     };
 
     IgnoreAppsInHomeFolder = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "FALSE";
+      default = null;
       description = "Ignore apps found in '/Users/'. If an update is found in '/Users/' and variable is set to false, the app will be updated into the application's default path";
     };
 
@@ -204,13 +204,13 @@ with lib;
 
     InstallomatorUpdateDisable = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "FALSE";
+      default = null;
       description = "This will prevent Installomator from automatically updating. If Installomator does not exist in the working folder, it will still download from GitHub to prevent script failure";
     };
 
     InstallomatorVersion = lib.mkOption {
       type = types.nullOr (types.enum [ "Main" "Release" "Custom" ]);
-      default = "Main";
+      default = null;
       description = "Determines if the AAP script should use the Main, Release, or Custom version of Installomator. The version from the Main branch typically includes more recent updates from PR's to fix issues or add new labels. If using Custom, you must also set the InstallomatorVersionCustomRepoPath and InstallomatorVersionCustomBranchName keys";
     };
 
@@ -228,13 +228,13 @@ with lib;
 
     InteractiveMode = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 ]);
-      default = 2;
+      default = null;
       description = "0 (Completely Silent) | 1 (Silent Discovery, Interactive Patching) | 2 (Full Interactive) (default)";
     };
 
     RemoveInstallomatorPath = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "FALSE";
+      default = null;
       description = "Remove Installomator after App Auto-Patch is completed";
     };
 
@@ -264,7 +264,7 @@ with lib;
 
     WebhookFeature = lib.mkOption {
       type = types.nullOr (types.enum [ "FALSE" "ALL" "FAILURES" ]);
-      default = "FAILURES";
+      default = null;
       description = "Determines if Webhooks are sent when patching is completed";
     };
 
@@ -282,19 +282,19 @@ with lib;
 
     WorkflowDisableAppDiscovery = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "FALSE";
+      default = null;
       description = "Disables the discovery of applications that require patching. If a list of labels from a previous discovery exists, AAP will use that list for the workflow";
     };
 
     WorkflowDisableRelaunch = lib.mkOption {
       type = types.nullOr (types.enum [ "TRUE" "FALSE" ]);
-      default = "FALSE";
+      default = null;
       description = "Disable the automatic relaunch of AAP after the current workflow successfully completes";
     };
 
     WorkflowInstallNowPatchingStatusAction = lib.mkOption {
       type = types.nullOr (types.enum [ "NEVER" "ALWAYS" "SUCCESS" ]);
-      default = "SUCCESS";
+      default = null;
       description = "Determines if the Patching Completion Status is set to true when using the --workflow-install-now trigger";
     };
 
@@ -318,7 +318,7 @@ with lib;
 
     VersionComparisonInstallomatorFallback = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When enabled, if version comparison fails, AAP will fall back to using Installomator for version checking";
     };
 

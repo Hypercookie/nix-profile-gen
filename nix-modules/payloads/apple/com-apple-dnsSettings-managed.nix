@@ -48,7 +48,7 @@ with lib;
           };
           AllowFailover = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the device allows failover to the default system DNS resolver.";
           };
         };
@@ -116,7 +116,7 @@ with lib;
 
     ProhibitDisablement = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prohibits users from disabling DNS settings. This key is only available on supervised devices.";
     };
 

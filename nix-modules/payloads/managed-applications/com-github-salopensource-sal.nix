@@ -26,7 +26,7 @@ with lib;
 
     BasicAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Whether to use basic authentication on your server.";
     };
 
@@ -38,7 +38,7 @@ with lib;
 
     SyncScripts = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Download the scripts needed to run for your plugins from the server.";
     };
 
@@ -56,7 +56,7 @@ with lib;
 
     GetOhai = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Collect Ohai attributes and upload them to Sal.";
     };
 

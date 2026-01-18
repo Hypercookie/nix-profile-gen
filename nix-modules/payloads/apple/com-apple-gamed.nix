@@ -20,25 +20,25 @@ with lib;
 
     GKFeatureGameCenterAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', enables Game Center.";
     };
 
     GKFeatureAccountModificationAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', allows account modifications.";
     };
 
     GKFeatureAddingGameCenterFriendsAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', allows adding Game Center friends.";
     };
 
     GKFeatureMultiplayerGamingAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', allows multiplayer gaming.";
     };
 

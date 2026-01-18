@@ -20,7 +20,7 @@ with lib;
 
     locked = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks the desktop picture. Replaced with allowWallpaperModification in macOS 10.13.";
     };
 

@@ -23,7 +23,7 @@ with lib;
         options = {
           tile_type = lib.mkOption {
             type = types.nullOr (types.enum [ "file-tile" ]);
-            default = "file-tile";
+            default = null;
             description = "The type of tile.";
           };
           tile_data = lib.mkOption {
@@ -83,7 +83,7 @@ with lib;
         options = {
           tile_type = lib.mkOption {
             type = types.nullOr (types.enum [ "file-tile" "directory-tile" "url-tile" ]);
-            default = "file-tile";
+            default = null;
             description = "The type of tile.";
           };
           tile_data = lib.mkOption {
@@ -134,17 +134,17 @@ with lib;
                 };
                 arrangement = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 3 4 5 ]);
-                  default = 1;
+                  default = null;
                   description = "Arrangement (sorting) of the directory contents.";
                 };
                 displayas = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 ]);
-                  default = 2;
+                  default = null;
                   description = "Display directory as either a Folder or a Stack.";
                 };
                 showas = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 3 4 ]);
-                  default = 4;
+                  default = null;
                   description = "How to show directory contents.";
                 };
               };
@@ -163,7 +163,7 @@ with lib;
         options = {
           tile_type = lib.mkOption {
             type = types.nullOr (types.enum [ "file-tile" ]);
-            default = "file-tile";
+            default = null;
             description = "The type of tile.";
           };
           tile_data = lib.mkOption {
@@ -223,7 +223,7 @@ with lib;
         options = {
           tile_type = lib.mkOption {
             type = types.nullOr (types.enum [ "file-tile" "directory-tile" "url-tile" ]);
-            default = "file-tile";
+            default = null;
             description = "The type of tile.";
           };
           tile_data = lib.mkOption {
@@ -274,17 +274,17 @@ with lib;
                 };
                 arrangement = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 3 4 5 ]);
-                  default = 1;
+                  default = null;
                   description = "Arrangement (sorting) of the directory contents.";
                 };
                 displayas = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 ]);
-                  default = 2;
+                  default = null;
                   description = "Display directory as either a Folder or a Stack.";
                 };
                 showas = lib.mkOption {
                   type = types.nullOr (types.enum [ 1 2 3 4 ]);
-                  default = 4;
+                  default = null;
                   description = "How to show directory contents.";
                 };
               };
@@ -300,37 +300,37 @@ with lib;
 
     tilesize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 64;
+      default = null;
       description = "The tile size. Values must be in the range from 16 to 128.";
     };
 
     size_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks the size slider.";
     };
 
     magnification = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables magnification.";
     };
 
     magnify_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks magnification.";
     };
 
     largesize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 128;
+      default = null;
       description = "The size of the largest magnification.";
     };
 
     magsize_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks the magnification slider.";
     };
 
@@ -342,91 +342,91 @@ with lib;
 
     position_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks the position.";
     };
 
     mineffect = lib.mkOption {
       type = types.nullOr (types.enum [ "genie" "scale" ]);
-      default = "genie";
+      default = null;
       description = "The minimize effect.";
     };
 
     mineffect_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks \"Minimize windows using.\"";
     };
 
     minimize_to_application = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables \"Minimize windows into application icon.\"";
     };
 
     minintoapp_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables the \"Minimize windows into application icon\" checkbox.";
     };
 
     launchanim = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables \"Animate opening applications.\"";
     };
 
     launchanim_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks \"Animate opening applications.\"";
     };
 
     autohide = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables \"Automatically hide and show the Dock.\"";
     };
 
     autohide_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks \"Automatically hide.\"";
     };
 
     show_process_indicators = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If true, shows the process indicator.";
     };
 
     show_recents = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables \"Show recent items.\"";
     };
 
     show_recent_count = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "Controls the number of items shown in the recent apps area of the dock.";
     };
 
     static_only = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', uses the 'static-apps' and 'static-others' dictionaries for the Dock and ignores any items in the 'persistent-apps' and 'persistent-others' dictionaries. If 'false', the contents are merged with the static items listed first.";
     };
 
     contents_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables changes to the Dock.";
     };
 
     AllowDockFixupOverride = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', use the file in '/Library/Preferences/com.apple.dockfixup.plist' when a new user or migrated user logs in. This option has no effect for existing users. Available in macOS 10.12 and later. Only available on the device channel.";
     };
 
@@ -438,49 +438,49 @@ with lib;
 
     wvous_tl_corner = lib.mkOption {
       type = types.nullOr (types.enum [ 5 6 2 3 4 7 12 11 14 10 13 0 ]);
-      default = 0;
+      default = null;
       description = "Action to be taken when the pointer enters the top left corner of the screen";
     };
 
     wvous_tl_modifier = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1048576 1572864 1835008 1966080 1703936 1310720 1441792 1179648 524288 786432 917504 655360 262144 393216 131072 ]);
-      default = 0;
+      default = null;
       description = "Modifier keys required to activate the top left hot corner";
     };
 
     wvous_tr_corner = lib.mkOption {
       type = types.nullOr (types.enum [ 5 6 2 3 4 7 12 11 14 10 13 0 ]);
-      default = 0;
+      default = null;
       description = "Action to be taken when the pointer enters the top right corner of the screen";
     };
 
     wvous_tr_modifier = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1048576 1572864 1835008 1966080 1703936 1310720 1441792 1179648 524288 786432 917504 655360 262144 393216 131072 ]);
-      default = 0;
+      default = null;
       description = "Modifier keys required to activate the top right hot corner";
     };
 
     wvous_bl_corner = lib.mkOption {
       type = types.nullOr (types.enum [ 5 6 2 3 4 7 12 11 14 10 13 0 ]);
-      default = 0;
+      default = null;
       description = "Action to be taken when the pointer enters the bottom left corner of the screen";
     };
 
     wvous_bl_modifier = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1048576 1572864 1835008 1966080 1703936 1310720 1441792 1179648 524288 786432 917504 655360 262144 393216 131072 ]);
-      default = 0;
+      default = null;
       description = "Modifier keys required to activate the bottom left hot corner";
     };
 
     wvous_br_corner = lib.mkOption {
       type = types.nullOr (types.enum [ 5 6 2 3 4 7 12 11 14 10 13 0 ]);
-      default = 0;
+      default = null;
       description = "Action to be taken when the pointer enters the bottom right corner of the screen";
     };
 
     wvous_br_modifier = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1048576 1572864 1835008 1966080 1703936 1310720 1441792 1179648 524288 786432 917504 655360 262144 393216 131072 ]);
-      default = 0;
+      default = null;
       description = "Modifier keys required to activate the bottom right hot corner";
     };
 
@@ -492,7 +492,7 @@ with lib;
 
     windowtabbing_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables \"Prefer tabs when opening documents\" checkbox.";
     };
 
@@ -504,19 +504,19 @@ with lib;
 
     dblclickbehavior_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks \"Double-click a window's title bar.\"";
     };
 
     showindicators_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', locks \"Show indicators.\"";
     };
 
     showrecents_immutable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables \"Show recent applications\" checkbox.";
     };
 

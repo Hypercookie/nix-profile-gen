@@ -26,25 +26,25 @@ with lib;
 
     USE_GEOCODE = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If set to true then pinpoint will also use the Google Geocode API to look up the street address for the location, if set to false it skips this and records the location as an empty string but saves on an additional API call thereby either preventing you exceeding your quota or reducing the cost.";
     };
 
     USE_ALTITUDE = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true then pinpoint will also use the Google Elevation API to determine the altitude, if set to false it skips this and records the altitude as zero but saves on an additional API call thereby either preventing you exceeding your quota or reducing the cost.";
     };
 
     OPTIMISE = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Optional feature designed to reduce i.e. 'optimise' the use of the Google APIs and therefore reduce the potential bill use of these APIs might result in.";
     };
 
     DEBUG = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled logs to /var/log/pinpoint.log";
     };
 

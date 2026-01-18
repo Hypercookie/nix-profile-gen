@@ -44,7 +44,7 @@ with lib;
 
     TextField05 = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "This is a default string";
+      default = null;
       description = "TextField with a default value.";
     };
 
@@ -73,7 +73,7 @@ with lib;
 
     TextField10 = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "AA:BB:CC:DD:11:22deletethis";
+      default = null;
       description = "TextField with a required format of a MAC address: ^([0-9A-Fa-f]{2}:){5}([0-9A-Fa-f]{2})$";
     };
 

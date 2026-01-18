@@ -20,31 +20,31 @@ with lib;
 
     NSRequiresAquaSystemAppearance = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable macOS Dark Mode settings for application.";
     };
 
     DisableResumeAssistant = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "The icon for Resume Assistant will appear on the Review tab for Office 365 users. Set this preference to TRUE to disable this feature.";
     };
 
     kSubUIAppCompletedFirstRunSetup1507 = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls the original \"What's New\" dialog and Office 365 activation prompt on first launch. Replaced by 'OfficeAutoSignIn' in the main Office profile starting in version 16.17 and should not be used for Office 2019.";
     };
 
     SendASmileEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This key when set to false will deactivate the ability for users to use the \"Smile\" feature to send feedback to Microsoft.";
     };
 
     SendAllTelemetryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set to FALSE to send minimal heartbeat data, no application usage, and no environment details.";
     };
 
@@ -68,7 +68,7 @@ with lib;
 
     kFREEnterpriseTelemetryInfoKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Suppresses a temporary Privacy and Services Update dialog in 16.27 ONLY. (Was previously used for a similar purpose in 16.13.1 but the key was recycled.)";
     };
 

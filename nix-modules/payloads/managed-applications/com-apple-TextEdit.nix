@@ -30,7 +30,7 @@ with lib;
 
     AddExtensionToNewPlainTextFiles = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set this preference to 'false' to forcibly disable adding the \".txt\" extension to plain text files.";
     };
 
@@ -113,7 +113,7 @@ with lib;
 
     PreserveDocumentWhitespace = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set this preference to 'false' to not include code that preserves the white space in your document's formatted text.";
     };
 

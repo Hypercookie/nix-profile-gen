@@ -32,7 +32,7 @@ with lib;
 
     RecentWhatsNewPanelVersion = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 99;
+      default = null;
       description = "So long as the integer value of this preference is set equal or higher to the value produced in the user-level plist after launching the app and acknowledging the \"What's New\" prompt, this will prevent the \"What's New\" prompt from appearing.";
     };
 

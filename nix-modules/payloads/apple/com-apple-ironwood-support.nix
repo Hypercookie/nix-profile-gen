@@ -20,13 +20,13 @@ with lib;
 
     Ironwood_Allowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', disables dictation. Use 'allowDictation' in Restrictions instead.";
     };
 
     Profanity_Allowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', suppresses profanity. Use 'forceAssistantProfanityFilter' in Restrictions instead.";
     };
 

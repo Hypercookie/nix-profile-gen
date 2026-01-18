@@ -25,31 +25,31 @@ with lib;
 
     RemovePlist = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "By default, the plist at /var/root/crypt_output.plist with the FileVault Key will be removed once it has been escrowed. If this is set to True the key will remain as root read only.";
     };
 
     RotateUsedKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If the recovery key plist is still present on the disk, rotates the recovery key after the key is used to unlock the disk.";
     };
 
     ValidateKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If the recovery key plist is still present on the disk, validates the recovery key. If the key fails validation, the plist is removed so it can be regenerated on next login.";
     };
 
     OutputPath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/var/root/crypt_output.plist";
+      default = null;
       description = "Path where the recovery key plist is written to disk.";
     };
 
     KeyEscrowInterval = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1;
+      default = null;
       description = "Time interval in Hours for how often Crypt tries to re-escrow the key to Crypt-Server after the first successful escrow.";
     };
 

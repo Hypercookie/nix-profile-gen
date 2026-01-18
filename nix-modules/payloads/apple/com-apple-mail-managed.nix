@@ -20,7 +20,7 @@ with lib;
 
     EmailAccountType = lib.mkOption {
       type = types.nullOr (types.enum [ "EmailTypeIMAP" "EmailTypePOP" ]);
-      default = "EmailTypeIMAP";
+      default = null;
       description = "Defines the protocol to use for the account.";
     };
 
@@ -56,37 +56,37 @@ with lib;
 
     PreventMove = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prevents moving messages out of this email account and into another account. It also prevents forwarding or replying from an account other than the recipient of the message.";
     };
 
     disableMailRecentsSyncing = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system excludes this account from Recent Addresses syncing.";
     };
 
     allowMailDrop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables this account to use Mail Drop.";
     };
 
     PreventAppSheet = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prevents this account from sending mail in any app other than the Apple Mail app.";
     };
 
     SMIMEEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables S/MIME encryption. The system ignores this key in iOS 10.0 and later.";
     };
 
     SMIMESigningEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables S/MIME signing for this account.";
     };
 
@@ -98,7 +98,7 @@ with lib;
 
     SMIMEEncryptionEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables S/MIME encryption for this account.";
     };
 
@@ -110,43 +110,43 @@ with lib;
 
     SMIMEEnablePerMessageSwitch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI. Deprecated in iOS 12.0. Use 'SMIMEEnableEncryptionPerMessageSwitch' instead.";
     };
 
     SMIMESigningUserOverrideable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the user can turn S/MIME signing on or off in Settings.";
     };
 
     SMIMESigningCertificateUUIDUserOverrideable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the user can select the signing identity.";
     };
 
     SMIMEEncryptByDefault = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables S/MIME encryption by default.";
     };
 
     SMIMEEncryptByDefaultUserOverrideable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the user can turn encryption by default on/off, and encryption is on.";
     };
 
     SMIMEEncryptionCertificateUUIDUserOverrideable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the user can select the S/MIME encryption identity, and encryption is on.";
     };
 
     SMIMEEnableEncryptionPerMessageSwitch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI.";
     };
 
@@ -163,7 +163,7 @@ with lib;
 
     IncomingMailServerPortNumber = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 993;
+      default = null;
       description = "The incoming mail server port number. If not set, the system uses the default port for a given protocol.";
     };
 
@@ -175,7 +175,7 @@ with lib;
 
     IncomingMailServerAuthentication = lib.mkOption {
       type = types.nullOr (types.enum [ "EmailAuthNone" "EmailAuthPassword" "EmailAuthCRAMMD5" "EmailAuthNTLM" "EmailAuthHTTPMD5" ]);
-      default = "EmailAuthPassword";
+      default = null;
       description = "The authentication scheme for incoming mail.";
     };
 
@@ -187,7 +187,7 @@ with lib;
 
     IncomingMailServerUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables SSL for authentication on the incoming mail server.";
     };
 
@@ -199,7 +199,7 @@ with lib;
 
     OutgoingMailServerPortNumber = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 587;
+      default = null;
       description = "The outgoing mail server port number. If not set, the system uses ports 25, 587, and 465, in that order.";
     };
 
@@ -211,7 +211,7 @@ with lib;
 
     OutgoingMailServerAuthentication = lib.mkOption {
       type = types.nullOr (types.enum [ "EmailAuthNone" "EmailAuthPassword" "EmailAuthCRAMMD5" "EmailAuthNTLM" "EmailAuthHTTPMD5" ]);
-      default = "EmailAuthPassword";
+      default = null;
       description = "The authentication scheme for outgoing mail.";
     };
 
@@ -223,13 +223,13 @@ with lib;
 
     OutgoingPasswordSameAsIncomingPassword = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prompts the user only once for the password, which it uses for both outgoing and incoming mail.\n\nThis setting is only supported by interactive profile installations. Not supported by non-interactive installations, such as MDM on iOS.";
     };
 
     OutgoingMailServerUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables SSL authentication on the outgoing mail server.";
     };
 

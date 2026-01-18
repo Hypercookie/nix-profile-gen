@@ -62,7 +62,7 @@ with lib;
 
     SSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system enables SSL.";
     };
 
@@ -86,13 +86,13 @@ with lib;
 
     ExternalSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system enables SSL for connections to the external server.";
     };
 
     OAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables OAuth for authentication. Don't specify a password if 'OAuth' is 'true'. Available in macOS 10.14 and later";
     };
 
@@ -110,7 +110,7 @@ with lib;
 
     allowMailDrop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables Mail Drop.";
     };
 

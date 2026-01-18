@@ -44,7 +44,7 @@ with lib;
 
     TextFieldFloat05 = lib.mkOption {
       type = types.nullOr (types.anything);
-      default = 99;
+      default = null;
       description = "TextFieldFloat with a default value.";
     };
 
@@ -73,19 +73,19 @@ with lib;
 
     TextFieldFloat10 = lib.mkOption {
       type = types.nullOr (types.anything);
-      default = 98;
+      default = null;
       description = "TextFieldFloat with a max value of: 99";
     };
 
     TextFieldFloat11 = lib.mkOption {
       type = types.nullOr (types.anything);
-      default = 2;
+      default = null;
       description = "TextFieldFloat with a min value of: 1";
     };
 
     TextFieldFloat12 = lib.mkOption {
       type = types.nullOr (types.anything);
-      default = 2;
+      default = null;
       description = "TextFieldFloat with a min value of: 1 and max value of: 99";
     };
 

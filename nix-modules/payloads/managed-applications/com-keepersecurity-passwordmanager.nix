@@ -32,13 +32,13 @@ with lib;
 
     HideCreateAccount = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hides the Create Account button from the start page";
     };
 
     UseDefaultBrowserForSSO = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Routes the user to their default web browser for SSO authentication instead of using a popup window.";
     };
 

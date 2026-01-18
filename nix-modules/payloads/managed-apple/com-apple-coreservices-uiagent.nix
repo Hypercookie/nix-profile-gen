@@ -20,7 +20,7 @@ with lib;
 
     CSUIDisable32BitWarnings = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hides the one-time alert shown when opening a 32-bit application.";
     };
 

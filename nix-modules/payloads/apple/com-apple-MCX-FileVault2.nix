@@ -26,25 +26,25 @@ with lib;
 
     Defer = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system defers enabling FileVault until the designated user logs out. For details, see 'fdesetup(8)'. Only a local user or a mobile account user can enable FileVault.";
     };
 
     UserEntersMissingInfo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables a prompt for missing user name or password fields.";
     };
 
     UseRecoveryKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system creates a personal recovery key and displays it to the user.";
     };
 
     ShowRecoveryKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the system prevents display of the personal recovery key to the user after the system enables FileVault.";
     };
 
@@ -74,7 +74,7 @@ with lib;
 
     UseKeychain = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true' and you don't include certificate information in this payload, the system uses the keychain created at '/Library/Keychains/FileVaultMaster.keychain' when it adds the institutional recovery key.";
     };
 
@@ -86,13 +86,13 @@ with lib;
 
     DeferDontAskAtUserLogout = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system prevents requests to enable FileVault at user logout time.";
     };
 
     ForceEnableInSetupAssistant = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', and installation of this payload occurs after enrolling with MDM in Setup Assistant, the system requests Setup Assistant to enable FileVault at setup time.\n\nTo use this, enable the Await Device Configured DEP configuration option and send this profile with this key set, before sending the 'DeviceConfiguredCommand'.\n\nAn admin SecureToken user is required, otherwise the FileVault pane does not appear.";
     };
 

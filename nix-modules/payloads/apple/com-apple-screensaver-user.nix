@@ -26,7 +26,7 @@ with lib;
 
     idleTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 300;
+      default = null;
       description = "The number of seconds of inactivity before the screen saver activates ('0' = Never activate).";
     };
 

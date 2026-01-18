@@ -31,31 +31,31 @@ with lib;
 
     MenuShowIdentity = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to show the Identity menu item. Defaults to true";
     };
 
     MenuShowApps = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to show the Apps menu item. Defaults to true";
     };
 
     MenuShowSelfService = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to show the Self Service menu item. Defaults to true";
     };
 
     MenuShowCompanyPortal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to show the Company Portal menu item. Defaults to true";
     };
 
     MenuShowKnowledgeBase = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to show the Knowledge Base menu item. Defaults to true";
     };
 
@@ -145,25 +145,25 @@ with lib;
 
     SoftwareUpdateNotificationMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Software Updates Available. Please update your device to the latest version.";
+      default = null;
       description = "Configures the message for notifications for Software Updates notifications. Defaults to \"Software Updates Available. Please update your device to the latest version.\" if not configured.";
     };
 
     SoftwareUpdateNotificationButtonText = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Update Now 🚀";
+      default = null;
       description = "Configures the button text for notifications for Software Updates notifications. Defaults to \"Update Now 🚀\" if not configured.";
     };
 
     AppUpdateNotificationMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "App Updates Available. Please update your apps to the latest version.";
+      default = null;
       description = "Configures the message for notifications for App Updates notifications. Defaults to \"App Updates Available. Please update your apps to the latest version.\" if not configured.";
     };
 
     AppUpdateNotificationButtonText = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Update Now 🚀";
+      default = null;
       description = "Configures the button text for notifications for App Updates notifications. Defaults to \"Update Now 🚀\" if not configured.";
     };
 
@@ -220,13 +220,13 @@ with lib;
 
     ShowDesktopInfo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configures the desktop info widget.";
     };
 
     DesktopInfoWindowPosition = lib.mkOption {
       type = types.nullOr (types.enum [ "UpperLeft" "UpperRight" "LowerLeft" "LowerRight" ]);
-      default = "LowerRight";
+      default = null;
       description = "Configures the position of the desktop info. Defaults to Lower Right.";
     };
 
@@ -244,7 +244,7 @@ with lib;
 
     DesktopInfoBackgroundOpacity = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 1.0;
+      default = null;
       description = "Configures the opacity of the desktop info. Defaults to 0%.";
     };
 
@@ -256,7 +256,7 @@ with lib;
 
     DesktopInfoFontSize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 14;
+      default = null;
       description = "Configures the font size for the desktop info. Defaults to 14.";
     };
 
@@ -268,25 +268,25 @@ with lib;
 
     EnableElevation = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When set to true allows the user to elevate to admin during a set time frame. Defaults to false.";
     };
 
     RequireResonForElevation = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Requires the user to enter a reason for the elevation. Defaults to false.";
     };
 
     ReasonMinLength = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 10;
+      default = null;
       description = "Set a minimum amount of characters the user must enter as the reason. Defaults to 10.";
     };
 
     MaxElevationTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5;
+      default = null;
       description = "The amount of time (in minutes) the user is elevated. Defaults to 5.";
     };
 
@@ -298,13 +298,13 @@ with lib;
 
     ShowElevateTrayCard = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configure wether to show the elevate button in the tray menu or not. Defaults to false.";
     };
 
     ElevationSeverity = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 6;
+      default = null;
       description = "Configure the elevation severity. Defaults to 6 (Informational).";
     };
 
@@ -340,7 +340,7 @@ with lib;
 
     RequirePrivilegedActionAuthentication = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Disables the requirement for the user to enter their credentials when running privileged actions via the CLI.";
     };
 

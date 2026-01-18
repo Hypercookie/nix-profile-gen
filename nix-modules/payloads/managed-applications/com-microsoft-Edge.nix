@@ -97,13 +97,13 @@ with lib;
 
     DefaultWebBluetoothGuardSetting = lib.mkOption {
       type = types.nullOr (types.enum [ 2 3 ]);
-      default = 3;
+      default = null;
       description = "Allows you to set whether websites are allowed to get access to nearby Bluetooth devices. Access can be completely blocked, or the user can be asked every time a website wants to get access to nearby Bluetooth devices.";
     };
 
     DefaultWebUsbGuardSetting = lib.mkOption {
       type = types.nullOr (types.enum [ 2 3 ]);
-      default = 3;
+      default = null;
       description = "Allows you to set whether websites are allowed to get access to connected USB devices. Access can be completely blocked, or the user can be asked every time a website wants to get access to connected USB devices.";
     };
 
@@ -196,7 +196,7 @@ with lib;
         options = {
           default = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
           };
           protocol = lib.mkOption {
             type = types.nullOr (types.str);
@@ -258,13 +258,13 @@ with lib;
 
     BackgroundTemplateListUpdatesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If you enable this setting or the setting is unconfigured, the list of available templates will be downloaded in the background from a Microsoft service every 24 hours.";
     };
 
     BingAdsSuppression = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Block all ads on Bing search results.";
     };
 
@@ -336,7 +336,7 @@ with lib;
 
     BlockExternalExtensions = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls the installation of external extensions.";
     };
 
@@ -437,19 +437,19 @@ with lib;
 
     EnableMediaRouter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or is not set, Google Cast will be enabled, and users will be able to launch it from the app menu, page context menus, media controls on Cast-enabled websites, and (if shown) the Cast toolbar icon.";
     };
 
     ShowCastIconInToolbar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If this policy is set to true, the Cast toolbar icon will always be shown on the toolbar or the overflow menu, and users will not be able to remove it.";
     };
 
     AllowCrossOriginAuthPrompt = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls whether third-party sub-content on a page is allowed to pop-up an HTTP Basic Auth dialog box.";
     };
 
@@ -473,19 +473,19 @@ with lib;
 
     DisableAuthNegotiateCnameLookup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Specifies whether the generated Kerberos SPN is based on the canonical DNS name or the original name entered.";
     };
 
     EnableAuthNegotiatePort = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Specifies whether the generated Kerberos SPN should include a non-standard port.";
     };
 
     NtlmV2Enabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If you don't configure this policy, NTLMv2 is enabled by default.";
     };
 
@@ -497,31 +497,31 @@ with lib;
 
     AllowDeletingBrowserHistory = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables deleting browser history and download history in Microsoft Edge and prevents users from changing this setting.";
     };
 
     AllowFileSelectionDialogs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows access to local files on the machine by allowing Microsoft Edge to display file selection dialogs.";
     };
 
     AllowPopupsDuringPageUnload = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy allows an admin to specify that a page may show popups during its unloading.";
     };
 
     AllowSurfGame = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables or disables the built-in surf game. Game accessible via edge://surf.";
     };
 
     AllowSyncXHRInPageDismissal = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy lets you specify that a page can send synchronous XHR requests during page dismissal.";
     };
 
@@ -539,25 +539,25 @@ with lib;
 
     AlwaysOpenPdfExternally = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables the internal PDF viewer in Microsoft Edge. Instead it treats it as download and allows the user to open PDF files with the default application.";
     };
 
     AppCacheForceEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allows the AppCache feature to be re-enabled, even if it's turned off by default";
     };
 
     ApplicationLocaleValue = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "en";
+      default = null;
       description = "Set application locale";
     };
 
     AudioCaptureAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled or not configured (default), the user will be prompted for audio capture access except for URLs configured in the AudioCaptureAllowedUrls list which will be granted access without prompting.";
     };
 
@@ -587,13 +587,13 @@ with lib;
 
     AutofillAddressEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Microsoft Edge's AutoFill feature and allows users to auto complete address information in web forms using previously stored information.";
     };
 
     AutofillCreditCardEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables Microsoft Edge's AutoFill feature and allows users to auto complete credit card information in web forms using previously stored information.";
     };
 
@@ -605,19 +605,19 @@ with lib;
 
     BrowserAddProfileEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable profile creation from the Identity flyout menu or the Settings page";
     };
 
     BrowserGuestModeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable the option to allow the use of guest profiles in Microsoft Edge. In a guest profile, the browser doesn't import browsing data from existing profiles, and it deletes browsing data when all guest profiles are closed.";
     };
 
     BrowserNetworkTimeQueriesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If set to false, prevents Microsoft Edge from occasionally sending queries to a browser network time service to retrieve an accurate timestamp.";
     };
 
@@ -671,7 +671,7 @@ with lib;
 
     ClearBrowsingDataOnExit = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this policy, all browsing data is deleted each time Microsoft Edge closes.";
     };
 
@@ -689,13 +689,13 @@ with lib;
 
     CommandLineFlagSecurityWarningsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If disabled, prevents security warnings from appearing when Edge is launched with some potentially dangerous command-line flags.";
     };
 
     ComponentUpdatesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables component updates for all components in Microsoft Edge when not set or set to True.";
     };
 
@@ -707,7 +707,7 @@ with lib;
 
     ConfigureOnlineTextToSpeech = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If you enable or don't configure this policy, web-based applications that use the SpeechSynthesis API can use Online Text to Speech voice fonts.";
     };
 
@@ -719,7 +719,7 @@ with lib;
 
     DNSInterceptionChecksEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy configures a local switch that can be used to disable DNS interception checks. These checks attempt to discover whether the browser is behind a proxy that redirects unknown host names.";
     };
 
@@ -731,7 +731,7 @@ with lib;
 
     DefaultSearchProviderContextMenuAccessAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow default search provider context menu search access";
     };
 
@@ -749,13 +749,13 @@ with lib;
 
     Disable3DAPIs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enabling this setting prevents web pages from accessing the graphics processing unit (GPU). Specifically, web pages can not access the WebGL API and plugins can not use the Pepper 3D API.";
     };
 
     DisableScreenshots = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If enabled, screenshots cannot be taken using keyboard shortcuts or extension APIs.";
     };
 
@@ -785,13 +785,13 @@ with lib;
 
     EdgeCollectionsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Lets you allow users to access the Collections feature, where they can collect, organize, share, and export content more efficiently and with Office integration.";
     };
 
     EditFavoritesEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If you enable this setting, favorites can be added, removed or modified. This is the default also when this policy is not set.";
     };
 
@@ -809,19 +809,19 @@ with lib;
 
     EnableOnlineRevocationChecks = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "In light of the fact that soft-fail, online revocation checks provide no effective security benefit, they are disabled by default in Google Chrome version 19 and later. By setting this policy to true, the previous behavior is restored and online OCSP/CRL checks will be performed.";
     };
 
     EnableSha1ForLocalAnchors = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allow certificates signed using SHA-1 when issued by local trust anchors (deprecated).";
     };
 
     EnterpriseHardwarePlatformAPIEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When this policy is set to enabled, extensions installed by enterprise policy are allowed to use the Enterprise Hardware Platform API.";
     };
 
@@ -833,13 +833,13 @@ with lib;
 
     ExternalProtocolDialogShowAlwaysOpenCheckbox = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you set to True, when an external protocol confirmation prompt is shown, the user can select \"Always open\". The user won't get any future confirmation prompts for this protocol.";
     };
 
     ForceEphemeralProfiles = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to enabled this policy forces the profile to be switched to ephemeral mode. If this policy is specified as an OS policy (e.g. GPO on Windows) it will apply to every profile on the system; if the policy is set as a Cloud policy it will apply only to a profile signed in with a managed account.";
     };
 
@@ -857,13 +857,13 @@ with lib;
 
     ForceGoogleSafeSearch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Forces queries in Google Web Search to be done with SafeSearch set to active and prevents users from changing this setting.";
     };
 
     ForceLegacyDefaultReferrerPolicy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Use a default referrer policy of no-referrer-when-downgrade.";
     };
 
@@ -875,13 +875,13 @@ with lib;
 
     FullscreenAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow full screen mode";
     };
 
     GoToIntranetSiteForSingleWordEntryInAddressBar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this policy, the top auto-suggest result in the address bar suggestion list will navigate to intranet sites if the text entered in the address bar is a single word without punctuation.";
     };
 
@@ -893,19 +893,19 @@ with lib;
 
     HardwareAccelerationModeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If this policy is set to true or left unset, hardware acceleration will be enabled unless a certain GPU feature is on the denylist.";
     };
 
     HideFirstRunExperience = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this policy, the First-run experience and the splash screen will not be shown to users when they run Microsoft Edge for the first time.";
     };
 
     HubsSidebarEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the Sidebar launcher bar.";
     };
 
@@ -935,7 +935,7 @@ with lib;
 
     ImportFavorites = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy forces bookmarks to be imported from the current default browser if enabled. If enabled, this policy also affects the import dialog.";
     };
 
@@ -1058,7 +1058,7 @@ with lib;
 
     MaxConnectionsPerProxy = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 32;
+      default = null;
       description = "Specifies the maximal number of simultaneous connections to the proxy server.";
     };
 
@@ -1076,31 +1076,31 @@ with lib;
 
     MicrosoftEdgeInsiderPromotionEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Shows content promoting the Microsoft Edge Insider channels on the About Microsoft Edge settings page.";
     };
 
     OmniboxMSBProviderEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables the display of relevant MSB suggestions in omnibox when user types a search string in the addressbar";
     };
 
     PaymentMethodQueryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to set whether websites can check if the user has payment methods saved.";
     };
 
     PersonalizationReportingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This policy prevents Microsoft from collecting a user's Microsoft Edge browsing history to be used for personalizing advertising, search, news and other Microsoft services.";
     };
 
     ProactiveAuthEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Lets you configure whether to turn on Proactive Authentication.";
     };
 
@@ -1118,13 +1118,13 @@ with lib;
 
     PolicyRefreshRate = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 10800000;
+      default = null;
       description = "Refresh rate for user policy. Specifies the period in milliseconds at which the device management service is queried for user policy information. Setting this policy overrides the default value of 3 hours. Valid values for this policy are in the range from 1800000 (30 minutes) to 86400000 (1 day).";
     };
 
     PromotionalTabsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to control the presentation of full-tab promotional and/or educational content in Microsoft Edge.";
     };
 
@@ -1170,7 +1170,7 @@ with lib;
 
     QuicAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "QUIC is a transport layer network protocol that can improve performance of web applications that currently use TCP.";
     };
 
@@ -1200,13 +1200,13 @@ with lib;
 
     RunAllFlashInAllowMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this setting, all Flash content embedded on websites that have been set to allow Flash in content settings -- either by the user or by enterprise policy -- will be run, including content from other origins or small content.";
     };
 
     SSLErrorOverrideAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Edge shows a warning page when users navigate to sites that have SSL errors. By default or when this policy is set to true, users are allowed to click through these warning pages.\nSetting this policy to false disallows users to click through any warning page.";
     };
 
@@ -1224,7 +1224,7 @@ with lib;
 
     SavingBrowserHistoryDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disables saving browser history in Microsft Edge and prevents users from changing this setting.";
     };
 
@@ -1248,13 +1248,13 @@ with lib;
 
     ShowOfficeShortcutInFavoritesBar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Specifies whether to include a shortcut to Office.com in the favorites bar. For users signed into Microsoft Edge the shortcut takes users to their Microsoft Office apps and docs.";
     };
 
     SignedHTTPExchangeEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable support for Signed HTTP Exchange (SXG).";
     };
 
@@ -1308,13 +1308,13 @@ with lib;
 
     TabFreezingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Controls whether Microsoft Edge can freeze tabs that are in the background for at least 5 minutes.";
     };
 
     TaskManagerEndProcessEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If set to false, the 'End process' button is disabled in the Task Manager.";
     };
 
@@ -1332,7 +1332,7 @@ with lib;
 
     TyposquattingCheckerEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables the integrated Typosquatting Checker on Microsoft Edge.";
     };
 
@@ -1350,7 +1350,7 @@ with lib;
 
     UserAgentClientHintsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable the User-Agent Client Hints feature.";
     };
 
@@ -1362,7 +1362,7 @@ with lib;
 
     UserFeedbackAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow user feedback. If the policy is set to false, users can not send feedback to Microsoft.";
     };
 
@@ -1374,7 +1374,7 @@ with lib;
 
     VideoCaptureAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If enabled or not configured (default), the user will be prompted for\nvideo capture access except for URLs configured in the VideoCaptureAllowedUrls list which will be granted access without prompting.";
     };
 
@@ -1386,7 +1386,7 @@ with lib;
 
     WPADQuickCheckEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows you to turn off WPAD (Web Proxy Auto-Discovery) optimization in Microsoft Edge";
     };
 
@@ -1449,13 +1449,13 @@ with lib;
 
     WebComponentsV0Enabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Re-enable Web Components v0 API until M84.";
     };
 
     WebDriverOverridesIncompatiblePolicies = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This policy allows users of the WebDriver feature to override policies which can interfere with its operation. This policy is deprecated. It is currently supported but will become obsolete in a future release.";
     };
 
@@ -1521,19 +1521,19 @@ with lib;
 
     PrintingEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enables printing in Microsoft Edge and prevents users from changing this setting.";
     };
 
     UseSystemPrintDialog = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If you enable this policy, Microsoft Edge opens the system print dialog instead of the built-in print preview when a user prints a page.";
     };
 
     PrintPreviewUseSystemDefaultPrinter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Causes Microsoft Edge to use the system default printer as the default choice in Print Preview instead of the most recently used printer.";
     };
 
@@ -1569,13 +1569,13 @@ with lib;
 
     PreventSmartScreenPromptOverride = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Lets you decide whether users can override the Microsoft Defender SmartScreen warnings about potentially malicious websites.";
     };
 
     PreventSmartScreenPromptOverrideForFiles = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Lets you determine whether users can override Microsoft Defender SmartScreen warnings about unverified downloads.";
     };
 
@@ -1587,7 +1587,7 @@ with lib;
 
     SmartScreenForTrustedDownloadsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Force Microsoft Defender SmartScreen checks on downloads from trusted sources";
     };
 
@@ -1629,7 +1629,7 @@ with lib;
 
     NewTabPageAllowedBackgroundTypes = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 3 ]);
-      default = 0;
+      default = null;
       description = "Configures the background types allowed for the new tab page layout.";
     };
 
@@ -1676,13 +1676,13 @@ with lib;
 
     NewTabPageContentEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allow Microsoft News content on the new tab page in Microsoft Edge.";
     };
 
     NewTabPageHideDefaultTopSites = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hides the default top sites from the new tab page in Microsoft Edge.";
     };
 
@@ -1773,13 +1773,13 @@ with lib;
 
     AutoLaunchProtocolsComponentEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Specifies whether the AutoLaunch Protocols component should be enabled.\nThis component allows Microsoft to provide a list similar to that of the AutoLaunchProtocolsFromOrigins policy, allowing certain external protocols to launch without prompt or blocking certain protocols (on specified origins). By default, this component is enabled.";
     };
 
     LocalNetworkAccessRestrictionsEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "A policy to control whether users are prompted to allow sites to ask for Local Network Access.";
     };
 

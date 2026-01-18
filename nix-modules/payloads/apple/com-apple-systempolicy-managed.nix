@@ -20,7 +20,7 @@ with lib;
 
     DisableOverride = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables the Finder's contextual menu item.";
     };
 

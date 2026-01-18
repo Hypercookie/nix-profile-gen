@@ -18,21 +18,21 @@ with lib;
       description = "The payload domain (PayloadType) for this manifest.";
     };
 
-    AcceptedENX7_2EULA = lib.mkOption {
+    "AcceptedENX7.2EULA" = lib.mkOption {
       type = types.nullOr (types.enum [ "1" "0" ]);
-      default = "0";
+      default = null;
       description = "Set to 1 to accept EndNote X7.2 and X8 EULA and hide the dialog from users.";
     };
 
     AcceptedENX9EULA = lib.mkOption {
       type = types.nullOr (types.enum [ "1" "0" ]);
-      default = "0";
+      default = null;
       description = "Set to 1 to accept EndNote X9 EULA and hide the dialog from users.";
     };
 
     ShowGettingStartedX9 = lib.mkOption {
       type = types.nullOr (types.enum [ "0" "1" ]);
-      default = "1";
+      default = null;
       description = "Set to 0 to disable EndNote Getting Started prompts.";
     };
 

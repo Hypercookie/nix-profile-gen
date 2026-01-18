@@ -26,31 +26,31 @@ with lib;
 
     BackupAllVolumes = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', backs up only the startup volume by default.";
     };
 
     BackupSkipSys = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', skips system files and folders by default.";
     };
 
     AutoBackup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', performs automatic backups at regular intervals.";
     };
 
     MobileBackups = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', create local backup snapshots when not connected to the network.";
     };
 
     BackupSizeMB = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "The backup size limit, in megabytes. Set to 0 for unlimited.";
     };
 

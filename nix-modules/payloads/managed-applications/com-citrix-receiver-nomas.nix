@@ -104,13 +104,13 @@ with lib;
 
     NetDisruptBrightness = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 80;
+      default = null;
       description = "Configures the greyscale brightness used for an inactive session. 100 = transparent, 0 = black";
     };
 
     SecurityComplianceMode = lib.mkOption {
       type = types.nullOr (types.enum [ "None" "FIPS" "SP800-52" ]);
-      default = "FIPS";
+      default = null;
       description = "Sets the security compliance mode for the policy. If you don't configure SecurityComplianceMode, FIPS is used as the default value.";
     };
 
@@ -122,7 +122,7 @@ with lib;
 
     SSLCertificateRevocationCheckPolicy = lib.mkOption {
       type = types.nullOr (types.enum [ "NoCheck" "CheckWithNoNetworkAccess" "FullAccessCheck" "FullAccessCheckAndCRLRequired" "FullAccessCheckAndCRLRequiredAll" ]);
-      default = "FullAccessCheck";
+      default = null;
       description = "This setting governs how a given trusted root certificate authority is treated during an attempt to open a remote session through SSL. When you enable this setting, the client checks whether or not the server's certificate is revoked.";
     };
 

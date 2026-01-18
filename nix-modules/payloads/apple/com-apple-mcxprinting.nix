@@ -20,7 +20,7 @@ with lib;
 
     AllowLocalPrinters = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', allows printers that connect directly to a user's computer.";
     };
 
@@ -45,7 +45,7 @@ with lib;
 
     PrintFooter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', prints the page footer (including the user name and date).";
     };
 
@@ -63,25 +63,25 @@ with lib;
 
     PrintMACAddress = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', includes the MAC address.";
     };
 
     RequireAdminToAddPrinters = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', requires an administrator password to add printers.";
     };
 
     RequireAdminToPrintLocally = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', requires an administrator password to print locally.";
     };
 
     ShowOnlyManagedPrinters = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', shows only managed printers.";
     };
 
@@ -118,7 +118,7 @@ with lib;
                 };
                 PrinterLocked = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "If 'true', locks the printer.";
                 };
               };

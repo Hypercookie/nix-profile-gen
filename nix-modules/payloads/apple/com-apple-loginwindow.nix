@@ -25,7 +25,7 @@ with lib;
 
     AdminHostInfo = lib.mkOption {
       type = types.nullOr (types.enum [ "HostName" "SystemVersion" "IPAddress" ]);
-      default = "HostName";
+      default = null;
       description = "The admin host info. If present in the payload, the system displays its value in the Login Window as additional computer information. Before macOS 10.10, this string could only contain host name, system version, or IP address. After macOS 10.10, setting this key to any value allows the user to click the time area of the menu bar to toggle through various computer information values.";
     };
 
@@ -37,91 +37,91 @@ with lib;
 
     SHOWFULLNAME = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system shows the name and password dialog. If 'false', the system displays a list of users.";
     };
 
     HideLocalUsers = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system shows only network and system users when showing a user list.";
     };
 
     HideMobileAccounts = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system hides mobile account users in a user list. In some cases, mobile users show up as network users.";
     };
 
     IncludeNetworkUser = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system shows network users when showing a user list.";
     };
 
     HideAdminUsers = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system hides administrator users when showing a user list.";
     };
 
     SHOWOTHERUSERS_MANAGED = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system displays \"Other...\" when it shows a list of users.";
     };
 
     SleepDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Sleep button.";
     };
 
     RestartDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Restart item.";
     };
 
     ShutDownDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Shut Down button.";
     };
 
     RestartDisabledWhileLoggedIn = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Restart menu item when the user is logged in.";
     };
 
     ShutDownDisabledWhileLoggedIn = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Shut Down menu item when the user is logged in.";
     };
 
     PowerOffDisabledWhileLoggedIn = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Power Off menu item when the user is logged in.";
     };
 
     LogOutDisabledWhileLoggedIn = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Log Out menu item when the user is logged in. Available in macOS 10.13 and later.";
     };
 
     DisableScreenLockImmediate = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the immediate Screen Lock functions. Available in macOS 10.13 and later.";
     };
 
-    com_apple_login_mcx_DisableAutoLoginClient = lib.mkOption {
+    "com.apple.login.mcx.DisableAutoLoginClient" = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "A loginwindow password will be required to login.";
     };
 
@@ -139,37 +139,37 @@ with lib;
 
     DisableFDEAutoLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the automatic login option when using FileVault.";
     };
 
     DisableConsoleAccess = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disregards the '>console' special user name, which provides a command line UI.";
     };
 
     EnableExternalAccounts = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows external accounts to log in.";
     };
 
     AdminMayDisableMCX = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Allows Mac administrators on the computer to refresh or disable the management features.";
     };
 
     TALLogoutSavesState = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Reopens windows that were open at time of logout";
     };
 
     UseComputerNameForComputerRecordName = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Forces the name of the Mac to be set as the computer record name.";
     };
 
@@ -229,7 +229,7 @@ with lib;
 
     showInputMenu = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system shows the Input Menu in the Login Window.";
     };
 

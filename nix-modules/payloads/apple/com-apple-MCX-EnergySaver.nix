@@ -23,7 +23,7 @@ with lib;
       default = null;
     };
 
-    com_apple_EnergySaver_desktop_ACPower = lib.mkOption {
+    "com.apple.EnergySaver.desktop.ACPower" = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
           Display_Sleep_Timer = lib.mkOption {
@@ -38,7 +38,7 @@ with lib;
           };
           Disk_Sleep_Timer = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 10;
+            default = null;
             description = "The disk sleep time, in minutes. A value of 0 means never.";
           };
           Wake_on_LAN = lib.mkOption {
@@ -77,7 +77,7 @@ with lib;
       default = null;
     };
 
-    com_apple_EnergySaver_portable_BatteryPower = lib.mkOption {
+    "com.apple.EnergySaver.portable.BatteryPower" = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
           Display_Sleep_Timer = lib.mkOption {
@@ -92,7 +92,7 @@ with lib;
           };
           Disk_Sleep_Timer = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 10;
+            default = null;
             description = "The disk sleep time, in minutes. A value of 0 means never.";
           };
           Wake_on_LAN = lib.mkOption {
@@ -126,7 +126,7 @@ with lib;
       description = "The settings for a laptop computer using battery power.";
     };
 
-    com_apple_EnergySaver_portable_ACPower = lib.mkOption {
+    "com.apple.EnergySaver.portable.ACPower" = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
           Display_Sleep_Timer = lib.mkOption {
@@ -141,7 +141,7 @@ with lib;
           };
           Disk_Sleep_Timer = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 10;
+            default = null;
             description = "The disk sleep time, in minutes. A value of 0 means never.";
           };
           Wake_on_LAN = lib.mkOption {
@@ -175,7 +175,7 @@ with lib;
       description = "The settings for a laptop computer using AC power.";
     };
 
-    com_apple_EnergySaver_desktop_Schedule = lib.mkOption {
+    "com.apple.EnergySaver.desktop.Schedule" = lib.mkOption {
       type = types.nullOr (types.submodule {
         options = {
           RepeatingPowerOn = lib.mkOption {
@@ -183,17 +183,17 @@ with lib;
               options = {
                 eventtype = lib.mkOption {
                   type = types.nullOr (types.enum [ "wake" "poweron" "wakepoweron" ]);
-                  default = "wakepoweron";
+                  default = null;
                   description = "The type of action defined by this schedule.";
                 };
                 weekdays = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 31;
+                  default = null;
                   description = "One or more days of the week in an unsigned integer bitmap:\n\n- '1' = Mon\n- '2' = Tue\n- '4' = Wed\n- '8' = Thu\n- '16' = Fri\n- '32' = Sat\n- '64' = Sun";
                 };
                 time = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 0;
+                  default = null;
                   description = "The time, in minutes, since midnight.";
                 };
               };
@@ -211,12 +211,12 @@ with lib;
                 };
                 weekdays = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 31;
+                  default = null;
                   description = "One or more days of the week in an unsigned integer bitmap:\n\n- '1' = Mon\n- '2' = Tue\n- '4' = Wed\n- '8' = Thu\n- '16' = Fri\n- '32' = Sat\n- '64' = Sun";
                 };
                 time = lib.mkOption {
                   type = types.nullOr (types.int);
-                  default = 0;
+                  default = null;
                   description = "The time, in minutes, since midnight.";
                 };
               };
@@ -232,7 +232,7 @@ with lib;
 
     SleepDisabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', disables sleep.";
     };
 

@@ -20,7 +20,7 @@ with lib;
 
     DisableAirDrop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
     };
 
   };

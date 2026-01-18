@@ -20,7 +20,7 @@ with lib;
 
     CardDAVAccountDescription = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "My Contacts Account";
+      default = null;
       description = "The description of the account.";
     };
 
@@ -32,7 +32,7 @@ with lib;
 
     CardDAVPort = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 443;
+      default = null;
       description = "The server's port.";
     };
 
@@ -56,7 +56,7 @@ with lib;
 
     CardDAVUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system enables SSL.";
     };
 

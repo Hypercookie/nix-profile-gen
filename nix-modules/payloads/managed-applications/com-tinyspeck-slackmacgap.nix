@@ -55,7 +55,7 @@ with lib;
 
     AutoUpdate = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable or disable auto updates.";
     };
 
@@ -64,12 +64,12 @@ with lib;
         options = {
           ClientEnvironment = lib.mkOption {
             type = types.nullOr (types.enum [ 1000 1001 ]);
-            default = 1000;
+            default = null;
             description = "Configures the client to run in either commercial mode or government compliance mode (GovSlack) by default. The user can still change this setting.";
           };
           HardwareAcceleration = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Enables or disable hardware accelerated rendering via GPU. The user can still change this setting.";
           };
           DownloadPath = lib.mkOption {
@@ -79,7 +79,7 @@ with lib;
           };
           ReleaseChannel = lib.mkOption {
             type = types.nullOr (types.enum [ "prod" "beta" ]);
-            default = "prod";
+            default = null;
             description = "Configure the client to receive updates from either the production or beta channel. The user can still change this setting.";
           };
         };

@@ -23,127 +23,127 @@ with lib;
       default = null;
     };
 
-    app_startAtLogin = lib.mkOption {
+    "app.startAtLogin" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Force 1Password 8 to start at login";
     };
 
-    privacy_checkCompromisedWebsites = lib.mkOption {
+    "privacy.checkCompromisedWebsites" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Check for compromised websites";
     };
 
-    privacy_checkMfa = lib.mkOption {
+    "privacy.checkMfa" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Check for two-factor authentication";
     };
 
-    privacy_checkPasskeys = lib.mkOption {
+    "privacy.checkPasskeys" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Check for passkeys";
     };
 
-    security_blockSleepEnabled = lib.mkOption {
+    "security.blockSleepEnabled" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Prevents device from sleeping while 1Password is active";
     };
 
-    security_revealWifiQrCodes = lib.mkOption {
+    "security.revealWifiQrCodes" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Always show Wi-Fi QR codes";
     };
 
-    browsers_other_trusted_apps_enabled = lib.mkOption {
+    "browsers.other_trusted_apps.enabled" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Allow connecting to a custom browser";
     };
 
-    security_autofill_autosubmit = lib.mkOption {
+    "security.autofill.autosubmit" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "You can fill your usernames and passwords everywhere you need to sign in on your Mac";
     };
 
-    security_authenticatedUnlock_requireAccountPasswordAfter = lib.mkOption {
+    "security.authenticatedUnlock.requireAccountPasswordAfter" = lib.mkOption {
       type = types.nullOr (types.enum [ "one-day" "thirty-days" "two-weeks" "never" ]);
       default = null;
       description = "Set the password requirement timeframe";
     };
 
-    security_authenticatedUnlock_appleTouchId = lib.mkOption {
+    "security.authenticatedUnlock.appleTouchId" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "If present enforces whether biometric unlock is allowed (Preferences > Security > Unlock).";
     };
 
-    security_authenticatedUnlock_appleWatchUnlock = lib.mkOption {
+    "security.authenticatedUnlock.appleWatchUnlock" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "If present enforces whether Apple Watch unlock is allowed (Preferences > Security > Unlock).";
     };
 
-    security_revealPasswords = lib.mkOption {
+    "security.revealPasswords" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enforces showing passwords and full credit card numbers (Preferences > Security > Conceal Fields).";
     };
 
-    security_autolock_onDeviceLock = lib.mkOption {
+    "security.autolock.onDeviceLock" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enforces the configured locked on sleep,screensaver, or switching users (Preferences > Security > Auto-lock).";
     };
 
-    security_autolock_onWindowClose = lib.mkOption {
+    "security.autolock.onWindowClose" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enforces the configured lock on app exit preference";
     };
 
-    security_autolock_minutes = lib.mkOption {
+    "security.autolock.minutes" = lib.mkOption {
       type = types.nullOr (types.int);
       default = null;
       description = "Enforces the lock on idle time preference (Preferences > Security > Lock).";
     };
 
-    security_clipboard_clearAfter = lib.mkOption {
+    "security.clipboard.clearAfter" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "The amount of time after copying a 1Password item that it is cleared from the clipboard (Preferences > Security > Clipboard).";
     };
 
-    security_deviceClipboardSharing = lib.mkOption {
+    "security.deviceClipboardSharing" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Enforces whether the clear clipboard preference is enabled or disabled (Preferences > Security > Clear clipboard contents).";
     };
 
-    privacy_downloadRichIcons = lib.mkOption {
+    "privacy.downloadRichIcons" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Show app and website icons";
     };
 
-    privacy_checkHibp = lib.mkOption {
+    "privacy.checkHibp" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Check for vulnerable passwords";
     };
 
-    updates_autoUpdate = lib.mkOption {
+    "updates.autoUpdate" = lib.mkOption {
       type = types.nullOr (types.bool);
       default = null;
       description = "Automatically check for updates";
     };
 
-    updates_updateChannel = lib.mkOption {
+    "updates.updateChannel" = lib.mkOption {
       type = types.nullOr (types.enum [ "PRODUCTION" "BETA" "NIGHTLY" ]);
       default = null;
       description = "Set release channel";

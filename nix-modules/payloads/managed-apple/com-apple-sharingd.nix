@@ -20,7 +20,7 @@ with lib;
 
     DiscoverableMode = lib.mkOption {
       type = types.nullOr (types.enum [ "Off" "Contacts Only" "Everyone" ]);
-      default = "Off";
+      default = null;
       description = "Configure the AirDrop option \"Allow me to be discovered by:\"";
     };
 

@@ -25,7 +25,7 @@ with lib;
 
     AllowedAccountsPattern = lib.mkOption {
       type = types.nullOr (types.str);
-      default = ".*@(mydomain1|mydomain2).com";
+      default = null;
       description = "Regular expression indicating accounts that are allowed to sign in on this machine.";
     };
 
@@ -49,7 +49,7 @@ with lib;
 
     ContentCachePath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "~/Library/Application Support/Google/DriveFS";
+      default = null;
       description = "Sets the path to the content cache location on a connected APFS or HFS+ file system.";
     };
 
@@ -61,7 +61,7 @@ with lib;
 
     DefaultMountPoint = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "/Volumes/GoogleDrive";
+      default = null;
       description = "Set the mounted drive path. You can include tilde (~) or environment variables in the path.";
     };
 
@@ -133,13 +133,13 @@ with lib;
 
     OpenOfficeFilesInDocs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "When using Copy to clipboard on MS Office files synced by Drive for desktop, create links that open in the respective Google Docs Editor instead of the read only Google Drive web preview.";
     };
 
     PromptToBackupDevices = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable Prompt me to back up devices setting.";
     };
 
@@ -169,7 +169,7 @@ with lib;
 
     AutomaticErrorReporting = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Automatically send diagnostic logs to Google when Drive for desktop encounters a problem.";
     };
 

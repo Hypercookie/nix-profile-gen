@@ -26,13 +26,13 @@ with lib;
 
     AllowAllAppsAccess = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system allows apps access to the private key. Available in macOS 10.10 and later.";
     };
 
     KeyIsExtractable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the system doesn't tag the private key data as extractable in the keychain.";
     };
 

@@ -33,7 +33,7 @@ with lib;
           };
           EnableDirectDownloads = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "If 'true', the system enables direct download of data for this domain instead of through a CDN. Set the entitlement value for this domain to 'service:domain?mode=managed'; otherwise, the system ignores this value. Available in macOS 11 and later.";
           };
         };

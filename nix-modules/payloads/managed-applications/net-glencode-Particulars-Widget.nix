@@ -20,7 +20,7 @@ with lib;
 
     labMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Lab Mode eases deployment of Particulars in a computer lab or data center.";
     };
 
@@ -32,19 +32,19 @@ with lib;
 
     labelCase = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 ]);
-      default = 1;
+      default = null;
       description = "Sets the letter case of the labels. Each case option has a corresponding number.";
     };
 
     dhcpLeaseRemaining = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Particulars shows the DHCP server address and the length of the DHCP lease. Setting this preference will also show the remaining lease time.";
     };
 
     macAddressFormat = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 3 ]);
-      default = 1;
+      default = null;
       description = "By default, MAC (Media Access Control) addresses are formatted with colon separators and in lowercase. Use this preference to select another MAC address format.";
     };
 
@@ -68,7 +68,7 @@ with lib;
 
     diskFreeSpace = lib.mkOption {
       type = types.nullOr (types.enum [ 0 1 2 ]);
-      default = 0;
+      default = null;
       description = "Free/available disk space can be displayed in multiple ways. See documentation URL for options.";
     };
 

@@ -20,7 +20,7 @@ with lib;
 
     ProxyType = lib.mkOption {
       type = types.nullOr (types.enum [ "Manual" "Auto" ]);
-      default = "Manual";
+      default = null;
       description = "The proxy type. For a manual proxy type, the profile contains the proxy server address, including its port, and optionally a user name and password. For an auto proxy type, you can enter a PAC URL.";
     };
 
@@ -56,13 +56,13 @@ with lib;
 
     ProxyPACFallbackAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', allows connecting directly to the destination if the proxy autoconfiguration (PAC) file is unreachable.";
     };
 
     ProxyCaptiveLoginAllowed = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', allows the device to bypass the proxy server to display the login page for captive networks.";
     };
 

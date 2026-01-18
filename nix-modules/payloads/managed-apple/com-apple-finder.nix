@@ -46,7 +46,7 @@ with lib;
 
     NewWindowTargetPath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "file:///";
+      default = null;
       description = "ex. file:/// = Root of Boot Volume";
     };
 
@@ -62,29 +62,29 @@ with lib;
 
     FXEnableExtensionChangeWarning = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Prompts the user to confirm they wish to change the extension on files.";
     };
 
     WarnOnEmptyTrash = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Prompts the user to confirm they wish to empty their Trash.";
     };
 
     FXRemoveOldTrashItems = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
     };
 
     _FXSortFoldersFirst = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
     };
 
     _FXSortFoldersFirstOnDesktop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
     };
 
     ShowSidebar = lib.mkOption {

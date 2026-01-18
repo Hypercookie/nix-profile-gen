@@ -26,7 +26,7 @@ with lib;
 
     whitelistEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Use 'allowlistEnabled' instead.";
     };
 
@@ -51,7 +51,7 @@ with lib;
 
     useContentFilter = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', filters content automatically.";
     };
 
@@ -69,7 +69,7 @@ with lib;
 
     allowlistEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables web content filters.";
     };
 

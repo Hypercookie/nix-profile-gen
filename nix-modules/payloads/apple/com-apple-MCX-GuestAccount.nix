@@ -20,13 +20,13 @@ with lib;
 
     EnableGuestAccount = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables the guest account.";
     };
 
     DisableGuestAccount = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the guest account. This property has no effect if 'EnableGuestAccount' is 'true'.";
     };
 

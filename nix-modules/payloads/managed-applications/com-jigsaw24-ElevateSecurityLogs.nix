@@ -50,7 +50,7 @@ with lib;
 
     siemNewLineSeperated = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "By default events are uploaded in JSON format as an array of events. Some systems require events to be seperated with a new line.";
     };
 
@@ -80,43 +80,43 @@ with lib;
 
     MaxDataUploadSize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1000000;
+      default = null;
       description = "Max size of single HTTP request uploading data. (Uncompressed size in bytes default size is 1,000,000 bytes)";
     };
 
     DefaultFilterRules = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Deploys default rules to discard some events which can be considered noise.";
     };
 
     SelfProtectionRules = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Deploys authorisation rules to attempt to stop the user making changes to Elevate24 database.";
     };
 
     DisableAll = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Stops all blocking/logging operations. Effectively a switch to disable this tool.";
     };
 
     EnableArchive = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enables the local retention of Events after they have been uploaded to Jigsaw24/SIEM.";
     };
 
     MaxArchiveAge = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 7;
+      default = null;
       description = "Sets maximum age of events retained locally.";
     };
 
     UploadOnHotspot = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Upload Events when connected to iPhone personal hotspot.";
     };
 
@@ -130,7 +130,7 @@ with lib;
           };
           action = lib.mkOption {
             type = types.nullOr (types.enum [ "allow" "block" "readOnly" ]);
-            default = "block";
+            default = null;
             description = "Action";
           };
           fileTargetPath = lib.mkOption {
@@ -164,7 +164,7 @@ with lib;
         options = {
           action = lib.mkOption {
             type = types.nullOr (types.enum [ "allow" "block" ]);
-            default = "block";
+            default = null;
             description = "Action";
           };
           processPath = lib.mkOption {
@@ -195,7 +195,7 @@ with lib;
 
     logAllEventTypes = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set all event types to be logged. Use with caution, as this could produce a lot of data entries.";
     };
 
@@ -204,7 +204,7 @@ with lib;
         options = {
           eventType = lib.mkOption {
             type = types.nullOr (types.enum [ "File:Write" "File:Unlink" "File:Clone" "File:CopyFile" "File:Create" "File:Rename" "User:Create" "User:Delete" "Profile:Add" "Profile:Remove" "LaunchItem:Add" "LaunchItem:Remove" "Sudo" "Process:Exec" ]);
-            default = "All";
+            default = null;
             description = "Event Type";
           };
         };

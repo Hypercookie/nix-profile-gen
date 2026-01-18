@@ -20,7 +20,7 @@ with lib;
 
     SubstitutionVariables01 = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Substitute this: <<serial>>";
+      default = null;
       description = "TextField with substitution variables: <<serial>>";
     };
 

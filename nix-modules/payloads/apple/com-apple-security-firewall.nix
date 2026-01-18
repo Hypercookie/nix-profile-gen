@@ -26,13 +26,13 @@ with lib;
 
     BlockAllIncoming = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables blocking all incoming connections.";
     };
 
     EnableStealthMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables stealth mode.";
     };
 
@@ -62,7 +62,7 @@ with lib;
 
     EnableLogging = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system enables logging. Available in macOS 12 through macOS 14.6.";
     };
 
@@ -74,13 +74,13 @@ with lib;
 
     AllowSigned = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system allows built-in software to receive incoming connections. Available in macOS 12.3 and later.\n\nNote:\nThe system ensures that 'AllowSigned' always has a value. If missing from the payload, the system sets it to 'true'.";
     };
 
     AllowSignedApp = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system allows downloaded signed software to receive incoming connections. Available in macOS 12.3 and later.\n\nNote:\nThe system ensures that 'AllowSignedApp' always has a value. If missing from the payload, the system sets it to 'true'.";
     };
 

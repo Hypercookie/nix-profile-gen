@@ -31,7 +31,7 @@ with lib;
 
     LDAPType = lib.mkOption {
       type = types.nullOr (types.enum [ "OD" ]);
-      default = "OD";
+      default = null;
       description = "LDAP Type";
     };
 
@@ -91,7 +91,7 @@ with lib;
 
     SecondsToRenew = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3600;
+      default = null;
       description = "Seconds To Renew Kerberos Tickets";
     };
 
@@ -254,7 +254,7 @@ with lib;
 
     PasswordExpireAlertTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 1296000;
+      default = null;
       description = "Number of seconds before a user's password expiration that an alert is shown. (Set to 0 to never be bothered. Defaults to 15 days or 1,296,000 seconds.)";
     };
 
@@ -284,7 +284,7 @@ with lib;
 
     MessageUPCAlert = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Your password was changed elsewhere.";
+      default = null;
       description = "Message to be shown in an UPCAlert notification.";
     };
 
@@ -618,7 +618,7 @@ with lib;
 
     SignInWindowAlertTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 360;
+      default = null;
       description = "Time in seconds between the SignInWindowAlert making the Sign In window the foremost window.";
     };
 

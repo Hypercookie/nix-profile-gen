@@ -73,7 +73,7 @@ with lib;
 
     ShowMenuToggle = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configures whether to show the menu toggle button in the apps side menu.";
     };
 
@@ -152,13 +152,13 @@ with lib;
 
     IntuneMode = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configures the app to use Intune for application information. Only supports PKG and DMG type apps, not LOB.";
     };
 
     SystemProfilerApps = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configures the app to list all applications installed under /Applications and their versions. Useful if Munki or Intune is not used.";
     };
 
@@ -194,13 +194,13 @@ with lib;
 
     ShowDesktopInfo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Configures the desktop info widget.";
     };
 
     DesktopPosition = lib.mkOption {
       type = types.nullOr (types.enum [ "TopLeft" "TopRight" "BottomLeft" "BottomRight" ]);
-      default = "TopRight";
+      default = null;
       description = "Configures the position of the desktop info. Defaults to TopRight.";
     };
 
@@ -224,19 +224,19 @@ with lib;
 
     DesktopInfoBackgroundOpacity = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 1.0;
+      default = null;
       description = "Configures the position of the desktop info. Defaults to 100%.";
     };
 
     DesktopInfoColorHighlight = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Configures whether to highlight the text in the desktop info. Defaults to true.";
     };
 
     DesktopInfoFontSize = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 17;
+      default = null;
       description = "Configures the font size for the desktop info. Defaults to 17.";
     };
 

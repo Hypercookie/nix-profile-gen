@@ -265,37 +265,37 @@ with lib;
 
     Restart = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This setting controls whether Baseline forces a restart after completion.";
     };
 
     LogOut = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This setting controls whether Baseline forces a restart after completion.";
     };
 
     BlurScreen = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This setting controls whether Baseline uses the SwiftDialog --blurscreen feature. Default is true. If you set to false, consider using --ontop in your DialogListOptions key";
     };
 
     ProgressBar = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This setting controls whether Baseline displays a progress bar.";
     };
 
     ProgressBarDisplayNames = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This setting controls whether Baseline displays the current item being processed under the progress bar.";
     };
 
     CleanupAfterUse = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "This setting controls whether Baseline deletes it's install directory after use: /usr/local/Baseline.";
     };
 
@@ -307,31 +307,31 @@ with lib;
 
     InstallomatorSwiftDialogIntegration = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Tell Installomator to use it's built in SwiftDialog integration for the List View.";
     };
 
     IgnoreDefaultInstallomatorOptions = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "By default, Baseline uses \"NOTIFY=silent\" and \"BLOCKING_PROCESS_ACTION=kill\" Installomator options. Setting this to True means Baseline will not use those options.";
     };
 
     Button1Enabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "This setting enables SwiftDialog \"Button 1\" (the OK button) on the Baseline List View. This allows users to dismiss the list view and continue working while Baseline runs. By default this button is disabled.";
     };
 
     JamfVerbose = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, when a Script is processing a jamf policy (/usr/local/bin/jamf), Baseline will watch the Jamf log to provide more verbose output on that line item. Similar to the Installomator integration, text and a progress circle will be used for all jamf items. ";
     };
 
     CloseListBeforeFinalScripts = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If set to true, Baseline will close the list view window before running FinalScripts. Use this option if you want to utilize FinalScripts to have the user complete actions prior to the Baseline completion dialog.";
     };
 

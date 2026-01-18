@@ -20,7 +20,7 @@ with lib;
 
     OnboardingUserViewedWelcomeSlide = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Suppress \"Welcome to The Unarchiver!\" slide.";
     };
 

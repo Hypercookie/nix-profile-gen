@@ -39,7 +39,7 @@ with lib;
 
     skipLoginHook = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system doesn't execute the login scripts during login.";
     };
 
@@ -64,7 +64,7 @@ with lib;
 
     skipLogoutHook = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system doesn't execute the logout scripts during logout.";
     };
 

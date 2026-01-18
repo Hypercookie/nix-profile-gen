@@ -20,7 +20,7 @@ with lib;
 
     ActivationExperience = lib.mkOption {
       type = types.nullOr (types.enum [ "License Key" "SSO" ]);
-      default = "SSO";
+      default = null;
       description = "Select a method for activating Parallels Desktop for Mac";
     };
 

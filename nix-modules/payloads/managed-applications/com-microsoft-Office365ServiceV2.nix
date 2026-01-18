@@ -20,7 +20,7 @@ with lib;
 
     SendAllTelemetryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set to false to send minimal heartbeat data, no application usage, and no environment details.";
     };
 

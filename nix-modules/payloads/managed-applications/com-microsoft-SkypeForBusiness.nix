@@ -43,7 +43,7 @@ with lib;
 
     autoAcceptTimeout = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 300;
+      default = null;
       description = "Auto-Accept timeout for users without Server-side Conversation History.";
     };
 
@@ -55,7 +55,7 @@ with lib;
 
     autoDetectAutoDicoveryURLs = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Specify how Skype for Business identifies the transport and server to use during sign-in. (The misspelling of Discovery in the key is intentional.)";
     };
 

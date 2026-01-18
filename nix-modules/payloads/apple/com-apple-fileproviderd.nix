@@ -20,13 +20,13 @@ with lib;
 
     AllowManagedFileProvidersToRequestAttribution = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', enables file providers access to the path of the requesting process.";
     };
 
     ManagementAllowsKnownFolderSyncing = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the device prevents the File Provider extension from using desktop and documents synchronization in any app. This does not impact the ability for apps to utilize the File Provider extension for file and folder syncing with remote storage.";
     };
 

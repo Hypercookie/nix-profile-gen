@@ -80,13 +80,13 @@ with lib;
 
     ExitNodeAllowLANAccess = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
-      default = "user-decides";
+      default = null;
       description = "Allow Local Network Access determines whether users can still access devices on the local network while using an exit node.";
     };
 
     UseTailscaleSubnets = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
-      default = "user-decides";
+      default = null;
       description = "Determines whether the client accepts subnets advertised by other nodes in your tailnet.";
     };
 
@@ -98,61 +98,61 @@ with lib;
 
     UseTailscaleDNSSettings = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
-      default = "user-decides";
+      default = null;
       description = "Determines whether to apply the DNS configuration provided by the coordination server when the tunnel is connected.";
     };
 
     AllowIncomingConnections = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
-      default = "user-decides";
+      default = null;
       description = "Determines whether Tailscale should allow incoming connections to the device.";
     };
 
     PostureChecking = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
-      default = "user-decides";
+      default = null;
       description = "Enables gathering of device posture data.";
     };
 
     ExitNodesPicker = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides all UI items to choose an exit node in the Tailscale client.";
     };
 
     ManageTailnetLock = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the \"Manage Tailnet lock\" menu item.";
     };
 
     ResetToDefaults = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the \"Reset to Defaults\" menu item.";
     };
 
     RunExitNode = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the \"Run as Exit Node\" menu item, controlling the user's ability to toggle this option.";
     };
 
     StartOnLoginMenuItem = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the \"Start on Login\" menu item, controlling the user's ability to toggle this option.";
     };
 
     TestMenu = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the debug menu in the Tailscale client. On macOS, this system policy will also hide any information displayed when holding down the Option key while clicking on the Tailscale menubar item.";
     };
 
     UpdateMenu = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "Shows or hides the \"Update Available\" menu item which appears when a newer version of Tailscale is available.";
     };
 
@@ -170,7 +170,7 @@ with lib;
 
     CLIIntegration = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "hide";
+      default = null;
       description = "When set to hide, the user will not be able to install the CLI helper, and will instead be told to contact their administrator.";
     };
 
@@ -182,7 +182,7 @@ with lib;
 
     VPNOnDemandSettings = lib.mkOption {
       type = types.nullOr (types.enum [ "show" "hide" ]);
-      default = "show";
+      default = null;
       description = "The VPNOnDemandSettings policy can be used to show or hide the VPN On Demand menu item. You might want to use this setting if you're deploying your own VPN configuration profile for Tailscale, and you don't want your users to interact with the on-demand VPN configuration you set up for them.";
     };
 

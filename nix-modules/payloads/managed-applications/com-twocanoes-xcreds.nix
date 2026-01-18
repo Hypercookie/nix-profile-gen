@@ -32,7 +32,7 @@ with lib;
 
     shouldUpdateKerberosUserPrincipalADDomain = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If the user principal has a domain name and the OpenID token does not match the ADDomain name, replace it with the ADDomain name. For example: bob@sub.example.com -> bob@example.com if ADDomain was example.com.";
     };
 
@@ -50,19 +50,19 @@ with lib;
 
     CreateAdminUser = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When set to true and the user account is created, the user will be a local admin.";
     };
 
     skipUserSetupBuddy = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When set to true and a new user home is created, the .skipbuddy file will be created at the top of the home folder to skip user setup screens.";
     };
 
     allowUsersClaim = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "upn";
+      default = null;
       description = "The claim that contains the value to check for in the allowedUsersArray. Both must be defined.";
     };
 
@@ -98,37 +98,37 @@ with lib;
 
     shouldSwitchToLoginWindowWhenLocked = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When set to true and the user locks the current session, XCreds will tell the system to switch to Login Window. The current session will stay active but the user will login with the XCreds Login Window to resume the session.";
     };
 
     LocalFallback = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If the user attempts to login as an AD user and the login fails against AD, try against local user account if off domain or AD user not found.";
     };
 
     shouldActivateSystemInfoButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the system info popover as active when first starting";
     };
 
     discoveryURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "https://login.microsoftonline.com/common/.well-known/openid-configuration";
+      default = null;
       description = "The discovery URL provided by your OIDC / Cloud provider. For Google it is typically https://accounts.google.com/.well-known/openid-configuration and for Azure it is typically https://login.microsoftonline.com/common/.well-known/openid-configuration.";
     };
 
     EnableFDE = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Enabled FDE enabled at first login on APFS disks.";
     };
 
     EnableFDERecoveryKey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Save the Personal Recovery Key (PRK) to disk for the MDM Escrow Service to collect.";
     };
 
@@ -140,7 +140,7 @@ with lib;
 
     EnableFDERekey = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Rotate the Personal Recovery Key (PRK).";
     };
 
@@ -158,19 +158,19 @@ with lib;
 
     loadPageTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please Wait....";
+      default = null;
       description = "When no network connection or a profile is not defined, this title is shown in an HTML view to the user when cloud login is configured.";
     };
 
     loadPageInfo = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "(or try connecting to network or check preferences)";
+      default = null;
       description = "When no network connection or a profile is not defined, this text is shown in an HTML view to the user when cloud login is configured.";
     };
 
     shouldHideLoginWindowLogo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hide the login window logo.";
     };
 
@@ -182,19 +182,19 @@ with lib;
 
     loginWindowBackgroundImageURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "file:///System/Library/CoreServices/DefaultDesktop.heic";
+      default = null;
       description = "URL to an image to show in the background while logging in. Default value: file:///System/Library/Desktop Pictures/Monterey Graphic.heic.";
     };
 
     loginWindowBackgroundImageAlpha = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 1.0;
+      default = null;
       description = "Alpha value of loginWindowBackgroundImage. Default value: 1";
     };
 
     loginWindowSecondaryMonitorsBackgroundImageURL = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "file:///System/Library/CoreServices/DefaultDesktop.heic";
+      default = null;
       description = "URL to an image to show in the background on secondary display while logging in. Default value: file:///System/Library/Desktop Pictures/Monterey Graphic.heic.";
     };
 
@@ -218,37 +218,37 @@ with lib;
 
     menuItemWindowBackgroundImageAlpha = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 1.0;
+      default = null;
       description = "Alpha value of menuItemWindowBackgroundImageURL. Default value: 1";
     };
 
     shouldLoginWindowBackgroundImageFillScreen = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set the background image to Fill Screen rather than Fit to Screen";
     };
 
     shouldLoginWindowSecondaryMonitorsBackgroundImageFillScreen = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set the secondary monitor(s) background image to Fill Screen rather than Fit to Screen";
     };
 
     loginWindowSecondaryMonitorsBackgroundAlpha = lib.mkOption {
       type = types.nullOr (types.float);
-      default = 1.0;
+      default = null;
       description = "Alpha value of loginWindowSecondaryMonitorsBackground. Default value: 1";
     };
 
     shouldRemoveMenuItemAutoLaunch = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When XCreds is installed, a launch agent is installed to automatically keep the menu item running when a user is logged in. Setting shouldRemoveMenuItemAutoLaunch to true makes XCreds at the login window remove the launchagent plist that was installed. This will cause the launchagent to not launch XCreds menu item on log in.";
     };
 
     shouldUseADNativePasswordChangeMenuItem = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When changing password via menu item, use the native UI to change password in Active Directory.";
     };
 
@@ -260,73 +260,73 @@ with lib;
 
     redirectURI = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "xcreds://auth/";
+      default = null;
       description = "The URI passed back to the webview after successful authentication. Default value: xcreds://auth/";
     };
 
     shouldShowCloudLoginByDefault = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determine if the Mac login window or the cloud login window is shown by default.  When not set or set to true, show cloud login. If false, shows Mac login.";
     };
 
     refreshRateHours = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "The number of hours between checks. Default value: 3. Minimum value: 0. Max value: 168.";
     };
 
     refreshRateMinutes = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "The number of minutes between checks. Default value: 0. Minimum value: 0. Max value: 59. This value is added to refreshRateHours. If refreshRateHours is 0, minimum for refreshRateMinutes becomes 5.";
     };
 
     scopes = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "profile openid offline_access";
+      default = null;
       description = "Scopes tell the identify provider what information to return. Note that the values are provided with a single space between them.\n\nProvide the following values the follow IdPs:\n\nGoogle: profile openid email\nAzure: profile openid offline_access\n\nNote that Google does not support the offline_access scope so instead use the preference shouldSetGoogleAccessTypeToOffline. Azure provides unique_name which is mapped to the local user account by using the prefix before \"@\" in unique_name and matching to the short name of a user account. Google provides \"email\" and is matched in the same way.";
     };
 
     shouldSetGoogleAccessTypeToOffline = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When using Google IdP, a refresh token may need be requested in a non-standard way.";
     };
 
     shouldPromptForADPasswordChange = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If the domain controller returns back that the password is expired or needs to be changed, prompt the user. If this is set to false, login will fail and an error message will be shown.";
     };
 
     shouldShowSignInMenuItem = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Determine if the Sign In menu item is shown in the XCreds menu. When not set or set to true, show Sign In. If false, the Sign In menu item is hidden.";
     };
 
     shouldSuppressLocalPasswordPrompt = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Do not prompt for local password.";
     };
 
     shouldPreferLocalLoginInsteadOfCloudLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Favor using XCreds' local login screen over the cloud login UI.";
     };
 
     shouldVerifyPasswordWithRopg = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "(Deprecated in v4.0) When verifying password in the menu app, use ROPG.";
     };
 
     shouldUseBasicAuthWithROPG = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When using ROPG, do basic HTTP auth. Default: false";
     };
 
@@ -344,25 +344,25 @@ with lib;
 
     shouldUseROPGForLoginWindowLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When verifying password in the login window, use ROPG.";
     };
 
     shouldUseROPGForMenuLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When verifying password in the menu app, use ROPG.";
     };
 
     shouldUseROPGForPasswordChangeChecking = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When verifying local password matches cloud password in the background, use ROPG. If set to false, the refresh token will be used to verify password change.";
     };
 
     shouldUseLDAPForPasswordChangeChecking = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When verifying local password matches cloud password in the background, use Google LDAP. If set to false, the refresh token will be used to verify password change.";
     };
 
@@ -374,7 +374,7 @@ with lib;
 
     ropgResponseValue = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "interaction_required";
+      default = null;
       description = "When a ROPG request is completed successfully to verify password, it may return an error that two factor is required. Add the string that is returned for the JSON response. For Azure, it is typically interaction_required. For Okta, the response is usually {\"error\":\"invalid_grant\",\"error_description\":\"Resource owner password credentials authentication denied by sign on policy.\"} Can be a string or an array of strings.";
     };
 
@@ -392,91 +392,91 @@ with lib;
 
     autoRefreshLoginTimer = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Timer for automatically refreshing login screen in seconds. If set to 0, does not automatically refresh.";
     };
 
     cloudLoginText = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Cloud Login";
+      default = null;
       description = "Text for return to cloud login on Mac login screen";
     };
 
     shouldShowAboutMenu = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the About Menu item menu. Default value: true";
     };
 
     shouldSkipFileVaultLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Skip FileVault login during startup if FileVault is enabled. The current username and password are used to tell fdesetup to silently use the credentials during next reboot to unlock FileVault. Passthrough is also disabled and the user will see the XCreds Login Window. To avoid the user being prompted for admin credentials, set the \"Login And Background Item Management\" management item (com.apple.servicemanagement) to allow teamid UXP6YEHSPW to have background tasks.";
     };
 
     shouldSkipFileVaultLoginAdmin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Skip FileVault authentication at startup if FileVault is enabled. The admin credentials will be used to tell fdesetup to silently use the credentials during next reboot to unlock FileVault. Passthrough is also disabled and the user will see the XCreds Login Window. To avoid the user being prompted for admin credentials, set the \"Login And Background Item Management\" management item (com.apple.servicemanagement) to allow teamid UXP6YEHSPW to have background tasks. Default value: false";
     };
 
     shouldShowMenuBarSignInWithoutLoginWindowSignin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If the discovery URL is defined and there are no tokens or tickets, the sign in window in the user session will show even if the user did not log in from the XCreds Login Window";
     };
 
     refreshBannerText = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Log in to verify your cloud credentials. After verification, your local user account password will be set to your cloud password.";
+      default = null;
       description = "Text at top of window shown in user session when prompting for password.";
     };
 
     shouldShowRefreshBanner = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show text at the top of the prompt window when tokens expire.";
     };
 
     shouldShowConfigureWifiButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show Configure WiFi button in XCreds Login.";
     };
 
     shouldShowShutdownButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show Shutdown button in XCreds Login.";
     };
 
     shouldShowRestartButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show Restart button in XCreds Login.";
     };
 
     shouldShowSystemInfoButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show Configure System Info in XCreds Login.";
     };
 
     shouldShowPreferencesOnStart = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show Settings on start if none are defined. Default value: false";
     };
 
     shouldPromptForMigration = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Prompt for local account username and password if no account was mapped and there are standard users already on the system.";
     };
 
     shouldAllowKeyComboForMacLoginWindow = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Allow key combo (control-option return) to switch logon window. Use command-option-control-return for Mac Login Window. ";
     };
 
@@ -488,13 +488,13 @@ with lib;
 
     shouldShowMacLoginButton = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the Mac Login Window button in XCreds Login.";
     };
 
     shouldShowLocalOnlyCheckbox = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the local only checkbox on the local login page ";
     };
 
@@ -512,25 +512,25 @@ with lib;
 
     shouldShowSupportStatus = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show message in XCreds Login reminding people to buy support.";
     };
 
     shouldShowQuitMenu = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show Quit in the menu item menu. Default value: true";
     };
 
     shouldShowVersionInfo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "(Removed in v5.4 and replaced by shouldActivateSystemInfoButton) Show the version number and build number in the lower left corner of XCreds Login.";
     };
 
     showDebug = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Show push notifications for authentication progress. Default value: false";
     };
 
@@ -542,19 +542,19 @@ with lib;
 
     KeychainReset = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "When a local user password does not match the cloud or AD password, this key will allow the user to select a Reset button to set their password to match their AD/cloud password, move their current keychain aside and create a new keychain. If XCreds does not have access to local admin credentials set from the XCreds command line tools, the user will prompted to enter local admin credentials.";
     };
 
     PasswordOverwriteSilent = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Update the local user password silently to match the cloud / AD password. Requires access to admin credentials. See command line help to set admin username and password.";
     };
 
     HideExpiration = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hide AD Expiration even if defined in AD Account";
     };
 
@@ -572,37 +572,37 @@ with lib;
 
     accountLockedPasswordDialogTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Unlock Account";
+      default = null;
       description = "Title of dialog prompting user to enter in their prior local password when account is locked.";
     };
 
     accountLockedPasswordDialogText = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "The user account is locked.  You can wait for the account to unlock or reset the password by clicking the Reset button below.";
+      default = null;
       description = "Text of dialog prompting user to enter in their prior local password when account is locked.";
     };
 
     resetPasswordDialogTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enter your local login password to sync your cloud password and login.";
+      default = null;
       description = "Title of dialog prompting user to enter in their prior local password.";
     };
 
     systemInfoButtonTitle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "System Info";
+      default = null;
       description = "The title of the button for system info in the bottom right corner of the login screen. This can either be plain text or one of these special values: .os, .hostname, .ipaddress, .serial, .mac, .computername, .ssid. Using the special value will populate the associated information as the button title.";
     };
 
     verifyPassword = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "When cloud password is changed and the local keychain password and local user account needs to be changed, a verification dialog can be shown to verify the password. Default value: true";
     };
 
     shouldDetectNetworkToDetermineLoginWindow = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Check if network is up. If not, select username and password login window.";
     };
 
@@ -632,7 +632,7 @@ with lib;
 
     shouldAllowLoginCardSetup = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If an unknown RFID card is tapped, show option to pair with local account.";
     };
 
@@ -650,31 +650,31 @@ with lib;
 
     map_firstname = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "given_name";
+      default = null;
       description = "Local DS to OIDC/AD Mapping for First Name. Default value: \"given_name\" (OIDC), \"givenName\" (AD). map_firstname should be set to an OIDC claim/AD Attribute for first name.";
     };
 
     map_lastname = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "family_name";
+      default = null;
       description = "Local DS to OIDC/AD Mapping for Last Name. Default value: \"family_name\" (OIDC), \"sn\" (AD). map_lastname should be set to an OIDC claim for last name.";
     };
 
     map_fullname = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "name";
+      default = null;
       description = "Local DS to OIDC/AD Attribute Mapping for Full Name. Default value: \"name\"(OIDC), \"displayName\" (AD). map_fullname should be set to an OIDC claim/AD Attribute for full name.";
     };
 
     map_username = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "name";
+      default = null;
       description = "Local DS to OIDC Mapping/AD Attribute for Name. Default value: \"name\" (OIDC), \"userPrincipalName\" (AD). map_username should be set to an OIDC claim/AD Attribute for name. The macOS username will be set as the portion of this value before an @ symbol if present.";
     };
 
     map_fullusername = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "name";
+      default = null;
       description = "Local DS to OIDC Mapping for Full Username (for example, freddy@twocanoes.com) Default value: \"unique_name\". map_username should be set to an OIDC claim for full username.";
     };
 
@@ -686,19 +686,19 @@ with lib;
 
     primaryGroupID = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "20";
+      default = null;
       description = "Primary Group ID when creating a new user. Default value 20.";
     };
 
     map_password_expiry = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "pwd_exp";
+      default = null;
       description = "Password expiry mapping to claim. If this value is set to an OIDC claim, the value in that claim should be the number of seconds from the token issued time (iat) to the expiry date. ";
     };
 
     settingsOverrideScriptPath = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "name";
+      default = null;
       description = "Script to override defaults. Must return valid property list with specified defaults. Script must exist at path, be owned by _securityagent and writable and executable only by _securityagent.";
     };
 
@@ -736,12 +736,12 @@ with lib;
           };
           separatorBefore = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Separator line before menu item";
           };
           separatorAfter = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Separator line after menu item";
           };
         };
@@ -785,13 +785,13 @@ with lib;
 
     HomeMountEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show and mount home directory from AD profile if defined.";
     };
 
     HomeAppendDomain = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Append the domain name to the share defined in the profile.";
     };
 

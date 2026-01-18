@@ -97,19 +97,19 @@ with lib;
 
     Attest = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device provides attestations that describe the device and the generated key to the ACME server. The server can use the attestations as strong evidence that the key is bound to the device, and that the device has properties listed in the attestation. The server can use that as part of a trust score to decide whether to issue the requested certificate.\n\nWhen 'Attest' is 'true', 'HardwareBound' also needs to be 'true'.\n\nSetting this key to 'true' is supported as of macOS 14. Older macOS versions require this key but it must have a value of 'false'. See below for hardware requirements.";
     };
 
     KeyIsExtractable = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the private key of the identity obtained through Automated Certificate Management Environment (ACME) needs to be tagged as \"non-extractable\" in the keychain.";
     };
 
     AllowAllAppsAccess = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', all apps have access to the private key.";
     };
 

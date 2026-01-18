@@ -20,7 +20,7 @@ with lib;
 
     DisablePythonAlert = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Controls whether warnings are shown to the user when an app or process calls the macOS-bundled Python2 interpreter. This interpreter has been deprecated and will be removed in a future version of macOS.";
     };
 

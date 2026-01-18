@@ -27,7 +27,7 @@ with lib;
           };
           __value__ = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
           };
         };
       });
@@ -44,7 +44,7 @@ with lib;
           };
           __value__ = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
           };
         };
       });

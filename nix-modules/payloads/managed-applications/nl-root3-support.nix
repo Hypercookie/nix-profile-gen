@@ -25,7 +25,7 @@ with lib;
 
     Title = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Support";
+      default = null;
       description = "Text shown in the top left corner when the app opens";
     };
 
@@ -61,7 +61,7 @@ with lib;
 
     StatusBarIconNotifierEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Shows a small notification badge in the Status Bar Icon when there is an Apple Software Update available or when the UptimeDaysLimit or PasswordExpiryLimit is reached";
     };
 
@@ -79,25 +79,25 @@ with lib;
 
     HideFirstRow = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hides the first row of configurable items.";
     };
 
     HideSecondRow = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Hides the second row of configurable items.";
     };
 
     ErrorMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please contact IT";
+      default = null;
       description = "Shown when clicking an action results in an error";
     };
 
     ShowWelcomeScreen = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "A welcome screen and feature explanation to show when the app is first opened";
     };
 
@@ -109,73 +109,73 @@ with lib;
 
     OpenAtLogin = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Disabled by default. Launch Support (non-PKG) automatically at login and keep it open (macOS 13 and higher). This setting is ignored if a legacy LaunchAgent is installed/active. Keep disabled if you don't want to open Support at login or use your own LaunchAgent";
     };
 
     InfoItemOne = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "ComputerName";
+      default = null;
       description = "Info item shown in the upper left corner";
     };
 
     InfoItemTwo = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "MacOSVersion";
+      default = null;
       description = "Info item shown in the upper right corner";
     };
 
     InfoItemThree = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "Uptime";
+      default = null;
       description = "Info item shown in the second row left";
     };
 
     InfoItemFour = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "Storage";
+      default = null;
       description = "Info item shown in the second row right";
     };
 
     InfoItemFive = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "Storage";
+      default = null;
       description = "Info item shown in the third row left";
     };
 
     InfoItemSix = lib.mkOption {
       type = types.nullOr (types.enum [ "ComputerName" "MacOSVersion" "Network" "Password" "Storage" "Uptime" "ExtensionA" "ExtensionB" "AppCatalog" ]);
-      default = "Storage";
+      default = null;
       description = "Info item shown in the third row right";
     };
 
     UptimeDaysLimit = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Days of uptime after which a notification badge is shown";
     };
 
     PasswordExpiryLimit = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Days until password expiry after which a notification badge is shown";
     };
 
     PasswordLabel = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Mac Password";
+      default = null;
       description = "Alternative text label shown in the Password info item";
     };
 
     StorageLimit = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 0;
+      default = null;
       description = "Percentage of storage after which a notification badge is shown";
     };
 
     FirstRowTitleLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Remote Support";
+      default = null;
       description = "The text shown in the button label";
     };
 
@@ -193,19 +193,19 @@ with lib;
 
     FirstRowLinkLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script";
     };
 
     FirstRowSymbolLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "cursorarrow";
+      default = null;
       description = "The SF Symbol shown in the button";
     };
 
     FirstRowTitleMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Company Store";
+      default = null;
       description = "The text shown in the button label";
     };
 
@@ -223,19 +223,19 @@ with lib;
 
     FirstRowLinkMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script";
     };
 
     FirstRowSymbolMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "cart.fill";
+      default = null;
       description = "The SF Symbol shown in the button";
     };
 
     FirstRowTitleRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Company Store";
+      default = null;
       description = "The text shown in the button label.";
     };
 
@@ -253,19 +253,19 @@ with lib;
 
     FirstRowLinkRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script";
     };
 
     FirstRowSymbolRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "cart.fill";
+      default = null;
       description = "The SF Symbol shown in the button.";
     };
 
     SecondRowTitleLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Support Ticket";
+      default = null;
       description = "The text shown in the button label.";
     };
 
@@ -283,19 +283,19 @@ with lib;
 
     SecondRowLinkLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script.";
     };
 
     SecondRowSymbolLeft = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "ticket";
+      default = null;
       description = "The SF Symbol shown in the button.";
     };
 
     SecondRowTitleMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Email";
+      default = null;
       description = "The text shown in the button label.";
     };
 
@@ -313,19 +313,19 @@ with lib;
 
     SecondRowLinkMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script.";
     };
 
     SecondRowSymbolMiddle = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "envelope";
+      default = null;
       description = "The SF Symbol shown in the button.";
     };
 
     SecondRowTitleRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Phone";
+      default = null;
       description = "The text shown in the button label.";
     };
 
@@ -343,13 +343,13 @@ with lib;
 
     SecondRowLinkRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "com.apple.ScreenSharing";
+      default = null;
       description = "The Bundle Identifier of the app, link, command or path to script.";
     };
 
     SecondRowSymbolRight = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "phone";
+      default = null;
       description = "The SF Symbol shown in the button.";
     };
 
@@ -367,7 +367,7 @@ with lib;
 
     ExtensionTypeA = lib.mkOption {
       type = types.nullOr (types.enum [ "App" "URL" "Command" "PrivilegedScript" "DistributedNotification" ]);
-      default = "App";
+      default = null;
       description = "Type of link the Extension should open.";
     };
 
@@ -391,7 +391,7 @@ with lib;
 
     ExtensionTypeB = lib.mkOption {
       type = types.nullOr (types.enum [ "App" "URL" "Command" "PrivilegedScript" "DistributedNotification" ]);
-      default = "App";
+      default = null;
       description = "Type of link the Extension should open";
     };
 
@@ -403,7 +403,7 @@ with lib;
 
     HideMajorUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Ignore macOS major updates. This will prevent the menu bar icon and the macOS version info item from showing an available major update.";
     };
 

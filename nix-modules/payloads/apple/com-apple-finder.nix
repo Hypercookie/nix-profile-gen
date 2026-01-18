@@ -20,73 +20,73 @@ with lib;
 
     InterfaceLevel = lib.mkOption {
       type = types.nullOr (types.enum [ "Simple" "Full" ]);
-      default = "Full";
+      default = null;
       description = "Specifies whether Finder should operate in Simple or Full mode.";
     };
 
     WarnOnEmptyTrash = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the system doesn't warn the user before emptying the trash.";
     };
 
     ProhibitConnectTo = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables Connect to Server.";
     };
 
     ProhibitEject = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables Eject.";
     };
 
     ProhibitBurn = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables the Finder's burn support.";
     };
 
     ProhibitGoToFolder = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system disables Go to Folder.";
     };
 
     ShowHardDrivesOnDesktop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'false', the system doesn't show internal hard drives on the Desktop.";
     };
 
     ShowExternalHardDrivesOnDesktop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the system doesn't show external hard drives on the Desktop.";
     };
 
     ShowRemovableMediaOnDesktop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'false', the system doesn't show removable media items on the Desktop.";
     };
 
     ShowMountedServersOnDesktop = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'false', the system doesn't show mounted file servers on the Desktop.";
     };
 
     ShowRecentTags = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Show the Recent Tags section in the Finder sidebar";
     };
 
     FXRemoveOldTrashItems = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Remove items from the Trash after 30 days";
     };
 

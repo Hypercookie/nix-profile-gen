@@ -61,13 +61,13 @@ with lib;
 
     CellularDataPreferred = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set to 'true' to prefer this private network over Wi-Fi.";
     };
 
     EnableNRStandalone = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Set to 'true' if this private network is NR Standalone.";
     };
 

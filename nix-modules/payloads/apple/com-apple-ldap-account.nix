@@ -44,7 +44,7 @@ with lib;
 
     LDAPAccountUseSSL = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "If 'true', the system enables SSL.";
     };
 
@@ -53,17 +53,17 @@ with lib;
         options = {
           LDAPSearchSettingDescription = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "My Search";
+            default = null;
             description = "The description of this search setting.";
           };
           LDAPSearchSettingScope = lib.mkOption {
             type = types.nullOr (types.enum [ "LDAPSearchSettingScopeBase" "LDAPSearchSettingScopeOneLevel" "LDAPSearchSettingScopeSubtree" ]);
-            default = "LDAPSearchSettingScopeSubtree";
+            default = null;
             description = "The type of recursion to use in the search:\n\n- 'LDAPSearchSettingScopeBase': The search uses only the immediate node that the search base points to.\n- 'LDAPSearchSettingScopeOneLevel': The search uses the node plus its immediate children.\n- 'LDAPSearchSettingScopeSubtree': The search uses the node plus all children, regardless of depth.";
           };
           LDAPSearchSettingSearchBase = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "o=My Company,ou=My Department";
+            default = null;
             description = "The path to the node where a search should start.";
           };
         };

@@ -28,7 +28,7 @@ with lib;
         options = {
           attemptToFetchMajorUpgrade = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When a major upgrade is required, Nudge will attempt to download it through the softwareupdate binary.";
           };
           acceptableApplicationBundleIDs = lib.mkOption {
@@ -38,7 +38,7 @@ with lib;
           };
           acceptableAssertionUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will not activate or re-activate when assertions are currently set.";
           };
           acceptableAssertionApplicationNames = lib.mkOption {
@@ -48,32 +48,32 @@ with lib;
           };
           acceptableCameraUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will not activate or re-activate when the camera is on.";
           };
           acceptableScreenSharingUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will not activate or re-activate when screen sharing is active.";
           };
           aggressiveUserExperience = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will not hide all non-acceptableApplicationBundleIDs after the requiredInstallationDate or allowedDeferrals.";
           };
           aggressiveUserFullScreenExperience = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will not create a blurred background when the user is past the deferral window.";
           };
           asynchronousSoftwareUpdate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will wait for Software Update to finish downloading (if any) updates before showing the UI.";
           };
           attemptToBlockApplicationLaunches = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will attempt to block application launches after the required installation date. This key must be used in conjunction with blockedApplicationBundleIDs";
           };
           blockedApplicationBundleIDs = lib.mkOption {
@@ -83,32 +83,32 @@ with lib;
           };
           disableNudgeForStandardInstalls = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When utilizing a SOFA feed and disableNudgeForStandardInstalls is true, Nudge will only enforce updates with published CVEs. Defaults to false.";
           };
           disableSoftwareUpdateWorkflow = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When disableSoftwareUpdateWorkflow is true, Nudge will not attempt to run the softwareupdate process. Defaults to false.";
           };
           enforceMinorUpdates = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When enabled, Nudge will enforce minor updates. This should likely never be disabled.";
           };
           terminateApplicationsOnLaunch = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will terminate the applications listed in blockedApplicationBundleIDs upon initial launch.";
           };
           acceptableUpdatePreparingUsage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When enabled, Nudge will not activate or re-activate when an update is being downloaded, prepared or staged.";
           };
           attemptToCheckForSupportedDevice = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will no longer compare the current device against the SOFA feed for the required update. If the device cannot install this update, Nudge will not present the Unsupported UI";
           };
           customSOFAFeedURL = lib.mkOption {
@@ -118,22 +118,22 @@ with lib;
           };
           honorFocusModes = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will not activate or re-activate when a user is in DoNotDisturb/Focus status. This feature is expiremental and may not work in all user settings.";
           };
           honorCycleTimersOnExit = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will honor the current cycle timers when user's press the `Quit` button.";
           };
           refreshSOFAFeedTime = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 86400;
+            default = null;
             description = "The maximum age the cached SOFA feed file can be on disk. When this file age expires, Nudge will re-assess the SOFA feed for updates. Please be mindful of changing this value as there is an associated cost for maintaining the SOFA service.";
           };
           utilizeSOFAFeed = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When enabled, Nudge will utilize the SOFA feed url for update data.";
           };
         };
@@ -200,32 +200,32 @@ with lib;
           };
           activelyExploitedCVEsMajorUpgradeSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 14;
+            default = null;
             description = "When a major upgrade is under active exploit, this is the amount of days a user has to install the update.";
           };
           activelyExploitedCVEsMinorUpdateSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 14;
+            default = null;
             description = "When a minor update is under active exploit, this is the amount of days a user has to install the update.";
           };
           nonActivelyExploitedCVEsMajorUpgradeSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 21;
+            default = null;
             description = "When a major upgrade is not under active exploit but contains CVEs, this is the amount of days a user has to install the update.";
           };
           nonActivelyExploitedCVEsMinorUpdateSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 21;
+            default = null;
             description = "When a minor update is not under active exploit but contains CVEs, this is the amount of days a user has to install the update.";
           };
           standardMajorUpgradeSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 28;
+            default = null;
             description = "When a major upgrade has no known CVEs, this is the amount of days a user has to install the update.";
           };
           standardMinorUpdateSLA = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 28;
+            default = null;
             description = "When a minor update has no known CVEs, this is the amount of days a user has to install the update.";
           };
           unsupportedURL = lib.mkOption {
@@ -253,7 +253,7 @@ with lib;
           };
           minorVersionRecalculationThreshold = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "The amount of minor versions a device can be behind before the requiredInstallationDate is recalculated against a previous update.";
           };
         };
@@ -267,107 +267,107 @@ with lib;
         options = {
           noTimers = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "This will disable all functionality related to the `userExperience` preference domain.";
           };
           allowedDeferrals = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 1000000;
+            default = null;
             description = "The number of times a user can defer Nudge (change it from the currently active window) before the \"aggressive user experience\" is enabled.";
           };
           allowGracePeriods = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Allows a device to modify the requiredInstallationDate logic and launch behavior. Useful for new device provisioning.";
           };
           allowUserQuitDeferrals = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Allows the user to specify when they will next be prompted by Nudge. (Set to `False` to maintain v1.0.0 behavior.) When using this feature, Nudge will no longer adhere to your LaunchAgent logic as the user is specifying their own execution time for the next Nudge event.(See: `~/Library/Preferences/com.github.macadmins.Nudge.plist`.)";
           };
           gracePeriodInstallDelay = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 23;
+            default = null;
             description = "The amount of time in hours Nudge will extend the requiredInstallationDate for newly provisioned devices.";
           };
           gracePeriodLaunchDelay = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 1;
+            default = null;
             description = "The amount of time in hours Nudge will bypass launching for newly provided devices.";
           };
           gracePeriodPath = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "/private/var/db/.AppleSetupDone";
+            default = null;
             description = "The path of the file Nudge will read and assess for allowGracePeriods.";
           };
           imminentRefreshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 600;
+            default = null;
             description = "The amount of time in seconds Nudge will use as a timer to refresh the user interface if it is not the currently active window. This key is directly tied to its partner key `imminentWindowTime` to know when to trigger this timer.";
           };
           allowedDeferralsUntilForcedSecondaryQuitButton = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 14;
+            default = null;
             description = "The number of times a user can defer Nudge (change it from the currently active window) before both quit buttons need to be actioned.";
           };
           approachingRefreshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 6000;
+            default = null;
             description = "The amount of time in seconds Nudge will use as a timer to refresh the user interface if it is not the currently active window. This key is directly tied to its partner key `approachingWindowTime` to know when to trigger this timer.";
           };
           approachingWindowTime = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 72;
+            default = null;
             description = "The amount of time in hours Nudge will use to determine that the `requiredInstallationDate` is \"approaching\".";
           };
           elapsedRefreshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 300;
+            default = null;
             description = "The amount of time in seconds Nudge will use as a timer to refresh the user interface if it is not the currently active window. This key is triggered once the `requiredInstallationDate` has expired.";
           };
           imminentRefeshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 600;
+            default = null;
             description = "Imminent Refresh Cycle";
           };
           imminentWindowTime = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 24;
+            default = null;
             description = "The amount of time in hours Nudge will use to determine that the `requiredInstallationDate` is \"imminent\".";
           };
           initialRefreshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 18000;
+            default = null;
             description = "The amount of time in seconds Nudge will use as a timer to refresh the user interface if it is not the currently active window. This key is triggered for all Nudge launches until the `approachingWindowTime` has been passed.";
           };
           maxRandomDelayInSeconds = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 1200;
+            default = null;
             description = "The maximum amount of delay Nudge will utilize before launching the UI. This is useful if you do not want your users to all receive the Nudge prompt at the exact time of the LaunchAgent. Note: This functionality only applies when also enabling `randomDelay`.";
           };
           nudgeRefreshCycle = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 60;
+            default = null;
             description = "The amount of time in seconds Nudge will use as its core timer to refresh all the core code paths. Note: While you can lower this setting, it could make Nudge too aggressive. Be mindful of decreasing this value.";
           };
           randomDelay = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Enables an initial delay Nudge before launching the UI. This is useful if you do not want your users to all receive the Nudge prompt at the exact time of the LaunchAgent.";
           };
           allowLaterDeferralButton = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Allows the user to press the `Later` button through the custom deferrals UI";
           };
           allowMovableWindow = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Allows the user to move the Nudge window.";
           };
           calendarDeferralUnit = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "imminentWindowTime";
+            default = null;
             description = "Utilize the approachingWindowTime or imminentWindowTime for calendar deferrals.";
           };
           launchAgentIdentifier = lib.mkOption {
@@ -377,17 +377,17 @@ with lib;
           };
           loadLaunchAgent = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Loads the Nudge LaunchAgent using macOS Ventura's SMAppService API (macOS 13+ required).";
           };
           nudgeMajorUpgradeEventLaunchDelay = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "When a new major upgrade is posted to the SOFA feed, this can artificially delay the SOFA nudge events by x amount of days.";
           };
           nudgeMinorUpdateEventLaunchDelay = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "When a new minor update is posted to the SOFA feed, this can artificially delay the SOFA nudge events by x amount of days.";
           };
         };
@@ -401,22 +401,22 @@ with lib;
         options = {
           simpleMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Enables Nudge to launch in the simplified user experience.";
           };
           forceScreenShotIcon = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Force the built-in ScreenShot icon to render in the UI if a ScreenShot path is not passed.";
           };
           showDeferralCount = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Enables or disables the deferral count of the current Nudge event.";
           };
           singleQuitButton = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Only display one quit button regardless of proximity to the due date.";
           };
           iconDarkPath = lib.mkOption {
@@ -446,12 +446,12 @@ with lib;
           };
           fallbackLanguage = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "en";
+            default = null;
             description = "The language to revert to if no localizations are available for the device's current language.";
           };
           forceFallbackLanguage = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Force the custom localizations to the value of `fallbackLanguage`.";
           };
           updateElements = lib.mkOption {
@@ -599,17 +599,17 @@ with lib;
           };
           showActivelyExploitedCVEs = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will not show the Actively Exploited CVEs in the left sidebar.";
           };
           showDaysRemainingToUpdate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "When disabled, Nudge will not show the `Days Remaining To Update:` item on the left side of the UI.";
           };
           showRequiredDate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When enabled, Nudge will also show the requiredInstallationDate as string formatted date.";
           };
         };

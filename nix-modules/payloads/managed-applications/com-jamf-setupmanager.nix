@@ -31,19 +31,19 @@ with lib;
 
     title = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Welcome to Setup Manager";
+      default = null;
       description = "The main title over the window. Supports substitutions.\n(v1.4+) When the title is empty or unset, the default message 'Welcome to Setup Manager' will be shown, unless the banner is set, then no title will be shown instead. This allows for a custom branded title and icon in the banner image.";
     };
 
     icon = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "name:AppIcon";
+      default = null;
       description = "The icon shown at the top center of the window. There are many options to define icons, as described in the documentation.\n(v1.4+) When the icon is empty or unset, Setup Manager will show the Setup Manager app icon, unless the banner is set, then no icon will be shown instead. This allows for a custom branded icon and title in the banner image.";
     };
 
     message = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Setup Manager is configuring your Mac…";
+      default = null;
       description = "The message shown below the title. Supports Markdown and substitutions.";
     };
 
@@ -61,7 +61,7 @@ with lib;
 
     runAt = lib.mkOption {
       type = types.nullOr (types.enum [ "enrollment" "loginwindow" ]);
-      default = "enrollment";
+      default = null;
       description = "This value determines when Setup Manager should launch.";
     };
 
@@ -79,13 +79,13 @@ with lib;
 
     finalCountdown = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 60;
+      default = null;
       description = "Changes the duration (in seconds) of the \"final countdown\" before the app automatically performs the finalAction. Set to -1 (or any negative number) to disable automated execution. This setting is ignored if finalAction is set to 'none'.";
     };
 
     finalAction = lib.mkOption {
       type = types.nullOr (types.enum [ "continue" "restart" "shutdown" "none" ]);
-      default = "continue";
+      default = null;
       description = "Sets the action and label for the button shown when Setup Manger has completed.";
     };
 
@@ -139,13 +139,13 @@ with lib;
 
     actionOutputLogging = lib.mkOption {
       type = types.nullOr (types.enum [ "always" "error" "never" ]);
-      default = "error";
+      default = null;
       description = "Controls whether the output of actions is written to the Setup Manager log file.";
     };
 
     networkQualityCheck = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Set this key to false to suppress the network quality check.";
     };
 
@@ -218,7 +218,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "User ID";
+                  default = null;
                   description = "Override the default label for the User ID field.";
                 };
               };
@@ -255,7 +255,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Email";
+                  default = null;
                   description = "Override the default label for the Email field.";
                 };
               };
@@ -292,7 +292,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Account Name";
+                  default = null;
                   description = "Override the default label for the Account Name field.";
                 };
               };
@@ -329,7 +329,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Full Name";
+                  default = null;
                   description = "Override the default label for the Full Name field.";
                 };
               };
@@ -366,7 +366,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Position";
+                  default = null;
                   description = "Override the default label for the Position field.";
                 };
               };
@@ -403,7 +403,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Phone";
+                  default = null;
                   description = "Override the default label for the Phone field.";
                 };
               };
@@ -440,7 +440,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Department";
+                  default = null;
                   description = "Override the default label for the Department field.";
                 };
               };
@@ -477,7 +477,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Building";
+                  default = null;
                   description = "Override the default label for the Building field.";
                 };
               };
@@ -514,7 +514,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Room";
+                  default = null;
                   description = "Override the default label for the Room field.";
                 };
               };
@@ -551,7 +551,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Asset Tag";
+                  default = null;
                   description = "Override the default label for the Asset Tag field.";
                 };
               };
@@ -588,7 +588,7 @@ with lib;
                 };
                 label = lib.mkOption {
                   type = types.nullOr (types.str);
-                  default = "Computer Name";
+                  default = null;
                   description = "Override the default label for the Computer Name field.";
                 };
               };
@@ -631,7 +631,7 @@ with lib;
             description = "The absolute path to the command or script that should be run for this action.";
           };
           requiresRoot = lib.mkOption {
-            type = types.nullOr (types.enum [ True ]);
+            type = types.nullOr (types.enum [ true ]);
             default = null;
             description = "Shell: run as root";
           };
@@ -647,7 +647,7 @@ with lib;
           };
           timeout = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 600;
+            default = null;
             description = "The watchPath action will fail after this timeout.";
           };
           wait = lib.mkOption {
@@ -707,7 +707,7 @@ with lib;
               options = {
                 kind = lib.mkOption {
                   type = types.nullOr (types.enum [ "generic" "teams" "slack" ]);
-                  default = "generic";
+                  default = null;
                   description = "Kind of webhook";
                 };
                 url = lib.mkOption {
@@ -725,7 +725,7 @@ with lib;
               options = {
                 kind = lib.mkOption {
                   type = types.nullOr (types.enum [ "generic" "teams" "slack" ]);
-                  default = "generic";
+                  default = null;
                   description = "Kind of webhook";
                 };
                 url = lib.mkOption {
@@ -759,12 +759,12 @@ with lib;
           };
           port = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 443;
+            default = null;
             description = "The port to test a connection to.";
           };
           protocol = lib.mkOption {
             type = types.nullOr (types.enum [ "tcp" "udp" ]);
-            default = "tcp";
+            default = null;
             description = "The connection protocol to test";
           };
           label = lib.mkOption {

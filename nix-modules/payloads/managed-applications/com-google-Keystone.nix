@@ -26,7 +26,7 @@ with lib;
               options = {
                 UpdateDefault = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 ]);
-                  default = 0;
+                  default = null;
                   description = "Enable auto-updates & installs = Turns on auto-updates. Updates are always applied when detected by Google Software Update.\nInstall updates at scheduled update checks = Manual update checks will not install updates.\nTurn off updates = Stops Google Software Update automatically updating all users to the latest stable version of Google apps. Updates are only applied when the user manually checks for updates.\nUpdates never applied = Never update Google apps";
                 };
                 UpdatesSupressedStartHour = lib.mkOption {
@@ -59,12 +59,12 @@ with lib;
             default = null;
             description = "Configure Global Google update settings";
           };
-          com_google_Chrome = lib.mkOption {
+          "com.google.Chrome" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 UpdateDefault = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 ]);
-                  default = 0;
+                  default = null;
                   description = "Enable auto-updates & installs = Turns on auto-updates. Chrome updates are always applied when detected by Google Software Update.\nInstall updates at scheduled update checks = Manual update checks will not install updates.\nTurn off updates = Stops Google Software Update automatically updating all users to the latest stable version of Chrome. Updates are only applied when the user manually checks for updates.\nUpdates never applied = Never update Chrome";
                 };
                 TargetVersionPrefix = lib.mkOption {
@@ -74,7 +74,7 @@ with lib;
                 };
                 TargetChannel = lib.mkOption {
                   type = types.nullOr (types.enum [ "stable" "extended" "beta" "dev" ]);
-                  default = "stable";
+                  default = null;
                   description = "Choose the Stable, Extended stable, Beta, or Dev Chrome browser update channel for Chrome version 90 or above.\nGoogle Software Update will not downgrade Chrome to a lower version when switching channels.\nChrome continues to follow the last channel on which it received an update if the TargetChannel policy is cleared.";
                 };
               };
@@ -82,12 +82,12 @@ with lib;
             default = null;
             description = "Configure Chrome update settings";
           };
-          com_google_drivefs = lib.mkOption {
+          "com.google.drivefs" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 UpdateDefault = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 ]);
-                  default = 0;
+                  default = null;
                   description = "Enable auto-updates & installs = Turns on auto-updates. FileStream updates are always applied when detected by Google Software Update.\nInstall updates at scheduled update checks = Manual update checks will not install updates.\nTurn off updates = Stops Google Software Update automatically updating all users to the latest stable version of FileStream. Updates are only applied when the user manually checks for updates.\nUpdates never applied = Never update FileStream";
                 };
                 TargetVersionPrefix = lib.mkOption {
@@ -100,12 +100,12 @@ with lib;
             default = null;
             description = "Configure Drive File Stream update settings";
           };
-          com_google_chat = lib.mkOption {
+          "com.google.chat" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 UpdateDefault = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 ]);
-                  default = 0;
+                  default = null;
                   description = "Enable auto-updates & installs = Turns on auto-updates. Chat updates are always applied when detected by Google Software Update.\nInstall updates at scheduled update checks = Manual update checks will not install updates.\nTurn off updates = Stops Google Software Update automatically updating all users to the latest stable version of Chat. Updates are only applied when the user manually checks for updates.\nUpdates never applied = Never update Chat";
                 };
                 TargetVersionPrefix = lib.mkOption {
@@ -118,12 +118,12 @@ with lib;
             default = null;
             description = "Configure Chat update settings";
           };
-          com_google_GoogleDrive = lib.mkOption {
+          "com.google.GoogleDrive" = lib.mkOption {
             type = types.nullOr (types.submodule {
               options = {
                 UpdateDefault = lib.mkOption {
                   type = types.nullOr (types.enum [ 0 1 2 3 ]);
-                  default = 0;
+                  default = null;
                   description = "Enable auto-updates & installs = Turns on auto-updates. Backup & Sync updates are always applied when detected by Google Software Update.\nInstall updates at scheduled update checks = Manual update checks will not install updates.\nTurn off updates = Stops Google Software Update automatically updating all users to the latest stable version of Backup & Sync. Updates are only applied when the user manually checks for updates.\nUpdates never applied = Never update Backup & Sync";
                 };
                 TargetVersionPrefix = lib.mkOption {

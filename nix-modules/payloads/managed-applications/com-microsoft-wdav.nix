@@ -23,37 +23,37 @@ with lib;
         options = {
           behaviorMonitoring = lib.mkOption {
             type = types.nullOr (types.enum [ "disabled" "enabled" ]);
-            default = "enabled";
+            default = null;
             description = "Determines whether behavior monitoring and blocking capability is enabled on the device or not.";
           };
           enforcementLevel = lib.mkOption {
             type = types.nullOr (types.enum [ "passive" "on_demand" "real_time" ]);
-            default = "real_time";
+            default = null;
             description = "Enforcement level of antivirus engine. On-demand: Files are scanned only on demand; Passive: Same as on-demand, but also security intelligence updates are enabled, and the status menu icon is hidden; Real-time: Scan files as they are accessed.";
           };
           enableFileHashComputation = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "When this feature is enabled, Defender for Endpoint will compute hashes for files it scans.";
           };
           scanAfterDefinitionUpdate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Specifies whether to start a process scan after new security intelligence updates are downloaded on the device. Enabling this setting will trigger an antivirus scan on the running processes of the device.";
           };
           scanArchives = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "If true, Defender will unpack archives and scan files inside them. Otherwise archive content will be skipped, that will improve scanning performance.";
           };
           maximumOnDemandScanThreads = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 2;
+            default = null;
             description = "The number of threads used to perform the scan.";
           };
           exclusionsMergePolicy = lib.mkOption {
             type = types.nullOr (types.enum [ "merge" "admin_only" ]);
-            default = "merge";
+            default = null;
             description = "Specify the merge policy for exclusions. This can be a combination of administrator-defined and user-defined exclusions (merge) or only administrator-defined exclusions (admin_only). This setting can be used to restrict local users from defining their own exclusions.";
           };
           exclusions = lib.mkOption {
@@ -61,7 +61,7 @@ with lib;
               options = {
                 _type = lib.mkOption {
                   type = types.nullOr (types.enum [ "excludedPath" "excludedFileExtension" "excludedFileName" ]);
-                  default = "excludedPath";
+                  default = null;
                   description = "Specify content excluded from being scanned by type.";
                 };
                 path = lib.mkOption {
@@ -71,7 +71,7 @@ with lib;
                 };
                 isDirectory = lib.mkOption {
                   type = types.nullOr (types.bool);
-                  default = false;
+                  default = null;
                   description = "Directory if selected, or file if not selected";
                 };
                 extension = lib.mkOption {
@@ -109,7 +109,7 @@ with lib;
                 };
                 value = lib.mkOption {
                   type = types.nullOr (types.enum [ "audit" "block" "off" ]);
-                  default = "audit";
+                  default = null;
                   description = "Action to take when coming across a threat of the type specified in the preceding section.";
                 };
               };
@@ -119,27 +119,27 @@ with lib;
           };
           threatTypeSettingsMergePolicy = lib.mkOption {
             type = types.nullOr (types.enum [ "merge" "admin_only" ]);
-            default = "merge";
+            default = null;
             description = "Specify the merge policy for threat type settings. This can be a combination of administrator-defined and user-defined settings (merge) or only administrator-defined settings (admin_only). This setting can be used to restrict local users from defining their own settings for different threat types.";
           };
           scanResultsRetentionDays = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "90";
+            default = null;
             description = "The number of days (1-180) that results are retained in the scan history on the device.";
           };
           scanHistoryMaximumItems = lib.mkOption {
             type = types.nullOr (types.str);
-            default = "10000";
+            default = null;
             description = "The maximum number of entries to keep in the scan history.";
           };
           enableRealTimeProtection = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Locates and stops malware from installing or running on your device. You can turn off this setting for a short time before it turns back on automatically.";
           };
           passiveMode = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Whether the antivirus engine runs in passive mode or not.";
           };
         };
@@ -153,32 +153,32 @@ with lib;
         options = {
           enabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Provides increased, faster protection with access to the latest protection data in the cloud. Works best with automatic sample submission turned on";
           };
           diagnosticLevel = lib.mkOption {
             type = types.nullOr (types.enum [ "optional" "required" ]);
-            default = "optional";
+            default = null;
             description = "We encourage you to share your diagnostic and usage data with us to help improve Microsoft products and services.";
           };
           cloudBlockLevel = lib.mkOption {
             type = types.nullOr (types.enum [ "normal" "moderate" "high" "high_plus" "zero_tolerance" ]);
-            default = "normal";
+            default = null;
             description = "Determines how aggressive Defender for Endpoint will be in blocking and scanning suspicious files.";
           };
           automaticSampleSubmission = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether suspicious samples are sent to Microsoft.";
           };
           automaticDefinitionUpdateEnabled = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = true;
+            default = null;
             description = "Determines whether security intelligence updates are installed automatically:";
           };
           automaticSampleSubmissionConsent = lib.mkOption {
             type = types.nullOr (types.enum [ "none" "safe" "all" ]);
-            default = "safe";
+            default = null;
             description = "Sends sample files to Microsoft to help protect device users and your organization from potential threats";
           };
         };
@@ -192,17 +192,17 @@ with lib;
         options = {
           hideStatusMenuIcon = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Whether the status menu icon (shown in the top-right corner of the screen) is hidden or not.";
           };
           userInitiatedFeedback = lib.mkOption {
             type = types.nullOr (types.enum [ "enabled" "disabled" ]);
-            default = "enabled";
+            default = null;
             description = "Specify whether users can submit feedback to Microsoft by going to Help > Send Feedback.";
           };
           consumerExperience = lib.mkOption {
             type = types.nullOr (types.enum [ "enabled" "disabled" ]);
-            default = "enabled";
+            default = null;
             description = "Specify whether users can sign into the consumer version of Microsoft Defender";
           };
         };
@@ -247,7 +247,7 @@ with lib;
         options = {
           enforcementLevel = lib.mkOption {
             type = types.nullOr (types.enum [ "disabled" "audit" "block" ]);
-            default = "block";
+            default = null;
             description = "Specifies if tamper protection is disabled, in audit mode, or enforced";
           };
           exclusions = lib.mkOption {
@@ -396,12 +396,12 @@ with lib;
         options = {
           dataLossPrevention = lib.mkOption {
             type = types.nullOr (types.enum [ "enabled" "disabled" ]);
-            default = "disabled";
+            default = null;
             description = "Whether data loss prevention enforcement is enabled on the machine.";
           };
           scheduledScan = lib.mkOption {
             type = types.nullOr (types.enum [ "enabled" "disabled" ]);
-            default = "enabled";
+            default = null;
             description = "Schedule scans with Microsoft Defender for Endpoint.";
           };
         };
@@ -415,7 +415,7 @@ with lib;
         options = {
           enforcementLevel = lib.mkOption {
             type = types.nullOr (types.enum [ "disabled" "audit" "block" ]);
-            default = "audit";
+            default = null;
             description = "Specifies if network protection is disabled, in audit mode, or enforced";
           };
         };
@@ -450,12 +450,12 @@ with lib;
                 };
                 state = lib.mkOption {
                   type = types.nullOr (types.enum [ "enabled" "disabled" ]);
-                  default = "enabled";
+                  default = null;
                   description = "Enable a feature up to a deployment ring (default production), or force disable a feature for all rings.";
                 };
                 ring = lib.mkOption {
                   type = types.nullOr (types.enum [ "insiderFast" "external" "production" ]);
-                  default = "production";
+                  default = null;
                   description = "Limit enabling the feature to a specific deployment ring.";
                 };
               };
@@ -474,7 +474,7 @@ with lib;
         options = {
           checkForDefinitionsUpdate = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Check for definitions update before initiating a scheduled scan";
           };
           dailyConfiguration = lib.mkOption {
@@ -484,17 +484,17 @@ with lib;
           };
           ignoreExclusions = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Should exclusions be ignored during a scheduled scan";
           };
           lowPriorityScheduledScan = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Should scheduled scan be run with low priority. (Scan might take longer to complete).";
           };
           runScanWhenIdle = lib.mkOption {
             type = types.nullOr (types.bool);
-            default = false;
+            default = null;
             description = "Run scheduled scan when the device is idle. Only applicable for weekly full scans.";
           };
           weeklyConfiguration = lib.mkOption {
@@ -502,7 +502,7 @@ with lib;
               options = {
                 scanType = lib.mkOption {
                   type = types.nullOr (types.enum [ "quick" "full" ]);
-                  default = "quick";
+                  default = null;
                   description = "Specifies the type of scan to perform.";
                 };
               };

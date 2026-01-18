@@ -20,7 +20,7 @@ with lib;
 
     AccountDescription = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "My macOS Server Account";
+      default = null;
       description = "The description of the account.";
     };
 
@@ -47,12 +47,12 @@ with lib;
         options = {
           Type = lib.mkOption {
             type = types.nullOr (types.enum [ "com.apple.osxserver.documents" ]);
-            default = "com.apple.osxserver.documents";
+            default = null;
             description = "com.apple.osxserver.documents (the Documents account type).";
           };
           Port = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 8071;
+            default = null;
             description = "Designates the port number to use when contacting the server. If no port number is specified, the default port is used.";
           };
         };

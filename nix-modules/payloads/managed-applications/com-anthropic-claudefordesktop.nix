@@ -20,31 +20,31 @@ with lib;
 
     disableAutoUpdates = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "Disable automatic updates for Claude Desktop.";
     };
 
     autoUpdaterEnforcementHours = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 72;
+      default = null;
       description = "Hours before forcefully restarting Claude to apply a prepared update. Must be between 1 and 72 hours.";
     };
 
     isDesktopExtensionEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable or disable Claude Desktop extensions.";
     };
 
     isDesktopExtensionDirectoryEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable or disable access to the extension directory.";
     };
 
     isLocalDevMcpEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Enable or disable local Model Context Protocol (MCP) servers.";
     };
 

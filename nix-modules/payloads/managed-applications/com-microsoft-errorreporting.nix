@@ -20,13 +20,13 @@ with lib;
 
     IsAttachedEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Disable attaching the file that caused the crash in the crash report. If you are working in a sensitive business it is recommended to set this to false.";
     };
 
     IsStoreLastCrashEnabled = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
       description = "Will store the last crash report in the following path: ~/Library/Group Containers/UBF8T346G9.ms/MerpTempItems";
     };
 

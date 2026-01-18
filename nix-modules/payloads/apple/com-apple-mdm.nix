@@ -74,31 +74,31 @@ with lib;
 
     CheckOutWhenRemoved = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device attempts to send a 'Check-Out' message to the 'CheckInURL' when the profile is removed.";
     };
 
     PinningRevocationCheckRequired = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system fails the connection attempt unless it obtains a verified positive response during certificate revocation checks.\nIf 'false', the system performs revocation checks on a best-attempt basis, where failure to reach the server isn't considered fatal.";
     };
 
     PromptUserToAllowBootstrapTokenForAuthentication = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the system warns the user that they need to reboot into RecoveryOS and allow the MDM to use the bootstrap token for authentication for certain sensitive operations such as enabling kernel extensions or installing some types of software updates. If the MDM doesn't need to perform these operations, it can leave this key set to 'false', and the user isn't notified.\nThe SettingsCommand.Command.Settings.MDMOptions.MDMOptions command overrides this default value.\nThis setting only applies to devices that have 'BootstrapTokenRequiredForSoftwareUpdate' or 'BootstrapTokenRequiredForKernelExtensionApproval' set to 'true' in their SecurityInfoResponse.SecurityInfo.\nDEP-enrolled devices are automatically allowed to use the bootstrap token for authentication.\nAvailable in macOS 11 and later.";
     };
 
     SignMessage = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', each message coming from the device carries the additional 'Mdm-Signature' HTTP header.";
     };
 
     UseDevelopmentAPNS = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = false;
+      default = null;
       description = "If 'true', the device uses the development APNS servers. Otherwise, the device uses the production servers.\nSet to 'false' if your Apple Push Notification Service certificate was issued by the Apple Push Certificate Portal ('https://identity.apple.com/pushcert'). That portal only issues certificates for the production push environment.";
     };
 

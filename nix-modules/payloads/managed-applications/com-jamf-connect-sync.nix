@@ -20,7 +20,7 @@ with lib;
 
     AuthServer = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "yourcompany.okta.com";
+      default = null;
       description = "Specifies your Okta authentication domain.";
     };
 
@@ -37,7 +37,7 @@ with lib;
 
     PeriodicUpdateTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Specifies the interval, in minutes, between background updates.";
     };
 
@@ -69,12 +69,12 @@ with lib;
 
     LocalPasswordSyncMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enter your local user account password.";
+      default = null;
     };
 
     PasswordCheckUpdateTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "Specifies the interval, in minutes, that Jamf Connect Sync checks the local password for synchronization. If unspecified, Jamf Connect Sync will check every 15 minutes by default.";
     };
 
@@ -118,7 +118,7 @@ with lib;
 
     KeychainItemsDebug = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
     };
 
     ADExpirationShow = lib.mkOption {
@@ -134,7 +134,7 @@ with lib;
 
     ExpirationWarningDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 5;
+      default = null;
     };
 
     PasswordExpirationMenu = lib.mkOption {
@@ -145,13 +145,13 @@ with lib;
 
     PasswordExpirationMenuDays = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
       description = "An integer, in days remaining, before the password expiration countdown is displayed in the menu bar.";
     };
 
     ChangePasswordTimer = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 3;
+      default = null;
       description = "Specifies an interval, in minutes, until the user is prompted to sign in again after a password change.";
     };
 
@@ -212,7 +212,7 @@ with lib;
 
     MessagePasswordChangePolicy = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please review the employee handbook.";
+      default = null;
     };
 
     KerberosRealm = lib.mkOption {
@@ -233,7 +233,7 @@ with lib;
 
     KerberosShortName = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "joel";
+      default = null;
     };
 
     KerberosShortNameAsk = lib.mkOption {
@@ -243,7 +243,7 @@ with lib;
 
     KerberosShortNameAskMessage = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enter your Active Directory user name.";
+      default = null;
     };
 
     IgnoreDomainReachability = lib.mkOption {
@@ -316,47 +316,47 @@ with lib;
 
     MenuAbout = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "This app";
+      default = null;
     };
 
     MenuActions = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Quick Actions";
+      default = null;
     };
 
     MenuChangePassword = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Change network password";
+      default = null;
     };
 
     MenuGetHelp = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "File ticket";
+      default = null;
     };
 
     MenuGetSoftware = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Get Apps";
+      default = null;
     };
 
     MenuLockScreen = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Screen Lock";
+      default = null;
     };
 
     MenuPreferences = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Settings";
+      default = null;
     };
 
     MenuSignIn = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Login";
+      default = null;
     };
 
     ActionsUpdateTime = lib.mkOption {
       type = types.nullOr (types.int);
-      default = 15;
+      default = null;
     };
 
     GetHelpType = lib.mkOption {
@@ -400,32 +400,32 @@ with lib;
 
     LabelUsername = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Corporate e-mail";
+      default = null;
     };
 
     LabelPassword = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Corporate Password";
+      default = null;
     };
 
     TitleSignIn = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Sign in to Okta";
+      default = null;
     };
 
     AutoAuth = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
     };
 
     CheckSafariExtension = lib.mkOption {
       type = types.nullOr (types.bool);
-      default = true;
+      default = null;
     };
 
     MessagePluginDisabled = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "Please enable the plugin in Safari.";
+      default = null;
       description = "Text displayed to users when the Safari plugin is not enabled.";
     };
 
@@ -441,7 +441,7 @@ with lib;
 
     Template = lib.mkOption {
       type = types.nullOr (types.str);
-      default = "User Auth";
+      default = null;
     };
 
     ExportableKey = lib.mkOption {

@@ -23,7 +23,7 @@ with lib;
         options = {
           HTTPEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables web proxy.";
           };
           HTTPProxy = lib.mkOption {
@@ -33,12 +33,12 @@ with lib;
           };
           HTTPPort = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The web proxy port.";
           };
           HTTPSEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables secure web proxy.";
           };
           HTTPSProxy = lib.mkOption {
@@ -48,17 +48,17 @@ with lib;
           };
           HTTPSPort = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The secure web proxy port.";
           };
           FTPEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables FTP proxy.";
           };
           FTPPassive = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables passive FTP mode.";
           };
           FTPProxy = lib.mkOption {
@@ -68,12 +68,12 @@ with lib;
           };
           FTPPort = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The FTP proxy port.";
           };
           SOCKSEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enable the SOCKS proxy.";
           };
           SOCKSProxy = lib.mkOption {
@@ -83,12 +83,12 @@ with lib;
           };
           SOCKSPortInteger = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The port on which to connect to the socks proxy server.";
           };
           RTSPEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enable streaming proxy.";
           };
           RTSPProxy = lib.mkOption {
@@ -98,12 +98,12 @@ with lib;
           };
           RTSPPort = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The streaming proxy port.";
           };
           GopherEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables gopher proxy.";
           };
           GopherProxy = lib.mkOption {
@@ -113,7 +113,7 @@ with lib;
           };
           GopherPort = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 80;
+            default = null;
             description = "The gopher proxy port.";
           };
           ExceptionsList = lib.mkOption {
@@ -123,7 +123,7 @@ with lib;
           };
           ProxyAutoConfigEnable = lib.mkOption {
             type = types.nullOr (types.int);
-            default = 0;
+            default = null;
             description = "If 'true', enables automatic proxy configuration.";
           };
           ProxyAutoConfigURLString = lib.mkOption {
@@ -138,7 +138,7 @@ with lib;
           };
           ProxyCaptiveLoginAllowed = lib.mkOption {
             type = types.nullOr (types.int);
-            default = false;
+            default = null;
             description = "If 1, allows client to log into captive portal network.";
           };
           SOCKSPortinteger = lib.mkOption {
