@@ -1,0 +1,124 @@
+# Auto-generated from ProfileManifests: com.apple.mdm.plist
+# Domain: com.apple.mdm
+# Title: MDM
+# Platforms: iOS, macOS, tvOS
+
+{ lib, ... }:
+
+with lib;
+
+{
+  options.programs.macprofile.payloads."apple-com-apple-mdm" = {
+    enable = lib.mkEnableOption "MDM";
+
+    _domain = lib.mkOption {
+      internal = true;
+      type = lib.types.str;
+      default = "com.apple.mdm";
+      description = "The payload domain (PayloadType) for this manifest.";
+    };
+
+    ServerURL = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The URL that the device contacts to retrieve device management instructions. The URL must begin with the 'https://' URL scheme, and may contain a port number\n(':1234', for example).\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+    ServerURLPinningCertificateUUIDs = lib.mkOption {
+      type = types.nullOr (types.listOf (types.str));
+      default = null;
+      description = "An array of strings, each containing the UUID of a certificate to use when evaluating trust to the '.../connect/' URLs of MDM servers.";
+    };
+
+    ServerCapabilities = lib.mkOption {
+      type = types.nullOr (types.listOf (types.enum [ "com.apple.mdm.per-user-connections" "com.apple.mdm.bootstraptoken" "com.apple.mdm.token" ]));
+      default = null;
+      description = "A unique array of strings indicating server capabilities:\n\n- 'com.apple.mdm.per-user-connections': Indicates that the server supports both device and user connections. This must be present when managing Shared iPad or macOS devices.\n- 'com.apple.mdm.bootstraptoken': Indicates that the server supports escrowing the Bootstrap Token. This must be present for the device to create a Bootstrap Token and send it to the server. Available as of macOS 11.0.\n- 'com.apple.mdm.token': Indicates that the server supports the 'Get-Token' CheckIn message type. This must be present for the device to use 'Get-Token' CheckIn message when appropriate.\n\nNote:\nWhen updating the payload, the 'com.apple.mdm.per-user-connections' capability must not be added or removed. Any such change is an error, and the update is rejected.";
+    };
+
+    Topic = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The topic that MDM listens to for push notifications. The certificate that the server uses to send push notifications must have the same topic in its subject. The topic must begin with the 'com.apple.mgmt.' prefix.\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+    IdentityCertificateUUID = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The UUID of the certificate payload for the device's identity. It may also point to a SCEP payload.";
+    };
+
+    ManagedAppleID = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The Managed Apple Account of the user. Previously required for profile-driven user enrollment.\nRemoved as of iOS 18 and macOS 15.";
+    };
+
+    AccessRights = lib.mkOption {
+      type = types.nullOr (types.int);
+      default = null;
+      description = "Logical OR of the following bit flags:\n\n- '1': Allow inspection of installed configuration profiles.\n- '2': Allow installation and removal of configuration profiles.\n- '4': Allow device lock and passcode removal.\n- '8': Allow device erase.\n- '16': Allow query of device information (device capacity, serial number).\n- '32': Allow query of network information (phone/SIM numbers, MAC addresses).\n- '64': Allow inspection of installed provisioning profiles.\n- '128': Allow installation and removal of provisioning profiles.\n- '256': Allow inspection of installed applications.\n- '512': Allow restriction-related queries.\n- '1024': Allow security-related queries.\n- '2048': Allow manipulation of settings.\n- '4096': Allow app management.\n\nDon't set to '0'. Specify '1' if you specify '2'. Specify '64' if you specify '128'. Ignored if you set a value for 'ManagedAppleID'.\n\nNote:\nWhen updating the payload, the addition of any access right is an error, and the update is rejected.";
+    };
+
+    CheckInURL = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The URL that the device should use to check in during installation. The URL must begin with the 'https://' URL scheme and may contain a port number (':1234', for example). If not set, the system uses 'ServerURL'.\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+    CheckInURLPinningCertificateUUIDs = lib.mkOption {
+      type = types.nullOr (types.listOf (types.str));
+      default = null;
+      description = "An array of strings, each containing the payload UUID of a certificate to use when evaluating trust to the '.../checkin/' URLs of MDM servers.";
+    };
+
+    CheckOutWhenRemoved = lib.mkOption {
+      type = types.nullOr (types.bool);
+      default = false;
+      description = "If 'true', the device attempts to send a 'Check-Out' message to the 'CheckInURL' when the profile is removed.";
+    };
+
+    PinningRevocationCheckRequired = lib.mkOption {
+      type = types.nullOr (types.bool);
+      default = false;
+      description = "If 'true', the system fails the connection attempt unless it obtains a verified positive response during certificate revocation checks.\nIf 'false', the system performs revocation checks on a best-attempt basis, where failure to reach the server isn't considered fatal.";
+    };
+
+    PromptUserToAllowBootstrapTokenForAuthentication = lib.mkOption {
+      type = types.nullOr (types.bool);
+      default = false;
+      description = "If 'true', the system warns the user that they need to reboot into RecoveryOS and allow the MDM to use the bootstrap token for authentication for certain sensitive operations such as enabling kernel extensions or installing some types of software updates. If the MDM doesn't need to perform these operations, it can leave this key set to 'false', and the user isn't notified.\nThe SettingsCommand.Command.Settings.MDMOptions.MDMOptions command overrides this default value.\nThis setting only applies to devices that have 'BootstrapTokenRequiredForSoftwareUpdate' or 'BootstrapTokenRequiredForKernelExtensionApproval' set to 'true' in their SecurityInfoResponse.SecurityInfo.\nDEP-enrolled devices are automatically allowed to use the bootstrap token for authentication.\nAvailable in macOS 11 and later.";
+    };
+
+    SignMessage = lib.mkOption {
+      type = types.nullOr (types.bool);
+      default = false;
+      description = "If 'true', each message coming from the device carries the additional 'Mdm-Signature' HTTP header.";
+    };
+
+    UseDevelopmentAPNS = lib.mkOption {
+      type = types.nullOr (types.bool);
+      default = false;
+      description = "If 'true', the device uses the development APNS servers. Otherwise, the device uses the production servers.\nSet to 'false' if your Apple Push Notification Service certificate was issued by the Apple Push Certificate Portal ('https://identity.apple.com/pushcert'). That portal only issues certificates for the production push environment.";
+    };
+
+    AssignedManagedAppleID = lib.mkOption {
+      type = types.nullOr (types.str);
+      default = null;
+      description = "The Managed Apple Account pre-assigned to the authenticated user. Required for account-driven enrollments. Available in iOS 15 and later, and macOS 14 and later.\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+    EnrollmentMode = lib.mkOption {
+      type = types.nullOr (types.enum [ "BYOD" "ADDE" ]);
+      default = null;
+      description = "The enrollment mode the server indicates to use when enrolling. Required for account-driven enrollment. Available in iOS 15 and macOS 14, and later.\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+    RequiredAppIDForMDM = lib.mkOption {
+      type = types.nullOr (types.int);
+      default = null;
+      description = "This property specifies an iTunes Store ID for an app the system can install with the InstallApplicationCommand, without any approval from the user. The MDM vendor or managing organization generally provides this app, which enhances the management experience for the user. The device shows the user details about this app in the account-driven enrollment process prior to installing the MDM profile. Use this property with account-driven MDM enrollments that normally require user approval for app installs through MDM.\nOnly account-driven enrollments support this property and other enrollment types ignore it.\nAvailable in iOS 15.1 and later.\n\nNote:\nWhen updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+    };
+
+  };
+}

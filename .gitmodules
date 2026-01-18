@@ -1,0 +1,3 @@
+[submodule "ProfileManifests"]
+	path = ProfileManifests
+	url = git@github.com:ProfileManifests/ProfileManifests.git
