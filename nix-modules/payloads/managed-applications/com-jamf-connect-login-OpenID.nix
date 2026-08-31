@@ -3,6 +3,7 @@
 # Title: Jamf Connect Login (OIDC)
 # Platforms: macOS
 # Unique: no
+# Targets: system
 
 { lib, ... }:
 
@@ -32,6 +33,19 @@ let
         type = lib.types.nullOr lib.types.str;
         default = null;
         description = "PayloadDisplayName for this instance. Defaults to the domain.";
+      };
+
+      _targets = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf (lib.types.enum [ "system" "user" ]);
+        default = [ "system" ];
+        description = "Profile scopes this payload may be installed into (pfm_targets).";
+      };
+
+      _scope = lib.mkOption {
+        type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
+        default = null;
+        description = "Force this instance into a specific profile scope, overriding pfm_targets.";
       };
 
       _keyNames = lib.mkOption {

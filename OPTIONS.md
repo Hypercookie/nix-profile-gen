@@ -111,3 +111,10 @@ if you need them:
 | `_unique` | Whether macOS allows only one instance |
 | `_displayName` | Per-instance `PayloadDisplayName` (defaults to the domain) |
 | `_keyNames` | Payload keys, used to detect the pre-instance flat syntax |
+| `_targets` | From `pfm_targets`; decides User vs System profile |
+
+`_scope` is *not* internal: set it to `"User"` or `"System"` to force an
+instance into a particular profile when the manifest's `pfm_targets` is wrong
+or missing. A warning is emitted if the forced scope is not advertised by the
+manifest. Each generated module records its targets in the header comment
+(`# Targets: user`).

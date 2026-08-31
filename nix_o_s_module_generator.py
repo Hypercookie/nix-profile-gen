@@ -236,6 +236,18 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
     # we would rather not raise a bogus assertion than guard an unknown case).
     unique = bool(manifest.get('pfm_unique', False))
 
+    # pfm_targets decides whether a payload belongs in the User or the System
+    # profile. Unknown or missing metadata is treated as "either", which lets
+    # the top-level `scope` preference decide.
+    raw_targets = manifest.get('pfm_targets')
+    if isinstance(raw_targets, list):
+        targets = [t for t in raw_targets if t in ('system', 'user')]
+    else:
+        targets = []
+    if not targets:
+        targets = ['system', 'user']
+    targets = sorted(set(targets))
+
     # Filter out Payload* keys as they are standard profile keys
     config_subkeys = [sk for sk in subkeys if not sk.get('pfm_name', '').startswith('Payload')]
     key_names = collect_key_names(config_subkeys)
@@ -256,6 +268,7 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
     if platforms:
         lines.append(f'# Platforms: {", ".join(platforms)}')
     lines.append(f'# Unique: {"yes" if unique else "no"}')
+    lines.append(f'# Targets: {", ".join(targets)}')
     lines.append('')
     lines.append('{ lib, ... }:')
     lines.append('')
@@ -292,6 +305,23 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
     lines.append('        type = lib.types.nullOr lib.types.str;')
     lines.append('        default = null;')
     lines.append('        description = "PayloadDisplayName for this instance. Defaults to the domain.";')
+    lines.append('      };')
+    lines.append('')
+
+    # pfm_targets: which profile scopes this payload may be installed into.
+    lines.append('      _targets = lib.mkOption {')
+    lines.append('        internal = true;')
+    lines.append('        type = lib.types.listOf (lib.types.enum [ "system" "user" ]);')
+    lines.append(f'        default = {nix_value(targets)};')
+    lines.append('        description = "Profile scopes this payload may be installed into (pfm_targets).";')
+    lines.append('      };')
+    lines.append('')
+
+    # Escape hatch for manifests whose pfm_targets is missing or wrong.
+    lines.append('      _scope = lib.mkOption {')
+    lines.append('        type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);')
+    lines.append('        default = null;')
+    lines.append('        description = "Force this instance into a specific profile scope, overriding pfm_targets.";')
     lines.append('      };')
     lines.append('')
 

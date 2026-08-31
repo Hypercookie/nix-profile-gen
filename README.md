@@ -11,6 +11,7 @@ This module generates a provisioning profile at a given path, which can then be 
 - 🔧 Generates `.mobileconfig` files from Nix configuration
 - 📋 Supports all Apple payload types (Apple, ManagedPreferences, etc.)
 - 🔁 Multiple instances of the same payload type in one profile
+- 🪪 Automatic User/System profile splitting based on each payload's `pfm_targets`
 - 📬 Maps `accounts.email` / `accounts.calendar` / `accounts.contact` straight into Mail, CalDAV and CardDAV payloads
 - 🔍 Browse options interactively with optnix
 
@@ -108,6 +109,47 @@ payloads."apple-com-apple-mail-managed" = {
 Manifests that declare `pfm_unique` accept only one instance per profile;
 enabling a second one fails evaluation with an explanatory assertion.
 
+## User and System profiles
+
+Apple payloads are not all installable at the same scope. Each manifest
+declares `pfm_targets`:
+
+| Targets | Manifests | Examples |
+|---|---|---|
+| system + user | 159 | Dock, Restrictions |
+| system only | 95 | Login Window, FileVault, DNS Settings |
+| user only | 12 | Mail, CalDAV, CardDAV, LDAP |
+| unspecified | 16 | treated as "either" |
+
+The module therefore generates **up to two profiles** and routes each payload
+into the correct one automatically:
+
+```
+Library/Application Support/HomeManager/profile-user.mobileconfig
+Library/Application Support/HomeManager/profile-system.mobileconfig
+```
+
+Only the profiles that actually contain payloads are written, and `outputPath`
+is the base name the scope suffix is appended to.
+
+`scope` no longer decides the whole profile. It is the **preference for
+payloads that accept either scope**, so with `scope = "System"` the Dock
+payload goes into the System profile while Mail still goes into the User one.
+The profile matching `scope` keeps the bare `PayloadIdentifier`; the other is
+suffixed, so the two never collide.
+
+If a manifest's metadata is missing or wrong, force an instance with `_scope`:
+
+```nix
+payloads."apple-com-apple-mail-managed".work = {
+  enable = true;
+  _scope = "System";   # warns, because this manifest is user-only
+};
+```
+
+You can see where things landed via the read-only
+`programs.macprofile.outputPaths`, an attribute set keyed by scope.
+
 ## Home Manager account bridges
 
 Importing `homeModules.bridges` **is** the opt-in. With
@@ -119,6 +161,9 @@ matching payload automatically:
 | `accounts.email.accounts.<n>` | `com.apple.mail.managed` | IMAP accounts only |
 | `accounts.calendar.accounts.<n>` | `com.apple.caldav.account` | `remote.type = "caldav"` only |
 | `accounts.contact.accounts.<n>` | `com.apple.carddav.account` | `remote.type = "carddav"` only |
+
+All three payloads are user-only, so they always land in the User profile
+regardless of the `scope` setting.
 
 Each account becomes one payload instance named after the account, so this is
 all that is needed:

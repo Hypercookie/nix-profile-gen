@@ -63,9 +63,9 @@ nix-modules/generateMacOSProfile.nix  (core Home Manager module)
         v
 programs.macprofile { enable = true; payloads."apple-com-apple-dock".default = { ... }; }
         |
-        |  at `home-manager switch`
+        |  at `home-manager switch`, split by pfm_targets
         v
-~/Library/Application Support/HomeManager/profile.mobileconfig
+~/Library/.../profile-user.mobileconfig   (+ profile-system.mobileconfig)
 ```
 
 ### Key Components
@@ -126,6 +126,12 @@ Two traps worth remembering when extending it:
   becomes vacuous. Force the finite `.outPath` string instead.
 - **Always negative-control a new check.** Break the assertion deliberately and
   confirm the check actually fails before trusting a green run.
+- **`evalFailureTest` must not route through `mkProfileScope`.** That helper
+  throws when the requested scope produced no profile, which would make a
+  "must fail" test pass for the wrong reason. It forces `home.file`'s
+  attribute names instead, which runs moduleChecks without assuming a scope.
+- **Never name a `runCommand` attribute `system`.** Nix already sets `system`
+  in every build environment and it silently shadows yours.
 
 ---
 
@@ -187,9 +193,29 @@ Every instance carries four internal options emitted by the generator:
 | `_unique` | From `pfm_unique`; drives the "only one instance" assertion |
 | `_displayName` | Per-instance `PayloadDisplayName` |
 | `_keyNames` | Payload key names, used to detect the pre-instance flat syntax |
+| `_targets` | From `pfm_targets`; routes the instance to the User or System profile |
+| `_scope` | User-facing override for `_targets` (not internal) |
 
 `internalKeys` in `generateMacOSProfile.nix` must be kept in sync with these,
 otherwise plumbing leaks into the generated plist.
+
+## Profile Scope Routing
+
+`pfm_targets` decides which profile a payload belongs in: 95 manifests are
+system-only, 12 are user-only, 159 accept either, and 16 declare nothing
+(treated as "either").
+
+- `scopeOf` in `generateMacOSProfile.nix` resolves `_scope` first, then falls
+  back to `_targets`; payloads accepting either follow the top-level `scope`.
+- Up to two `.mobileconfig` files are produced. `outputPath` is a **base**
+  name; `outputPathFor` appends `-user` / `-system` before the extension.
+- Only scopes with payloads are written. `outputPaths` is a read-only option
+  exposing the resolved paths, keyed by scope, and is what the tests use.
+- The profile whose scope equals the `scope` preference keeps the bare
+  `organizationIdentifier`; the other is suffixed so identifiers and UUIDs
+  cannot collide.
+- Forcing `_scope` against `_targets` warns rather than errors, because
+  upstream metadata is sometimes absent or wrong.
 
 ## Important Constraints
 

@@ -2,33 +2,68 @@
 { pkgs, lib, system, home-manager, modules }:
 
 let
-  # Build a Home Manager configuration and return the generated
-  # profile.mobileconfig derivation.
-  mkProfile = extraModules:
+  mkHm = extraModules: home-manager.lib.homeManagerConfiguration {
+    inherit pkgs;
+    modules = [
+      modules.default
+      {
+        home.username = "testuser";
+        home.homeDirectory = "/tmp/testuser";
+        home.stateVersion = "24.11";
+      }
+    ] ++ extraModules;
+  };
+
+  # Return the generated profile for `scope`, or throw if that scope produced
+  # no profile at all.
+  mkProfileScope = scope: extraModules:
     let
-      hm = home-manager.lib.homeManagerConfiguration {
-        inherit pkgs;
-        modules = [
-          modules.default
-          {
-            home.username = "testuser";
-            home.homeDirectory = "/tmp/testuser";
-            home.stateVersion = "24.11";
-          }
-        ] ++ extraModules;
-      };
-      outputPath = hm.config.programs.macprofile.outputPath;
+      hm = mkHm extraModules;
+      paths = hm.config.programs.macprofile.outputPaths;
     in
-    hm.config.home.file.${outputPath}.source;
+    if !(paths ? ${scope}) then
+      throw "no ${scope} profile was generated (scopes: ${
+        lib.concatStringsSep ", " (lib.attrNames paths)
+      })"
+    else
+      hm.config.home.file.${paths.${scope}}.source;
+
+  # Most tests only care about a single profile; default to the User one.
+  mkProfile = mkProfileScope "User";
+
+  # Shared by the scope-split checks: one user-only payload, one system-only
+  # payload, and one dual-target payload that follows the `scope` preference.
+  scopeSplitConfig = {
+    programs.macprofile = {
+      enable = true;
+      organizationIdentifier = "com.example.test";
+      scope = "System";
+      payloads."apple-com-apple-mail-managed".work = {
+        enable = true;
+        EmailAddress = "jane@work.example";
+      };
+      payloads."apple-com-apple-loginwindow".default = {
+        enable = true;
+        SHOWFULLNAME = false;
+      };
+      payloads."apple-com-apple-dock".default = {
+        enable = true;
+        tilesize = 48;
+      };
+    };
+  };
 
   # Assert something about the generated profile with a Python snippet.
   # `body` receives `profile` (the parsed plist) and `payloads`
   # (profile["PayloadContent"]), and should raise on failure.
   plistTest = name: extraModules: body:
+    plistTestScope "User" name extraModules body;
+
+  plistTestScope = scope: name: extraModules: body:
     pkgs.runCommand "check-${name}"
       {
         nativeBuildInputs = [ pkgs.python3 ];
-        profile = mkProfile extraModules;
+        profile = mkProfileScope scope extraModules;
       } ''
       python3 - "$profile" <<'PYEOF'
       import plistlib, sys
@@ -55,10 +90,16 @@ let
   # the test vacuous. Forcing the finite `outPath` string is enough: selecting
   # anything from `config` runs Home Manager's moduleChecks, which evaluates
   # `config.assertions`.
+  # Deliberately does not go through mkProfileScope: that throws when the
+  # requested scope produced no profile, which would make this test pass for
+  # the wrong reason. Forcing home.file's attribute names runs Home Manager's
+  # moduleChecks (and therefore config.assertions) without depending on which
+  # scopes exist.
   evalFailureTest = name: reason: extraModules:
     let
+      hm = mkHm extraModules;
       result = builtins.tryEval
-        (builtins.seq (mkProfile extraModules).outPath "evaluated");
+        (builtins.seq (builtins.attrNames hm.config.home.file) "evaluated");
     in
     pkgs.runCommand "check-${name}" { } ''
       ${if result.success then ''
@@ -289,6 +330,99 @@ in
       # No port in the URL: the key is omitted so macOS uses its default.
       assert "CardDAVPort" not in card[0], card[0]
       assert card[0]["CardDAVPrincipalURL"] == "/addressbooks/jane/", card[0]
+    '';
+
+  # User-only and system-only payloads must land in separate profiles.
+  # com.apple.mail.managed is pfm_targets = [ user ],
+  # com.apple.loginwindow is pfm_targets = [ system ].
+  scope-split-user = plistTestScope "User" "scope-split-user"
+    [ scopeSplitConfig ]
+    ''
+      assert profile["PayloadScope"] == "User", profile["PayloadScope"]
+      types = sorted(p["PayloadType"] for p in payloads)
+      assert types == ["com.apple.mail.managed"], types
+    '';
+
+  scope-split-system = plistTestScope "System" "scope-split-system"
+    [ scopeSplitConfig ]
+    ''
+      assert profile["PayloadScope"] == "System", profile["PayloadScope"]
+      types = sorted(p["PayloadType"] for p in payloads)
+      assert types == ["com.apple.dock", "com.apple.loginwindow"], types
+    '';
+
+  # The two profiles must not share a top-level identifier or UUID, and the
+  # profile matching the `scope` preference keeps the bare identifier.
+  scope-split-identifiers =
+    let
+      hm = mkHm [ scopeSplitConfig ];
+      paths = hm.config.programs.macprofile.outputPaths;
+    in
+    pkgs.runCommand "check-scope-split-identifiers"
+      {
+        nativeBuildInputs = [ pkgs.python3 ];
+        # NB: do not name these `system`; that collides with the `system`
+        # variable Nix already sets in every build environment.
+        userProfile = hm.config.home.file.${paths.User}.source;
+        systemProfile = hm.config.home.file.${paths.System}.source;
+      } ''
+      python3 - "$userProfile" "$systemProfile" <<'PYEOF'
+      import plistlib, sys
+
+      def load(p):
+          with open(p, "rb") as f:
+              return plistlib.load(f)
+
+      user, system = load(sys.argv[1]), load(sys.argv[2])
+
+      assert user["PayloadIdentifier"] != system["PayloadIdentifier"], "identifiers collide"
+      assert user["PayloadUUID"] != system["PayloadUUID"], "UUIDs collide"
+
+      # scope = "System" is the preference here, so it keeps the bare identifier.
+      assert system["PayloadIdentifier"] == "com.example.test", system["PayloadIdentifier"]
+      assert user["PayloadIdentifier"] == "com.example.test.user", user["PayloadIdentifier"]
+      PYEOF
+      touch "$out"
+    '';
+
+  # Only the scopes that actually have payloads produce a file.
+  scope-single-file =
+    let
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+        };
+      }];
+      scopes = lib.attrNames hm.config.programs.macprofile.outputPaths;
+    in
+    pkgs.runCommand "check-scope-single-file" { } ''
+      test "${lib.concatStringsSep "," scopes}" = "System"
+      echo "only the System profile was generated"
+      touch "$out"
+    '';
+
+  # _scope forces a payload into a scope its manifest does not advertise.
+  scope-override = plistTestScope "System" "scope-override"
+    [{
+      programs.macprofile = {
+        enable = true;
+        organizationIdentifier = "com.example.test";
+        payloads."apple-com-apple-mail-managed".work = {
+          enable = true;
+          _scope = "System";
+          EmailAddress = "jane@work.example";
+        };
+      };
+    }]
+    ''
+      assert profile["PayloadScope"] == "System", profile["PayloadScope"]
+      types = [p["PayloadType"] for p in payloads]
+      assert types == ["com.apple.mail.managed"], types
     '';
 
   # Enabling two instances of a pfm_unique payload must fail evaluation.
