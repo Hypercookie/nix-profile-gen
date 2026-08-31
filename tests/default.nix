@@ -253,6 +253,14 @@ in
       assert work["EmailAccountType"] == "EmailTypeIMAP", work
       assert work["EmailAccountName"] == "Jane Doe", work
 
+      # Incoming/OutgoingMailServerAuthentication are pfm_require = "always".
+      # Home Manager leaves `authentication` null by default, so the bridge has
+      # to fall back to the manifest default; without the key macOS installs
+      # the payload and then fails to verify the account.
+      for p in mail:
+          assert p["IncomingMailServerAuthentication"] == "EmailAuthPassword", p
+          assert p["OutgoingMailServerAuthentication"] == "EmailAuthPassword", p
+
       # Secrets must never reach the profile: it lives in the Nix store.
       flat = repr(profile)
       assert "hunter2" not in flat, "password leaked into the profile"

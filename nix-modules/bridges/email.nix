@@ -27,7 +27,15 @@ let
     digest_md5 = "EmailAuthHTTPMD5";
   };
 
-  mapAuth = a: if a == null then null else authMap.${a} or null;
+  # The manifest marks Incoming/OutgoingMailServerAuthentication as
+  # `pfm_require = "always"`. Omitting them does not make macOS fall back to
+  # the documented default: Mail installs the payload and then fails account
+  # verification. Home Manager's `authentication` defaults to null and its type
+  # also admits free-form strings, so anything we cannot map becomes the
+  # manifest default rather than a dropped key.
+  defaultAuth = "EmailAuthPassword";
+
+  mapAuth = a: if a == null then defaultAuth else authMap.${a} or defaultAuth;
 
   # Only IMAP accounts can become a Mail payload. JMAP-only and maildir-only
   # accounts have no representation in com.apple.mail.managed.
@@ -71,8 +79,9 @@ let
       map
         (a: ''
           accounts.email.accounts.${name}: authentication mechanism "${a}" has no
-          equivalent in com.apple.mail.managed; leaving the payload's
-          authentication key unset so macOS chooses a default.
+          equivalent in com.apple.mail.managed; falling back to
+          "${defaultAuth}". Set the payload's
+          Incoming/OutgoingMailServerAuthentication key explicitly to override.
         '')
         vals)
     eligible);
