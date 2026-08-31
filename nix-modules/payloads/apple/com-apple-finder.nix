@@ -2,93 +2,124 @@
 # Domain: com.apple.finder
 # Title: Finder
 # Platforms: macOS
+# Unique: yes
 
 { lib, ... }:
 
 with lib;
 
+let
+  payloadModule = {
+    options = {
+      enable = lib.mkEnableOption "Finder";
+
+      _domain = lib.mkOption {
+        internal = true;
+        type = lib.types.str;
+        default = "com.apple.finder";
+        description = "The payload domain (PayloadType) for this manifest.";
+      };
+
+      _unique = lib.mkOption {
+        internal = true;
+        type = lib.types.bool;
+        default = true;
+        description = "Whether macOS allows only one instance of this payload per profile.";
+      };
+
+      _displayName = lib.mkOption {
+        internal = true;
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "PayloadDisplayName for this instance. Defaults to the domain.";
+      };
+
+      _keyNames = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "InterfaceLevel" "WarnOnEmptyTrash" "ProhibitConnectTo" "ProhibitEject" "ProhibitBurn" "ProhibitGoToFolder" "ShowHardDrivesOnDesktop" "ShowExternalHardDrivesOnDesktop" "ShowRemovableMediaOnDesktop" "ShowMountedServersOnDesktop" "ShowRecentTags" "FXRemoveOldTrashItems" ];
+        description = "Payload keys of this manifest, used to detect legacy flat syntax.";
+      };
+
+      InterfaceLevel = lib.mkOption {
+        type = types.nullOr (types.enum [ "Simple" "Full" ]);
+        default = null;
+        description = "Specifies whether Finder should operate in Simple or Full mode.";
+      };
+
+      WarnOnEmptyTrash = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system doesn't warn the user before emptying the trash.";
+      };
+
+      ProhibitConnectTo = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system disables Connect to Server.";
+      };
+
+      ProhibitEject = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system disables Eject.";
+      };
+
+      ProhibitBurn = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system disables the Finder's burn support.";
+      };
+
+      ProhibitGoToFolder = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system disables Go to Folder.";
+      };
+
+      ShowHardDrivesOnDesktop = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system doesn't show internal hard drives on the Desktop.";
+      };
+
+      ShowExternalHardDrivesOnDesktop = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system doesn't show external hard drives on the Desktop.";
+      };
+
+      ShowRemovableMediaOnDesktop = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system doesn't show removable media items on the Desktop.";
+      };
+
+      ShowMountedServersOnDesktop = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system doesn't show mounted file servers on the Desktop.";
+      };
+
+      ShowRecentTags = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Show the Recent Tags section in the Finder sidebar";
+      };
+
+      FXRemoveOldTrashItems = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Remove items from the Trash after 30 days";
+      };
+
+    };
+  };
+in
 {
-  options.programs.macprofile.payloads."apple-com-apple-finder" = {
-    enable = lib.mkEnableOption "Finder";
-
-    _domain = lib.mkOption {
-      internal = true;
-      type = lib.types.str;
-      default = "com.apple.finder";
-      description = "The payload domain (PayloadType) for this manifest.";
-    };
-
-    InterfaceLevel = lib.mkOption {
-      type = types.nullOr (types.enum [ "Simple" "Full" ]);
-      default = null;
-      description = "Specifies whether Finder should operate in Simple or Full mode.";
-    };
-
-    WarnOnEmptyTrash = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'false', the system doesn't warn the user before emptying the trash.";
-    };
-
-    ProhibitConnectTo = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'true', the system disables Connect to Server.";
-    };
-
-    ProhibitEject = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'true', the system disables Eject.";
-    };
-
-    ProhibitBurn = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'true', the system disables the Finder's burn support.";
-    };
-
-    ProhibitGoToFolder = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'true', the system disables Go to Folder.";
-    };
-
-    ShowHardDrivesOnDesktop = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'false', the system doesn't show internal hard drives on the Desktop.";
-    };
-
-    ShowExternalHardDrivesOnDesktop = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'false', the system doesn't show external hard drives on the Desktop.";
-    };
-
-    ShowRemovableMediaOnDesktop = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'false', the system doesn't show removable media items on the Desktop.";
-    };
-
-    ShowMountedServersOnDesktop = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "If 'false', the system doesn't show mounted file servers on the Desktop.";
-    };
-
-    ShowRecentTags = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "Show the Recent Tags section in the Finder sidebar";
-    };
-
-    FXRemoveOldTrashItems = lib.mkOption {
-      type = types.nullOr (types.bool);
-      default = null;
-      description = "Remove items from the Trash after 30 days";
-    };
-
+  options.programs.macprofile.payloads."apple-com-apple-finder" = lib.mkOption {
+    type = types.attrsOf (types.submodule payloadModule);
+    default = { };
+    description = "Finder (com.apple.finder) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

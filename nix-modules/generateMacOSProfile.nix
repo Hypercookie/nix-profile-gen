@@ -1,4 +1,4 @@
-# nix-modules/default.nix
+# nix-modules/generateMacOSProfile.nix
 # Home Manager module for macOS configuration profiles
 { config, lib, pkgs, ... }:
 
@@ -7,58 +7,110 @@ with lib;
 let
   cfg = config.programs.macprofile;
 
-  # Filter out null values recursively from an attribute set and lists
-  filterNulls = value:
+  # Recursively drop null values, and drop attribute sets that become empty as
+  # a result. Always returns an attrset (never null) for attrset input, so
+  # `{ ... } // prune x` is safe even when every key was null.
+  prune = value:
     if value == null then
       null
-    else if builtins.isAttrs value then
-      # Filter null values from attribute sets
-      let
-        filtered = lib.filterAttrs (name: val: val != null) value;
-        # Recursively filter nested structures
-        result = lib.mapAttrs (name: val: filterNulls val) filtered;
-      in
-      # Only return non-empty attribute sets
-      if result == { } then null else result
     else if builtins.isList value then
-      # Filter null values from lists and recursively filter elements
-      let
-        filtered = lib.filter (x: x != null) (map filterNulls value);
-      in
-      # Return null for empty lists (or keep them? Let's keep empty lists)
-      filtered
+      map prune (lib.filter (x: x != null) value)
+    else if builtins.isAttrs value then
+      lib.filterAttrs (_: x: x != null && x != { })
+        (lib.mapAttrs (_: prune) value)
     else
       value;
 
-  # Convert a payload config to the plist-ready format
-  # manifestName is the key (e.g., "com-apple-MCX-TimeServer")
-  # payloadCfg contains the config including _domain (the actual domain like "com.apple.MCX")
-  payloadToAttrs = manifestName: payloadCfg:
-    let
-      # Extract the domain from the config (stored as _domain)
-      domain = payloadCfg._domain or manifestName;
-      # Remove internal keys and filter nulls
-      cleanedCfg = filterNulls (removeAttrs payloadCfg [ "enable" "_domain" ]);
-    in
-    if payloadCfg.enable && cleanedCfg != { }
-    then {
-      PayloadType = domain;
-      PayloadIdentifier = "${cfg.organizationIdentifier}.${domain}";
-      PayloadUUID = builtins.hashString "sha256" "${cfg.organizationIdentifier}.${domain}";
-      PayloadDisplayName = domain;
-      PayloadVersion = 1;
-    } // cleanedCfg
-    else null;
+  # Keys that are module plumbing rather than payload content.
+  internalKeys = [ "enable" "_domain" "_unique" "_displayName" "_keyNames" ];
 
-  # Collect all enabled payloads
-  # Access payloads directly from config (they're defined by imported modules)
-  payloadsConfig = config.programs.macprofile.payloads or { };
-  enabledPayloads = lib.filterAttrs (name: value: value != null)
-    (lib.mapAttrs payloadToAttrs payloadsConfig);
+  # Payloads are declared by the imported modules as
+  #   programs.macprofile.payloads.<manifest>.<instance>
+  payloadsConfig = cfg.payloads or { };
+  manifestNames = lib.attrNames payloadsConfig;
+
+  enabledInstanceNames = manifestName:
+    lib.attrNames (lib.filterAttrs (_: i: i.enable) payloadsConfig.${manifestName});
+
+  # Convert one payload instance into its plist representation.
+  instanceToAttrs = manifestName: instanceName: icfg:
+    let
+      domain = icfg._domain;
+      # The conventional "default" instance gets no suffix, so single-instance
+      # configurations keep stable PayloadIdentifiers and UUIDs.
+      ident = "${cfg.organizationIdentifier}.${domain}"
+        + lib.optionalString (instanceName != "default") ".${instanceName}";
+      cleaned = prune (removeAttrs icfg internalKeys);
+    in
+    if !icfg.enable then
+      null
+    else
+      {
+        PayloadType = domain;
+        PayloadIdentifier = ident;
+        PayloadUUID = builtins.hashString "sha256" ident;
+        PayloadDisplayName =
+          if icfg._displayName != null then icfg._displayName else domain;
+        PayloadVersion = 1;
+      } // cleaned;
+
+  # Flatten <manifest>.<instance> into the PayloadContent list.
+  enabledPayloads = lib.concatMap
+    (manifestName:
+      lib.filter (x: x != null)
+        (lib.mapAttrsToList (instanceToAttrs manifestName)
+          payloadsConfig.${manifestName}))
+    manifestNames;
+
+  # macOS rejects profiles containing more than one instance of a payload whose
+  # manifest declares pfm_unique.
+  uniqueAssertions = map
+    (manifestName:
+      let
+        instances = payloadsConfig.${manifestName};
+        enabled = enabledInstanceNames manifestName;
+        isUnique = lib.any (i: i._unique) (lib.attrValues instances);
+      in
+      {
+        assertion = !(isUnique && lib.length enabled > 1);
+        message = ''
+          programs.macprofile.payloads."${manifestName}" is marked pfm_unique in
+          its manifest: macOS accepts only one instance of this payload per
+          profile, but ${toString (lib.length enabled)} are enabled:
+          ${lib.concatStringsSep ", " enabled}
+        '';
+      })
+    manifestNames;
+
+  # Best-effort detection of the pre-instance (flat) configuration syntax, e.g.
+  #   payloads."apple-com-apple-dnsSettings-managed".DNSSettings = { ... };
+  # instead of
+  #   payloads."apple-com-apple-dnsSettings-managed".default.DNSSettings = { ... };
+  #
+  # This only fires when the legacy value happened to be an attribute set, since
+  # scalar values fail submodule coercion before assertions are ever evaluated.
+  legacyAssertions = lib.concatMap
+    (manifestName:
+      lib.mapAttrsToList
+        (instanceName: icfg: {
+          assertion = !(lib.elem instanceName icfg._keyNames);
+          message = ''
+            programs.macprofile.payloads."${manifestName}"."${instanceName}" looks
+            like the old flat payload syntax: "${instanceName}" is a payload key of
+            this manifest, not an instance name.
+
+            Payloads are now keyed by instance name so a profile can contain
+            several instances of the same payload type. Rewrite as:
+
+              payloads."${manifestName}".default.${instanceName} = ...;
+          '';
+        })
+        payloadsConfig.${manifestName})
+    manifestNames;
 
   # Generate the complete mobileconfig profile structure
   profileContent = {
-    PayloadContent = lib.attrValues enabledPayloads;
+    PayloadContent = enabledPayloads;
     PayloadDisplayName = cfg.profileName;
     PayloadIdentifier = cfg.organizationIdentifier;
     PayloadOrganization = cfg.organization;
@@ -74,12 +126,13 @@ let
     PayloadRemovalDisallowed = true;
   };
 
-  # Convert to plist XML using a derivation
-  generateMobileconfig = pkgs.runCommand "profile.mobileconfig" {
-    nativeBuildInputs = [ pkgs.python3 ];
-    profileJson = builtins.toJSON profileContent;
-    passAsFile = [ "profileJson" ];
-  } ''
+  # Convert to plist using a derivation
+  generateMobileconfig = pkgs.runCommand "profile.mobileconfig"
+    {
+      nativeBuildInputs = [ pkgs.python3 ];
+      profileJson = builtins.toJSON profileContent;
+      passAsFile = [ "profileJson" ];
+    } ''
     ${pkgs.python3}/bin/python3 << 'EOF'
 import json
 import plistlib
@@ -180,19 +233,23 @@ in
       description = "The path relative to HOME where the mobileconfig file will be written.";
     };
 
-    # Payloads are defined by the imported modules - no need to declare here
-    # Each imported payload module defines options.programs.macprofile.payloads."domain"
-    # Use list-macprofile-options.py to discover available payloads and their options
+    # Payloads are declared by the imported modules as
+    #   programs.macprofile.payloads.<manifest>.<instance>
+    # Each manifest is a `types.attrsOf (types.submodule ...)`, so multiple
+    # instances of the same payload type are supported. Use the instance name
+    # "default" when a single instance is all you need.
   };
 
   config = mkIf cfg.enable {
+    assertions = uniqueAssertions ++ legacyAssertions;
+
     # Only generate if there are enabled payloads
-    home.file.${cfg.outputPath} = mkIf (enabledPayloads != { }) {
+    home.file.${cfg.outputPath} = mkIf (enabledPayloads != [ ]) {
       source = generateMobileconfig;
     };
 
     # Provide an activation script to optionally install the profile
-    home.activation.installMacProfile = mkIf (enabledPayloads != { }) (
+    home.activation.installMacProfile = mkIf (enabledPayloads != [ ]) (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         if [[ "$OSTYPE" == "darwin"* ]]; then
           PROFILE_PATH="$HOME/${cfg.outputPath}"

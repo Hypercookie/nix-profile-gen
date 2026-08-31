@@ -2,39 +2,70 @@
 # Domain: com.apple.security.FDERecoveryKeyEscrow
 # Title: FileVault Recovery Key Escrow
 # Platforms: macOS
+# Unique: yes
 
 { lib, ... }:
 
 with lib;
 
+let
+  payloadModule = {
+    options = {
+      enable = lib.mkEnableOption "FileVault Recovery Key Escrow";
+
+      _domain = lib.mkOption {
+        internal = true;
+        type = lib.types.str;
+        default = "com.apple.security.FDERecoveryKeyEscrow";
+        description = "The payload domain (PayloadType) for this manifest.";
+      };
+
+      _unique = lib.mkOption {
+        internal = true;
+        type = lib.types.bool;
+        default = true;
+        description = "Whether macOS allows only one instance of this payload per profile.";
+      };
+
+      _displayName = lib.mkOption {
+        internal = true;
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "PayloadDisplayName for this instance. Defaults to the domain.";
+      };
+
+      _keyNames = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "Location" "EncryptCertPayloadUUID" "DeviceKey" ];
+        description = "Payload keys of this manifest, used to detect legacy flat syntax.";
+      };
+
+      Location = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "The description of the location where the system escrows the recovery key. The system inserts this text into the message the user sees when it enables FileVault.";
+      };
+
+      EncryptCertPayloadUUID = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "The UUID of a payload within the same profile that contains the certificate that the system uses to encrypt the recovery key. The referenced payload must be of type 'com.apple.security.pkcs1'.";
+      };
+
+      DeviceKey = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "The string that's included in help text if the user appears to have forgotten the password. Site admins can use this key to look up the escrowed key for the particular computer.\nThis key replaces the 'RecordNumber' key used in the previous escrow mechanism. If the key is missing, the system uses the device serial number instead.";
+      };
+
+    };
+  };
+in
 {
-  options.programs.macprofile.payloads."apple-com-apple-security-FDERecoveryKeyEscrow" = {
-    enable = lib.mkEnableOption "FileVault Recovery Key Escrow";
-
-    _domain = lib.mkOption {
-      internal = true;
-      type = lib.types.str;
-      default = "com.apple.security.FDERecoveryKeyEscrow";
-      description = "The payload domain (PayloadType) for this manifest.";
-    };
-
-    Location = lib.mkOption {
-      type = types.nullOr (types.str);
-      default = null;
-      description = "The description of the location where the system escrows the recovery key. The system inserts this text into the message the user sees when it enables FileVault.";
-    };
-
-    EncryptCertPayloadUUID = lib.mkOption {
-      type = types.nullOr (types.str);
-      default = null;
-      description = "The UUID of a payload within the same profile that contains the certificate that the system uses to encrypt the recovery key. The referenced payload must be of type 'com.apple.security.pkcs1'.";
-    };
-
-    DeviceKey = lib.mkOption {
-      type = types.nullOr (types.str);
-      default = null;
-      description = "The string that's included in help text if the user appears to have forgotten the password. Site admins can use this key to look up the escrowed key for the particular computer.\n\nThis key replaces the 'RecordNumber' key used in the previous escrow mechanism. If the key is missing, the system uses the device serial number instead.";
-    };
-
+  options.programs.macprofile.payloads."apple-com-apple-security-FDERecoveryKeyEscrow" = lib.mkOption {
+    type = types.attrsOf (types.submodule payloadModule);
+    default = { };
+    description = "FileVault Recovery Key Escrow (com.apple.security.FDERecoveryKeyEscrow) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

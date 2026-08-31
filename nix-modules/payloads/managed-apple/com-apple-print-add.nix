@@ -2,50 +2,81 @@
 # Domain: com.apple.print.add
 # Title: Printing: Toolbar of Add Printer Window
 # Platforms: macOS
+# Unique: yes
 
 { lib, ... }:
 
 with lib;
 
+let
+  payloadModule = {
+    options = {
+      enable = lib.mkEnableOption "Printing: Toolbar of Add Printer Window";
+
+      _domain = lib.mkOption {
+        internal = true;
+        type = lib.types.str;
+        default = "com.apple.print.add";
+        description = "The payload domain (PayloadType) for this manifest.";
+      };
+
+      _unique = lib.mkOption {
+        internal = true;
+        type = lib.types.bool;
+        default = true;
+        description = "Whether macOS allows only one instance of this payload per profile.";
+      };
+
+      _displayName = lib.mkOption {
+        internal = true;
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "PayloadDisplayName for this instance. Defaults to the domain.";
+      };
+
+      _keyNames = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "NSToolbar_Configuration_com.apple.print.add.toolbar" ];
+        description = "Payload keys of this manifest, used to detect legacy flat syntax.";
+      };
+
+      "NSToolbar_Configuration_com.apple.print.add.toolbar" = lib.mkOption {
+        type = types.nullOr (types.submodule {
+          options = {
+            TB_Item_Identifiers = lib.mkOption {
+              type = types.nullOr (types.listOf (types.enum [ "com.apple.print.pbm.uber" "com.apple.print.pbm.ip" "com.apple.print.pbm.smb" "com.apple.print.pbm.advanced" "com.apple.print.add.search" "NSToolbarFlexibleSpaceItem" "NSToolbarSpaceItem" ]));
+              default = null;
+              description = "The items to include in the toolbar and their order. The only items that can be added more than once are the Flexible Space and Space. Warning: configuring this property with no actual buttons (Default, IP, Windows, or Advanced) may lead to the display of no UI, and this condition may persist after removal of profile.";
+            };
+            TB_Display_Mode = lib.mkOption {
+              type = types.nullOr (types.enum [ 1 2 3 ]);
+              default = null;
+              description = "The toolbar display mode.";
+            };
+            TB_Icon_Size_Mode = lib.mkOption {
+              type = types.nullOr (types.enum [ 1 2 ]);
+              default = null;
+              description = "The icon size style.";
+            };
+            TB_Is_Shown = lib.mkOption {
+              type = types.nullOr (types.enum [ 0 1 ]);
+              default = null;
+              description = "Show or hide the toolbar.";
+            };
+          };
+        });
+        default = null;
+        description = "Add Printer Dictionary";
+      };
+
+    };
+  };
+in
 {
-  options.programs.macprofile.payloads."managed-apple-com-apple-print-add" = {
-    enable = lib.mkEnableOption "Printing: Toolbar of Add Printer Window";
-
-    _domain = lib.mkOption {
-      internal = true;
-      type = lib.types.str;
-      default = "com.apple.print.add";
-      description = "The payload domain (PayloadType) for this manifest.";
-    };
-
-    "NSToolbar_Configuration_com.apple.print.add.toolbar" = lib.mkOption {
-      type = types.nullOr (types.submodule {
-        options = {
-          TB_Item_Identifiers = lib.mkOption {
-            type = types.nullOr (types.listOf (types.enum [ "com.apple.print.pbm.uber" "com.apple.print.pbm.ip" "com.apple.print.pbm.smb" "com.apple.print.pbm.advanced" "com.apple.print.add.search" "NSToolbarFlexibleSpaceItem" "NSToolbarSpaceItem" ]));
-            default = null;
-            description = "The items to include in the toolbar and their order. The only items that can be added more than once are the Flexible Space and Space. Warning: configuring this property with no actual buttons (Default, IP, Windows, or Advanced) may lead to the display of no UI, and this condition may persist after removal of profile.";
-          };
-          TB_Display_Mode = lib.mkOption {
-            type = types.nullOr (types.enum [ 1 2 3 ]);
-            default = null;
-            description = "The toolbar display mode.";
-          };
-          TB_Icon_Size_Mode = lib.mkOption {
-            type = types.nullOr (types.enum [ 1 2 ]);
-            default = null;
-            description = "The icon size style.";
-          };
-          TB_Is_Shown = lib.mkOption {
-            type = types.nullOr (types.enum [ 0 1 ]);
-            default = null;
-            description = "Show or hide the toolbar.";
-          };
-        };
-      });
-      default = null;
-      description = "Add Printer Dictionary";
-    };
-
+  options.programs.macprofile.payloads."managed-apple-com-apple-print-add" = lib.mkOption {
+    type = types.attrsOf (types.submodule payloadModule);
+    default = { };
+    description = "Printing: Toolbar of Add Printer Window (com.apple.print.add) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

@@ -2,33 +2,76 @@
 # Domain: com.apple.iWork.Keynote
 # Title: Keynote
 # Platforms: macOS
+# Unique: no
 
 { lib, ... }:
 
 with lib;
 
+let
+  payloadModule = {
+    options = {
+      enable = lib.mkEnableOption "Keynote";
+
+      _domain = lib.mkOption {
+        internal = true;
+        type = lib.types.str;
+        default = "com.apple.iWork.Keynote";
+        description = "The payload domain (PayloadType) for this manifest.";
+      };
+
+      _unique = lib.mkOption {
+        internal = true;
+        type = lib.types.bool;
+        default = false;
+        description = "Whether macOS allows only one instance of this payload per profile.";
+      };
+
+      _displayName = lib.mkOption {
+        internal = true;
+        type = lib.types.nullOr lib.types.str;
+        default = null;
+        description = "PayloadDisplayName for this instance. Defaults to the domain.";
+      };
+
+      _keyNames = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "TMAFirstLaunchVersion" "TSURemoteDefaultsNextUpdate" "TMAApplicationUpdateNotifier.MigrationAlertToInstallCallCounter" "TMAApplicationUpdateNotifier.MigrationAlertToInstallLastShownTimeStamp" ];
+        description = "Payload keys of this manifest, used to detect legacy flat syntax.";
+      };
+
+      TMAFirstLaunchVersion = lib.mkOption {
+        type = types.nullOr (types.int);
+        default = null;
+        description = "Suppress Welcome Dialog";
+      };
+
+      TSURemoteDefaultsNextUpdate = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Suppress iWork Update Messages";
+      };
+
+      "TMAApplicationUpdateNotifier.MigrationAlertToInstallCallCounter" = lib.mkOption {
+        type = types.nullOr (types.enum [ 99 ]);
+        default = null;
+        description = "Set to 99 as part of suppressing the dialog asking to switch to the Creator Studio version.";
+      };
+
+      "TMAApplicationUpdateNotifier.MigrationAlertToInstallLastShownTimeStamp" = lib.mkOption {
+        type = types.nullOr (types.float);
+        default = null;
+        description = "Set to 4068144000000 as part of suppressing the dialog asking to switch to the Creator Studio version.";
+      };
+
+    };
+  };
+in
 {
-  options.programs.macprofile.payloads."managed-apple-com-apple-iWork-Keynote" = {
-    enable = lib.mkEnableOption "Keynote";
-
-    _domain = lib.mkOption {
-      internal = true;
-      type = lib.types.str;
-      default = "com.apple.iWork.Keynote";
-      description = "The payload domain (PayloadType) for this manifest.";
-    };
-
-    TMAFirstLaunchVersion = lib.mkOption {
-      type = types.nullOr (types.int);
-      default = null;
-      description = "Suppress Welcome Dialog";
-    };
-
-    TSURemoteDefaultsNextUpdate = lib.mkOption {
-      type = types.nullOr (types.str);
-      default = null;
-      description = "Suppress iWork Update Messages";
-    };
-
+  options.programs.macprofile.payloads."managed-apple-com-apple-iWork-Keynote" = lib.mkOption {
+    type = types.attrsOf (types.submodule payloadModule);
+    default = { };
+    description = "Keynote (com.apple.iWork.Keynote) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

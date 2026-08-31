@@ -10,59 +10,180 @@ This module generates a provisioning profile at a given path, which can then be 
 - 🍎 Converts Apple ProfileManifests to Nix module options
 - 🔧 Generates `.mobileconfig` files from Nix configuration
 - 📋 Supports all Apple payload types (Apple, ManagedPreferences, etc.)
+- 🔁 Multiple instances of the same payload type in one profile
+- 📬 Maps `accounts.email` / `accounts.calendar` / `accounts.contact` straight into Mail, CalDAV and CardDAV payloads
 - 🔍 Browse options interactively with optnix
 
 ## Quick Start
 
-include 
-```
+Include
+
+```nix
 nix-profile-gen.url = "github:Hypercookie/nix-profile-gen";
 ```
-in your flake inputs. 
-Then import `inputs.nix-profile-gen.homeModules.profiles` inside your home manager config.
 
-Find configurable options.
+in your flake inputs, then import one of:
+
+| Module | Contents |
+|---|---|
+| `homeModules.profiles` | Core module + all payload options |
+| `homeModules.bridges` | Home Manager account bridges (needs `profiles`) |
+| `homeModules.default` | Both of the above |
+
+Find configurable options:
+
 ```shell
 optnix
 ```
+
 You can also use the free software [ProfileCreator](https://github.com/ProfileCreator/ProfileManifests) and then export the profile to find the names
 of options. (That is sometimes easier because of weird naming).
-## Usage in Home Manager
 
-Add this module to your Home Manager configuration:
+## Usage in Home Manager
 
 ```nix
 {
   imports = [
-     inputs.nix-profile-gen.homeModules.profiles
+     inputs.nix-profile-gen.homeModules.default
   ];
 
   programs.macprofile = {
-            enable = true;
-            profileName = "NixOS Enforced Config";
-            organizationIdentifier = "eu.faustinus";
-            scope = "System"; # System-level for network settings
-            consentText = "This profile enforces nixos settings";
+    enable = true;
+    profileName = "NixOS Enforced Config";
+    organizationIdentifier = "eu.faustinus";
+    scope = "System"; # System-level for network settings
+    consentText = "This profile enforces nixos settings";
 
-            payloads = {
-              "managed-applications-com-1password-1password" = {
-                enable = true;
-                "updates.autoUpdate" = false;
-              };
-              "apple-com-apple-applicationaccess-macOS" = {
-                enable = true;
-                allowAppleIntelligenceReport = false;
-                allowGenmoji = false;
-                allowImagePlayground = false;
-              };
-              "apple-com-apple-loginwindow" = {
-                enable = true;
-                SHOWFULLNAME = false;
-                LoginwindowText = "Welcome to faustinus.eu";
-              };
-            };
-          };
+    payloads = {
+      "managed-applications-com-1password-1password".default = {
+        enable = true;
+        "updates.autoUpdate" = false;
+      };
+      "apple-com-apple-applicationaccess-macOS".default = {
+        enable = true;
+        allowAppleIntelligenceReport = false;
+        allowGenmoji = false;
+        allowImagePlayground = false;
+      };
+      "apple-com-apple-loginwindow".default = {
+        enable = true;
+        SHOWFULLNAME = false;
+        LoginwindowText = "Welcome to faustinus.eu";
+      };
+    };
+  };
 }
+```
+
+## Payload instances
+
+Payloads are keyed by **manifest name**, then by **instance name**:
+
+```
+programs.macprofile.payloads.<manifest>.<instance>.<key>
+```
+
+Use the instance name `default` when one instance is all you need — it is
+special-cased to keep the `PayloadIdentifier` un-suffixed, so single-instance
+profiles get stable identifiers and UUIDs.
+
+Several payload types may appear more than once in a profile, which is what
+makes per-account mail configuration possible:
+
+```nix
+payloads."apple-com-apple-mail-managed" = {
+  work = {
+    enable = true;
+    EmailAddress = "jane@work.example";
+    IncomingMailServerHostName = "imap.work.example";
+  };
+  personal = {
+    enable = true;
+    EmailAddress = "jane@personal.example";
+    IncomingMailServerHostName = "imap.personal.example";
+  };
+};
+```
+
+Manifests that declare `pfm_unique` accept only one instance per profile;
+enabling a second one fails evaluation with an explanatory assertion.
+
+## Home Manager account bridges
+
+Importing `homeModules.bridges` **is** the opt-in. With
+`programs.macprofile.enable = true`, every eligible account is turned into the
+matching payload automatically:
+
+| Home Manager option | Payload | Notes |
+|---|---|---|
+| `accounts.email.accounts.<n>` | `com.apple.mail.managed` | IMAP accounts only |
+| `accounts.calendar.accounts.<n>` | `com.apple.caldav.account` | `remote.type = "caldav"` only |
+| `accounts.contact.accounts.<n>` | `com.apple.carddav.account` | `remote.type = "carddav"` only |
+
+Each account becomes one payload instance named after the account, so this is
+all that is needed:
+
+```nix
+programs.macprofile = {
+  enable = true;
+  organizationIdentifier = "com.example";
+};
+
+accounts.email.accounts.work = {
+  primary = true;
+  address = "jane@work.example";
+  realName = "Jane Doe";
+  userName = "jane";
+  imap = { host = "imap.work.example"; port = 993; };
+  smtp = { host = "smtp.work.example"; port = 465; };
+};
+```
+
+Every bridged value is set with `lib.mkDefault`, so it can be overridden
+through the ordinary typed payload path:
+
+```nix
+programs.macprofile.payloads."apple-com-apple-mail-managed".work = {
+  PreventMove = true;
+  SMIMEEnabled = true;
+};
+```
+
+Turn a bridge off or narrow it with:
+
+```nix
+programs.macprofile.bridges.email.enable = false;
+programs.macprofile.bridges.calendar.exclude = [ "personal" ];
+```
+
+### Passwords are never written to the profile
+
+`IncomingPassword`, `OutgoingPassword`, `CalDAVPassword` and `CardDAVPassword`
+are deliberately never emitted. The generated `.mobileconfig` is built in a Nix
+derivation and therefore lives in the **world-readable Nix store**, and Home
+Manager only exposes `passwordCommand`, which cannot be evaluated at build
+time. macOS prompts for the password when the profile is installed.
+
+### Other deliberate omissions
+
+- `aliases`, `folders`, `signature`, `gpg`, `maildir` — no equivalent payload keys.
+- `imap.tls.useStartTls` — the payload only has a boolean `*UseSSL` key, so the STARTTLS distinction is lost. A warning is emitted.
+- `authentication` values `gssapi` and `xoauth2` — no equivalent; the key is left unset and a warning is emitted.
+- Calendar/contact remotes of type `http`, `google_calendar` and `google_contacts` — skipped with a warning.
+
+## Development
+
+Regenerate the payload modules after updating the submodule:
+
+```bash
+git submodule update --remote ProfileManifests
+python3 nix_o_s_module_generator.py
+```
+
+Run the test suite:
+
+```bash
+nix flake check
 ```
 
 This project uses ProfileManifests from [ProfileCreator](https://github.com/ProfileCreator/ProfileManifests), which is licensed under the Apache License 2.0.

@@ -194,8 +194,36 @@ def generate_option(subkey: dict, indent: int = 4, seen_names: set = None) -> st
     lines.append(f'{ind}}};')
 
     return '\n'.join(lines)
+
+
+def collect_key_names(config_subkeys: list) -> list[str]:
+    """Return the Nix attribute names that `generate_option` will emit.
+
+    Mirrors the skip/dedupe logic of `generate_option` so the two stay in sync.
+    Quotes added by `sanitize_nix_identifier` for dotted names are stripped,
+    since we want the bare attribute name here.
+    """
+    seen: set[str] = set()
+    names: list[str] = []
+    for subkey in config_subkeys:
+        raw = subkey.get('pfm_name', '')
+        if not raw or raw.startswith('Payload'):
+            continue
+        nix_name = sanitize_nix_identifier(raw)
+        if nix_name in seen:
+            continue
+        seen.add(nix_name)
+        names.append(nix_name.strip('"'))
+    return names
+
+
 def generate_nix_module(plist_path: Path, category: str = '') -> str:
-    """Generate a complete NixOS module from a plist manifest without collisions."""
+    """Generate a complete NixOS module from a plist manifest without collisions.
+
+    Each manifest becomes a single `types.attrsOf (types.submodule ...)` option,
+    so a profile can contain multiple instances of the same payload type (for
+    example one `com.apple.mail.managed` payload per mail account).
+    """
     with open(plist_path, 'rb') as f:
         manifest = plistlib.load(f)
 
@@ -204,9 +232,13 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
     description = manifest.get('pfm_description', '')
     subkeys = manifest.get('pfm_subkeys', [])
     platforms = manifest.get('pfm_platforms', [])
+    # Manifests that omit pfm_unique are treated as non-unique (permissive:
+    # we would rather not raise a bogus assertion than guard an unknown case).
+    unique = bool(manifest.get('pfm_unique', False))
 
     # Filter out Payload* keys as they are standard profile keys
     config_subkeys = [sk for sk in subkeys if not sk.get('pfm_name', '').startswith('Payload')]
+    key_names = collect_key_names(config_subkeys)
 
     # Use manifest file name for uniqueness, include category to avoid conflicts across directories
     manifest_base_name = plist_path.stem.replace('.', '-')
@@ -215,31 +247,61 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
     else:
         manifest_name = manifest_base_name
 
+    escaped_title = title.replace('\\', '\\\\').replace('"', '\\"')
+
     lines = []
     lines.append(f'# Auto-generated from ProfileManifests: {plist_path.name}')
     lines.append(f'# Domain: {domain}')
     lines.append(f'# Title: {title}')
     if platforms:
         lines.append(f'# Platforms: {", ".join(platforms)}')
+    lines.append(f'# Unique: {"yes" if unique else "no"}')
     lines.append('')
     lines.append('{ lib, ... }:')
     lines.append('')
     lines.append('with lib;')
     lines.append('')
-    lines.append('{')
-    # Use manifest_name as the key to ensure uniqueness (multiple manifests can share the same domain)
-    lines.append(f'  options.programs.macprofile.payloads."{manifest_name}" = {{')
-    lines.append('    enable = lib.mkEnableOption "' + title.replace('"', '\\"') + '";')
+    lines.append('let')
+    lines.append('  payloadModule = {')
+    lines.append('    options = {')
+    lines.append(f'      enable = lib.mkEnableOption "{escaped_title}";')
     lines.append('')
-    
+
     # Store the domain as an internal option for use when generating the mobileconfig
     # This is needed because PayloadType must be the domain, not the manifest name
-    lines.append('    _domain = lib.mkOption {')
-    lines.append('      internal = true;')
-    lines.append('      type = lib.types.str;')
-    lines.append(f'      default = "{domain}";')
-    lines.append('      description = "The payload domain (PayloadType) for this manifest.";')
-    lines.append('    };')
+    lines.append('      _domain = lib.mkOption {')
+    lines.append('        internal = true;')
+    lines.append('        type = lib.types.str;')
+    lines.append(f'        default = "{domain}";')
+    lines.append('        description = "The payload domain (PayloadType) for this manifest.";')
+    lines.append('      };')
+    lines.append('')
+
+    # pfm_unique: macOS only accepts one payload of this type per profile.
+    lines.append('      _unique = lib.mkOption {')
+    lines.append('        internal = true;')
+    lines.append('        type = lib.types.bool;')
+    lines.append(f'        default = {"true" if unique else "false"};')
+    lines.append('        description = "Whether macOS allows only one instance of this payload per profile.";')
+    lines.append('      };')
+    lines.append('')
+
+    # Per-instance PayloadDisplayName, defaults to the domain when unset.
+    lines.append('      _displayName = lib.mkOption {')
+    lines.append('        internal = true;')
+    lines.append('        type = lib.types.nullOr lib.types.str;')
+    lines.append('        default = null;')
+    lines.append('        description = "PayloadDisplayName for this instance. Defaults to the domain.";')
+    lines.append('      };')
+    lines.append('')
+
+    # Used by the core module to detect pre-instance (flat) configuration syntax.
+    lines.append('      _keyNames = lib.mkOption {')
+    lines.append('        internal = true;')
+    lines.append('        type = lib.types.listOf lib.types.str;')
+    lines.append(f'        default = {nix_value(key_names)};')
+    lines.append('        description = "Payload keys of this manifest, used to detect legacy flat syntax.";')
+    lines.append('      };')
     lines.append('')
 
     # Track seen names to avoid duplicates in this manifest
@@ -247,23 +309,39 @@ def generate_nix_module(plist_path: Path, category: str = '') -> str:
 
     # Generate options for each subkey
     for subkey in config_subkeys:
-        option_str = generate_option(subkey, indent=4, seen_names=seen_names)
+        option_str = generate_option(subkey, indent=6, seen_names=seen_names)
         if option_str:
             lines.append(option_str)
             lines.append('')
 
-    # Close braces
-    lines.append('  };')    # end manifest_name
+    lines.append('    };')  # end options
+    lines.append('  };')    # end payloadModule
+    lines.append('in')
+    lines.append('{')
+    # Use manifest_name as the key to ensure uniqueness (multiple manifests can share the same domain)
+    lines.append(f'  options.programs.macprofile.payloads."{manifest_name}" = lib.mkOption {{')
+    lines.append('    type = types.attrsOf (types.submodule payloadModule);')
+    lines.append('    default = { };')
+    lines.append(f'    description = "{escaped_title} ({domain}) payload instances, keyed by instance name. Use \\"default\\" if you only need one.";')
+    lines.append('  };')
     lines.append('}')
 
     return '\n'.join(lines)
 
 def convert_manifest_directory(manifest_dir: Path, output_dir: Path, category: str = ''):
-    """Convert all manifests in a directory to NixOS modules."""
+    """Convert all manifests in a directory to NixOS modules.
+
+    Outputs from earlier runs whose source manifest has since been renamed or
+    removed upstream are deleted. Otherwise they linger in an outdated format
+    and are still picked up by `generate_payload_imports`, which globs the
+    output directory.
+    """
     output_dir.mkdir(parents=True, exist_ok=True)
 
     plist_files = list(manifest_dir.glob('*.plist'))
     print(f"Found {len(plist_files)} manifest files in {manifest_dir}")
+
+    written: set[Path] = set()
 
     for plist_path in plist_files:
         try:
@@ -276,9 +354,15 @@ def convert_manifest_directory(manifest_dir: Path, output_dir: Path, category: s
             with open(output_path, 'w') as f:
                 f.write(nix_content)
 
+            written.add(output_path)
             print(f"  Generated: {output_path.name}")
         except Exception as e:
             print(f"  Error processing {plist_path.name}: {e}", file=sys.stderr)
+
+    for stale in sorted(output_dir.glob('*.nix')):
+        if stale not in written:
+            stale.unlink()
+            print(f"  Removed stale: {stale.name}")
 
 
 def main():

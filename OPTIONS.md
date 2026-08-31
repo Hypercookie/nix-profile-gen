@@ -1,60 +1,47 @@
 # Listing macprofile Options
 
-This module provides several ways to discover and list available options for macOS configuration profiles.
+Payload options live at:
 
-## Using the Python Script
-
-The easiest way to list options is using the provided Python script:
-
-### List All Available Payloads
-
-```bash
-python3 list-macprofile-options.py
+```
+programs.macprofile.payloads.<manifest>.<instance>.<key>
 ```
 
-This will show all available payloads grouped by category (apple, managed-apple, managed-applications, etc.).
+`<manifest>` identifies the ProfileManifests plist, `<instance>` is a name you
+choose (use `default` for a single instance), and `<key>` is an Apple
+preference key.
 
-### Show Options for a Specific Payload
+## Using optnix
 
 ```bash
-python3 list-macprofile-options.py apple-com-apple-airplay
+optnix
 ```
 
-This will show detailed information about the payload including:
-- Title and domain
-- Supported platforms
-- All available options with descriptions
+`optnix.toml` in the repository root is preconfigured to evaluate
+`nix-modules/payloads/all-payloads.nix` and list every visible, non-internal
+option.
 
 ## Using Nix Commands
 
-Since the options are defined in the Nix module system, you can also query them using standard Nix/Home Manager tools.
-
-### List All Payload Options
+### List all payload manifests
 
 ```bash
-home-manager-options | grep "programs.macprofile.payloads"
-```
-
-### Query a Specific Payload
-
-```bash
-home-manager-options programs.macprofile.payloads."apple-com-apple-airplay"
-```
-
-### Using nix eval (Advanced)
-
-You can also use `nix eval` to programmatically query options:
-
-```bash
-nix eval --expr '
+nix eval --impure --json --expr '
   let
-    hm = import (builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/master.tar.gz");
-    eval = hm.lib.evalModules {
-      modules = [ ./nix-modules/generateMacOSProfile.nix ];
+    pkgs = import <nixpkgs> {};
+    lib = pkgs.lib;
+    eval = lib.evalModules {
+      modules = [ ./nix-modules/payloads/all-payloads.nix ];
     };
   in
     builtins.attrNames eval.options.programs.macprofile.payloads
 '
+```
+
+### Query a specific payload
+
+```bash
+home-manager-options | grep "programs.macprofile.payloads"
+home-manager-options 'programs.macprofile.payloads."apple-com-apple-airplay"'
 ```
 
 ## Finding Payload Names
@@ -68,22 +55,24 @@ For example:
 
 The category prefix ensures uniqueness when the same manifest exists in multiple directories.
 
-## Example Configuration
+You can also use [ProfileCreator](https://github.com/ProfileCreator/ProfileManifests)
+to build a profile in a GUI and export it, which is sometimes the quickest way
+to discover an awkwardly named key.
 
-Once you know the payload name, you can configure it:
+## Example Configuration
 
 ```nix
 programs.macprofile = {
   enable = true;
   payloads = {
-    "apple-com-apple-airplay" = {
+    "apple-com-apple-airplay".default = {
       enable = true;
       AllowList = [
         { DeviceName = "Conference Room A"; }
       ];
     };
-    
-    "apple-com-apple-dnsSettings-managed" = {
+
+    "apple-com-apple-dnsSettings-managed".default = {
       enable = true;
       DNSSettings = {
         DNSProtocol = "HTTPS";
@@ -94,3 +83,31 @@ programs.macprofile = {
   };
 };
 ```
+
+## Multiple instances
+
+Manifests whose plist sets `pfm_unique = false` may appear more than once in a
+profile. Give each one its own instance name:
+
+```nix
+payloads."apple-com-apple-caldav-account" = {
+  work    = { enable = true; CalDAVHostName = "dav.work.example"; };
+  private = { enable = true; CalDAVHostName = "dav.home.example"; };
+};
+```
+
+Enabling two instances of a `pfm_unique` payload is rejected at evaluation
+time. Each generated module records this in its header comment (`# Unique: yes`
+or `# Unique: no`).
+
+## Internal options
+
+Every instance carries a few internal options, hidden from `optnix` but usable
+if you need them:
+
+| Option | Purpose |
+|---|---|
+| `_domain` | `PayloadType` for the manifest |
+| `_unique` | Whether macOS allows only one instance |
+| `_displayName` | Per-instance `PayloadDisplayName` (defaults to the domain) |
+| `_keyNames` | Payload keys, used to detect the pre-instance flat syntax |

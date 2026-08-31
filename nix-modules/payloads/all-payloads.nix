@@ -10,6 +10,7 @@
     ./apple/com-apple-Dictionary.nix
     ./apple/com-apple-DirectoryService-managed.nix
     ./apple/com-apple-DiscRecording.nix
+    ./apple/com-apple-GlobalPreferences.nix
     ./apple/com-apple-MCX-EnergySaver.nix
     ./apple/com-apple-MCX-FileVault2.nix
     ./apple/com-apple-MCX-FileVaultOptions.nix
@@ -121,7 +122,6 @@
     ./apple/com-apple-xsan.nix
     ./apple/loginwindow.nix
     ./managed-apple/com-apple-AdLib.nix
-    ./managed-apple/com-apple-GlobalPreferences.nix
     ./managed-apple/com-apple-NetworkBrowser.nix
     ./managed-apple/com-apple-Safari-SandboxBroker.nix
     ./managed-apple/com-apple-Siri.nix
@@ -176,7 +176,11 @@
     ./managed-applications/com-crowdstrike-falcon.nix
     ./managed-applications/com-dare-zappl-preferences.nix
     ./managed-applications/com-docker-config.nix
+    ./managed-applications/com-electron-dialpad.nix
+    ./managed-applications/com-frontapp-Front.nix
     ./managed-applications/com-fxfactory-FxFactory.nix
+    ./managed-applications/com-gingerlabs-notability-iOS.nix
+    ./managed-applications/com-gingerlabs-notability-macOS.nix
     ./managed-applications/com-github-ants-framework.nix
     ./managed-applications/com-github-macadmins-Nudge.nix
     ./managed-applications/com-github-macadmins-SupportCompanion.nix
@@ -213,6 +217,7 @@
     ./managed-applications/com-microsoft-Outlook.nix
     ./managed-applications/com-microsoft-Powerpoint.nix
     ./managed-applications/com-microsoft-SkypeForBusiness.nix
+    ./managed-applications/com-microsoft-VSCode.nix
     ./managed-applications/com-microsoft-Word.nix
     ./managed-applications/com-microsoft-autoupdate-fba.nix
     ./managed-applications/com-microsoft-autoupdate2.nix
@@ -221,11 +226,12 @@
     ./managed-applications/com-microsoft-onenote-mac.nix
     ./managed-applications/com-microsoft-rdc-macos.nix
     ./managed-applications/com-microsoft-wdav.nix
+    ./managed-applications/com-missiveapp-osx.nix
     ./managed-applications/com-northpolesec-santa.nix
     ./managed-applications/com-okta-mobile-auth-service-extension.nix
     ./managed-applications/com-okta-mobile.nix
     ./managed-applications/com-papercut-printdeploy-client.nix
-    ./managed-applications/com-parallels-dektop-managedprefs.nix
+    ./managed-applications/com-parallels-desktop-managedprefs.nix
     ./managed-applications/com-pratikkumar-airserver-mac.nix
     ./managed-applications/com-secondsonconsulting-baseline.nix
     ./managed-applications/com-secondsonconsulting-renew.nix
@@ -233,11 +239,14 @@
     ./managed-applications/com-skype-skype.nix
     ./managed-applications/com-sqwarq-DetectX-Swift.nix
     ./managed-applications/com-tinyspeck-slackmacgap.nix
+    ./managed-applications/com-todesktop-230313mzl4w4u92.nix
+    ./managed-applications/com-trelica-macapp.nix
     ./managed-applications/com-trusourcelabs-NoMAD.nix
     ./managed-applications/com-twingate-macos.nix
     ./managed-applications/com-twocanoes-xcreds.nix
     ./managed-applications/com-unity3d-UnityEditor5-x.nix
     ./managed-applications/com-vpntracker-365mac-config.nix
+    ./managed-applications/com-zappl-AppBar.nix
     ./managed-applications/com-zscaler-installparams.nix
     ./managed-applications/corp-sap-privileges.nix
     ./managed-applications/cx-c3-theunarchiver.nix
@@ -255,7 +264,9 @@
     ./managed-applications/menu-nomad-shares.nix
     ./managed-applications/net-glencode-Particulars-Widget.nix
     ./managed-applications/net-glencode-Particulars.nix
+    ./managed-applications/net-whatsapp-WhatsApp.nix
     ./managed-applications/nl-root3-support.nix
+    ./managed-applications/notion-id.nix
     ./managed-applications/org-churchofjesuschrist-dorm.nix
     ./managed-applications/org-mozilla-firefox.nix
     ./managed-applications/org-sveinbjorn-Platypus.nix
