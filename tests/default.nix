@@ -425,6 +425,37 @@ in
       assert types == ["com.apple.mail.managed"], types
     '';
 
+  # openOnChange wires an onChange hook onto every generated profile.
+  open-on-change =
+    let
+      mk = enabled:
+        let
+          hm = mkHm [{
+            programs.macprofile = {
+              enable = true;
+              organizationIdentifier = "com.example.test";
+              openOnChange = enabled;
+              payloads."apple-com-apple-loginwindow".default = {
+                enable = true;
+                SHOWFULLNAME = false;
+              };
+            };
+          }];
+          path = hm.config.programs.macprofile.outputPaths.System;
+        in
+        hm.config.home.file.${path}.onChange;
+    in
+    pkgs.runCommand "check-open-on-change" { } ''
+      ${lib.optionalString (!(lib.hasInfix "/usr/bin/open" (mk true))) ''
+        echo "openOnChange = true did not install an open hook" >&2; exit 1
+      ''}
+      ${lib.optionalString ((mk false) != "") ''
+        echo "openOnChange = false should leave onChange empty" >&2; exit 1
+      ''}
+      echo "onChange hook is gated on openOnChange"
+      touch "$out"
+    '';
+
   # Enabling two instances of a pfm_unique payload must fail evaluation.
   unique-assertion = evalFailureTest "unique-assertion" "two instances of a pfm_unique payload"
     [{

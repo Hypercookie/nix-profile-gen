@@ -150,6 +150,16 @@ payloads."apple-com-apple-mail-managed".work = {
 You can see where things landed via the read-only
 `programs.macprofile.outputPaths`, an attribute set keyed by scope.
 
+### Installing automatically
+
+Set `openOnChange = true` to hand each profile to System Settings whenever it
+changes (Home Manager only fires this when the file actually differs from the
+previous generation):
+
+```nix
+programs.macprofile.openOnChange = true;
+```
+
 ## Home Manager account bridges
 
 Importing `homeModules.bridges` **is** the opt-in. With

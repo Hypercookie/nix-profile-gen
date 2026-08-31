@@ -320,6 +320,19 @@ in
       description = "Consent text shown to the user during profile installation.";
     };
 
+    openOnChange = mkOption {
+      type = types.bool;
+      default = false;
+      description = ''
+        Open each generated profile with `/usr/bin/open` when it changes, which
+        hands it to System Settings for installation.
+
+        Home Manager only runs this when the file actually differs from the
+        previous generation. Note that with two scopes in play this can open
+        two profiles at once.
+      '';
+    };
+
     outputPath = mkOption {
       type = types.str;
       default = "Library/Application Support/HomeManager/profile.mobileconfig";
@@ -353,9 +366,17 @@ in
 
     # One file per scope that actually has payloads.
     home.file = lib.listToAttrs (map
-      (scope: lib.nameValuePair (outputPathFor scope) {
+      (scope: lib.nameValuePair (outputPathFor scope) ({
         source = generateMobileconfig scope;
-      })
+      } // lib.optionalAttrs cfg.openOnChange {
+        # Home Manager runs this after the new file has been linked, and only
+        # when it differs from the previous generation.
+        onChange = ''
+          if [[ "$OSTYPE" == "darwin"* ]]; then
+            /usr/bin/open "$HOME/${outputPathFor scope}"
+          fi
+        '';
+      }))
       activeScopes);
 
     # Provide an activation script to optionally install the profiles
