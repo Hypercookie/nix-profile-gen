@@ -179,6 +179,7 @@
     ./managed-applications/com-electron-dialpad.nix
     ./managed-applications/com-frontapp-Front.nix
     ./managed-applications/com-fxfactory-FxFactory.nix
+    ./managed-applications/com-gilburns-patcher.nix
     ./managed-applications/com-gingerlabs-notability-iOS.nix
     ./managed-applications/com-gingerlabs-notability-macOS.nix
     ./managed-applications/com-github-ants-framework.nix
@@ -193,6 +194,7 @@
     ./managed-applications/com-google-santa.nix
     ./managed-applications/com-grahamgilbert-crypt.nix
     ./managed-applications/com-grammarly-ProjectLlama.nix
+    ./managed-applications/com-granola-app.nix
     ./managed-applications/com-hjuutilainen-MunkiAdmin.nix
     ./managed-applications/com-hjuutilainen-bigsurblocker.nix
     ./managed-applications/com-jamf-connect-login-Okta.nix
