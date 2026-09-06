@@ -89,9 +89,19 @@ jobs:
       # A new upstream manifest can introduce a pfm type or structure the
       # generator mishandles, which surfaces as an evaluation failure rather
       # than a bad diff, so this must run before a human is asked to look.
-      - name: nix flake check
+      # Two passes, for the same reason ci.yml splits them: building is
+      # restricted to this runner's own system, because several checks realise
+      # store paths and a Linux runner cannot build a darwin derivation. The
+      # evaluation-only pass then covers every system, which is what actually
+      # matters for a manifest bump -- a new pfm type breaks evaluation on all
+      # platforms at once.
+      - name: nix flake check (build, this system)
         if: steps.submodule.outputs.changed == 'true'
-        run: nix flake check --all-systems -L
+        run: nix flake check -L
+
+      - name: nix flake check (evaluate, all systems)
+        if: steps.submodule.outputs.changed == 'true'
+        run: nix flake check --all-systems --no-build -L
 
       - name: Create pull request
         if: steps.submodule.outputs.changed == 'true'

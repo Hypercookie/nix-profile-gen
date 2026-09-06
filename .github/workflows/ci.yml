@@ -2,7 +2,11 @@ name: CI
 
 on:
   push:
-    branches: [master, mdm]
+    # Only master. Adding a topic branch here doubles every run while that
+    # branch has an open pull request, because `pull_request` already covers
+    # it -- which is how the GitHub Actions cache got throttled hard enough to
+    # bury a real failure in 418s.
+    branches: [master]
   pull_request:
 
 # Least-privilege default. `id-token: write` is required by
@@ -43,13 +47,35 @@ jobs:
       - uses: DeterminateSystems/nix-installer-action@main
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
-      # --all-systems was verified to evaluate cleanly: checks for
-      # x86_64-linux, aarch64-linux, x86_64-darwin and aarch64-darwin all
-      # instantiate without error, so the stricter flag is practical here and
-      # catches per-system evaluation breakage that the default single-system
-      # run would miss.
+      # Deliberately NOT --all-systems. `nix flake check` builds the checks it
+      # selects, and several of ours realise store paths (the Caddyfile and
+      # wrapper the MDM checks read with `cat`). Asking a Linux runner for the
+      # darwin checks therefore fails with "Cannot build ...: platform
+      # mismatch" rather than skipping them. The matrix above already covers
+      # both platforms, each building only what it can.
+      #
+      # Cross-system *evaluation* breakage is caught by the eval-all-systems
+      # job below, which is the part --all-systems was actually wanted for.
       - name: nix flake check
-        run: nix flake check --all-systems -L
+        run: nix flake check -L
+
+  # Evaluate every system's checks without building any of them. This is what
+  # `--all-systems` was meant to buy: a payload module or module option that
+  # only breaks on, say, aarch64-linux is caught here, on one cheap runner,
+  # without needing a builder for each platform.
+  eval-all-systems:
+    name: evaluate all systems
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: nix flake check --all-systems --no-build
+        run: nix flake check --all-systems --no-build -L
 
   # Formatting is also covered by `checks.<system>.treefmt` in the job above;
   # this job exists to surface the actual diff as its own red/green signal.
