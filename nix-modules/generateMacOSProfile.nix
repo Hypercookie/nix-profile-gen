@@ -188,24 +188,24 @@ let
         + lib.optionalString (scope != cfg.scope) ".${lib.toLower scope}";
     in
     {
-    PayloadContent = payloadsByScope.${scope};
-    PayloadDisplayName =
-      if scope == cfg.scope
-      then cfg.profileName
-      else "${cfg.profileName} (${scope})";
-    PayloadIdentifier = ident;
-    PayloadOrganization = cfg.organization;
-    PayloadType = "Configuration";
-    PayloadUUID = builtins.hashString "sha256" ident;
-    PayloadVersion = 1;
-    PayloadScope = scope;
-  } // lib.optionalAttrs (cfg.description != null) {
-    PayloadDescription = cfg.description;
-  } // lib.optionalAttrs (cfg.consentText != null) {
-    ConsentText = { default = cfg.consentText; };
-  } // lib.optionalAttrs cfg.removalDisallowed {
-    PayloadRemovalDisallowed = true;
-  };
+      PayloadContent = payloadsByScope.${scope};
+      PayloadDisplayName =
+        if scope == cfg.scope
+        then cfg.profileName
+        else "${cfg.profileName} (${scope})";
+      PayloadIdentifier = ident;
+      PayloadOrganization = cfg.organization;
+      PayloadType = "Configuration";
+      PayloadUUID = builtins.hashString "sha256" ident;
+      PayloadVersion = 1;
+      PayloadScope = scope;
+    } // lib.optionalAttrs (cfg.description != null) {
+      PayloadDescription = cfg.description;
+    } // lib.optionalAttrs (cfg.consentText != null) {
+      ConsentText = { default = cfg.consentText; };
+    } // lib.optionalAttrs cfg.removalDisallowed {
+      PayloadRemovalDisallowed = true;
+    };
 
   # Convert to plist using a derivation
   generateMobileconfig = scope: pkgs.runCommand
@@ -215,47 +215,111 @@ let
       profileJson = builtins.toJSON (profileContentFor scope);
       passAsFile = [ "profileJson" ];
     } ''
-    ${pkgs.python3}/bin/python3 << 'EOF'
-import json
-import plistlib
-import os
+        ${pkgs.python3}/bin/python3 << 'EOF'
+    import json
+    import plistlib
+    import os
 
-with open(os.environ['profileJsonPath'], 'r') as f:
-    profile = json.load(f)
+    with open(os.environ['profileJsonPath'], 'r') as f:
+        profile = json.load(f)
 
-# Remove None/null values recursively
-def remove_nulls(obj):
-    if isinstance(obj, dict):
-        return {k: remove_nulls(v) for k, v in obj.items() if v is not None}
-    elif isinstance(obj, list):
-        return [remove_nulls(item) for item in obj if item is not None]
-    else:
-        return obj
+    # Remove None/null values recursively
+    def remove_nulls(obj):
+        if isinstance(obj, dict):
+            return {k: remove_nulls(v) for k, v in obj.items() if v is not None}
+        elif isinstance(obj, list):
+            return [remove_nulls(item) for item in obj if item is not None]
+        else:
+            return obj
 
-# Generate proper UUIDs from the hash strings (take first 32 chars and format as UUID)
-def format_uuid(hash_str):
-    h = hash_str[:32]
-    return f"{h[:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}".upper()
+    # Generate proper UUIDs from the hash strings (take first 32 chars and format as UUID)
+    def format_uuid(hash_str):
+        h = hash_str[:32]
+        return f"{h[:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}".upper()
 
-def fix_uuids(obj):
-    if isinstance(obj, dict):
-        for k, v in obj.items():
-            if k == 'PayloadUUID' and isinstance(v, str) and len(v) == 64:
-                obj[k] = format_uuid(v)
-            else:
-                fix_uuids(v)
-    elif isinstance(obj, list):
-        for item in obj:
-            fix_uuids(item)
+    def fix_uuids(obj):
+        if isinstance(obj, dict):
+            for k, v in obj.items():
+                if k == 'PayloadUUID' and isinstance(v, str) and len(v) == 64:
+                    obj[k] = format_uuid(v)
+                else:
+                    fix_uuids(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                fix_uuids(item)
 
-# Remove nulls first, then fix UUIDs
-profile = remove_nulls(profile)
-fix_uuids(profile)
+    # Remove nulls first, then fix UUIDs
+    profile = remove_nulls(profile)
+    fix_uuids(profile)
 
-with open(os.environ['out'], 'wb') as f:
-    plistlib.dump(profile, f)
-EOF
+    with open(os.environ['out'], 'wb') as f:
+        plistlib.dump(profile, f)
+    EOF
   '';
+
+  # `outputPath` is user-supplied and ends up inside shell snippets (the
+  # onChange hooks and the activation script), so it must never be
+  # interpolated into a double-quoted string: a path containing `$(...)` or
+  # backticks would then execute at activation time. `$HOME` still has to be
+  # expanded by the shell, so only the relative part is escaped and the two
+  # are concatenated into one word.
+  profileArg = scope: ''"$HOME"/${lib.escapeShellArg (outputPathFor scope)}'';
+
+  # The MDM options live in a separate module (mdm/nix-modules/mdm.nix) which
+  # a user may not have imported, so every access has to be guarded.
+  mdmEnabled = (cfg ? mdm) && cfg.mdm.enable && cfg.mdm.pushOnChange;
+
+  # Push a freshly written profile to the local MDM server so macOS installs it
+  # without the user double-clicking anything.
+  #
+  # Scope decides the channel: the System profile goes to the device-channel
+  # enrollment, the User profile needs a user-channel enrollment ID
+  # (`UUID:UUID`). When the latter is missing there is nothing to push to, so
+  # the hook is omitted entirely rather than emitting a command that would
+  # fail on every activation. mdm.nix warns about that case separately.
+  mdmPushHook = scope:
+    let
+      explicitId =
+        if scope == "User" then cfg.mdm.userEnrollmentId else cfg.mdm.enrollmentId;
+      idFile = if scope == "User" then null else cfg.mdm.enrollmentIdFile;
+    in
+    if !mdmEnabled then
+      ""
+    else if scope == "User" && explicitId == null then
+      ""
+    else ''
+      if [[ "$OSTYPE" == "darwin"* ]]; then
+        ${lib.optionalString (idFile != null) ''
+          MDM_ENROLLMENT_ID="$(cat ${lib.escapeShellArg idFile} 2>/dev/null || true)"
+        ''}
+        # A failed push must not fail the activation: the profile is already on
+        # disk and can be installed by hand or pushed later with
+        # `nixmagic-mdm push`.
+        ${cfg.mdm.cliPackage}/bin/nixmagic-mdm \
+          --state-dir ${lib.escapeShellArg cfg.mdm.stateDir} \
+          --server-url ${lib.escapeShellArg cfg.mdm.serverUrl} \
+          --api-key-file ${lib.escapeShellArg cfg.mdm.apiKeyFile} \
+          push \
+          --scope ${lib.toLower scope} \
+          --profile ${profileArg scope} \
+          ${lib.optionalString (explicitId != null)
+            "--enrollment-id ${lib.escapeShellArg explicitId}"} \
+          ${lib.optionalString (idFile != null)
+            ''''${MDM_ENROLLMENT_ID:+--enrollment-id "$MDM_ENROLLMENT_ID"}''} \
+          || echo "nixmagic-mdm push failed; the profile is still at "${profileArg scope} >&2
+      fi
+    '';
+
+  # `openOnChange` and the MDM push are independent and can both be active.
+  onChangeFor = scope:
+    lib.concatStringsSep "\n" (lib.filter (s: s != "") [
+      (lib.optionalString cfg.openOnChange ''
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+          /usr/bin/open ${profileArg scope}
+        fi
+      '')
+      (mdmPushHook scope)
+    ]);
 
 in
 {
@@ -368,14 +432,12 @@ in
     home.file = lib.listToAttrs (map
       (scope: lib.nameValuePair (outputPathFor scope) ({
         source = generateMobileconfig scope;
-      } // lib.optionalAttrs cfg.openOnChange {
+      } // lib.optionalAttrs (onChangeFor scope != "") {
         # Home Manager runs this after the new file has been linked, and only
-        # when it differs from the previous generation.
-        onChange = ''
-          if [[ "$OSTYPE" == "darwin"* ]]; then
-            /usr/bin/open "$HOME/${outputPathFor scope}"
-          fi
-        '';
+        # when it differs from the previous generation. That "only on change"
+        # property is what makes the MDM push idempotent: re-running
+        # `home-manager switch` with unchanged payloads enqueues nothing.
+        onChange = onChangeFor scope;
       }))
       activeScopes);
 
@@ -384,9 +446,7 @@ in
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
         if [[ "$OSTYPE" == "darwin"* ]]; then
           for PROFILE_PATH in ${
-            lib.concatMapStringsSep " "
-              (scope: ''"$HOME/${outputPathFor scope}"'')
-              activeScopes
+            lib.concatMapStringsSep " " profileArg activeScopes
           }; do
             if [[ -f "$PROFILE_PATH" ]]; then
               $DRY_RUN_CMD echo "macOS profile generated at: $PROFILE_PATH"

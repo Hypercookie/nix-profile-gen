@@ -28,9 +28,6 @@ let
     else
       hm.config.home.file.${paths.${scope}}.source;
 
-  # Most tests only care about a single profile; default to the User one.
-  mkProfile = mkProfileScope "User";
-
   # Shared by the scope-split checks: one user-only payload, one system-only
   # payload, and one dual-target payload that follows the `scope` preference.
   scopeSplitConfig = {
@@ -464,6 +461,330 @@ in
       touch "$out"
     '';
 
+  # The NanoMDM package still builds. Only the finite `outPath` string is
+  # forced (never deepSeq a derivation), and the binary is deliberately not
+  # executed: the check has to work on both darwin and linux.
+  mdm-package-builds =
+    let
+      nanomdm = pkgs.callPackage ./../mdm/packages/nanomdm.nix { };
+    in
+    pkgs.runCommand "check-mdm-package-builds" { } ''
+      test -x "${nanomdm}/bin/nanomdm"
+      echo "nanomdm builds"
+      touch "$out"
+    '';
+
+  # The generated NanoMDM wrapper and Caddyfile are store paths, so their
+  # contents can be asserted on directly. They are also platform-independent,
+  # unlike `launchd.agents`, which only exists on darwin.
+  mdm-wrapper-and-caddyfile =
+    let
+      # A state directory containing a space: every path the wrapper passes to
+      # NanoMDM has to survive it. Unquoted, `-ca /tmp/test user/...` would
+      # reach NanoMDM as two argv elements, it would fatal on the stray one,
+      # and `KeepAlive = true` would turn that into a restart loop.
+      stateDir = "/tmp/test user/state";
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            inherit stateDir;
+            apiKeyFile = "/tmp/fake.key";
+            listen = "127.0.0.1:9000";
+          };
+        };
+      }];
+    in
+    pkgs.runCommand "check-mdm-wrapper-and-caddyfile"
+      {
+        wrapper = hm.config.programs.macprofile.mdm._wrapperScript;
+        caddyfile = hm.config.programs.macprofile.mdm._caddyfile;
+      } ''
+      grep -q -F -- '-storage filekv' "$wrapper"
+      grep -q -F -- '-checkin' "$wrapper"
+
+      # Every interpolated path must survive a space. The needles below are
+      # written out literally rather than via `escapeShellArg` (which would
+      # make the check tautological): a `stateDir` containing a space has to
+      # reach NanoMDM as a single argv element. See the API key leak check
+      # below for the argv/plist side of the key handling.
+      ${lib.concatMapStringsSep "\n"
+        (needle: "grep -q -F -- ${lib.escapeShellArg needle} \"$wrapper\"")
+        [
+          "-listen 127.0.0.1:9000"
+          "-ca '${stateDir}/ca/ca.pem'"
+          "-storage-dsn '${stateDir}/db'"
+          "mkdir -p '${stateDir}/db' '${stateDir}/log'"
+        ]}
+
+      grep -q -F -- 'reverse_proxy' "$caddyfile"
+      # No sudo prompt on start; the root is shipped in the enrollment profile.
+      grep -q -F -- 'skip_install_trust' "$caddyfile"
+      grep -q -F -- 'local_certs' "$caddyfile"
+      # No local control socket that could reconfigure the server.
+      grep -q -F -- 'admin off' "$caddyfile"
+      # Caddy keeps its internal PKI inside storage, so this root is what puts
+      # the CA certificate at `caRootPath`. It is also the only mechanism
+      # doing so: no XDG_DATA_HOME is set anywhere.
+      grep -q -F -- 'root "${stateDir}/caddy"' "$caddyfile"
+
+      echo "wrapper and Caddyfile contents are as expected"
+      touch "$out"
+    '';
+
+  # The Caddyfile's storage root is the single source of truth for where the
+  # internal CA lands, and `caRootPath` — what the CLI passes as `--cacert` —
+  # has to agree with it. Caddy stores PKI assets at
+  # `<storage root>/pki/authorities/<ca id>/root.crt`.
+  mdm-caddy-root-path =
+    let
+      stateDir = "/tmp/mdm-state";
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            inherit stateDir;
+          };
+        };
+      }];
+      mdm = hm.config.programs.macprofile.mdm;
+    in
+    pkgs.runCommand "check-mdm-caddy-root-path"
+      { caddyfile = mdm._caddyfile; } ''
+      storageRoot=${lib.escapeShellArg "${stateDir}/caddy"}
+      grep -q -F -- "root \"$storageRoot\"" "$caddyfile"
+
+      test ${lib.escapeShellArg mdm.caRootPath} = \
+        "$storageRoot/pki/authorities/local/root.crt"
+
+      # XDG_DATA_HOME only selects Caddy's *default* storage location, which
+      # the explicit `storage file` block replaces. Setting both would put the
+      # data dir at <storageRoot>/caddy and contradict caRootPath.
+      if grep -q -F -- 'XDG_DATA_HOME' "$caddyfile"; then
+        echo "the Caddyfile still mentions XDG_DATA_HOME" >&2
+        exit 1
+      fi
+
+      echo "caRootPath matches the Caddyfile storage root"
+      touch "$out"
+    '';
+
+  # The API key must never reach ~/Library/LaunchAgents. Home Manager renders
+  # `launchd.agents.<name>.config` into a plist there with world-readable
+  # permissions, so a `NANOMDM_API` entry in `EnvironmentVariables` would hand
+  # the key to every local user — the same reason it is not passed in argv,
+  # which `ps` exposes. The wrapper reads the key file at start time instead.
+  #
+  # On Linux `launchd.agents` stays empty (mdm.nix only defines it under
+  # `isDarwin`), so the plist assertions are gated on the platform and the
+  # wrapper half of the check carries the weight there.
+  mdm-api-key-not-in-launchd-plist =
+    let
+      apiKeyFile = "/tmp/nixmagic-test-secrets/api-key";
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            inherit apiKeyFile;
+          };
+        };
+      }];
+      agents = hm.config.launchd.agents or { };
+      isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
+      # Exactly what Home Manager writes into ~/Library/LaunchAgents: same
+      # generator, same options.
+      renderedAgents = lib.concatStringsSep "\n"
+        (lib.mapAttrsToList
+          (_: agent: lib.generators.toPlist { escape = true; } agent.config)
+          agents);
+    in
+    pkgs.runCommand "check-mdm-api-key-not-in-launchd-plist"
+      {
+        rendered = renderedAgents;
+        passAsFile = [ "rendered" ];
+        wrapper = hm.config.programs.macprofile.mdm._wrapperScript;
+      } ''
+      ${lib.optionalString isDarwin (
+        (lib.optionalString (!(agents ? nanomdm)) ''
+          echo "no nanomdm agent on darwin: this check would be vacuous" >&2
+          exit 1
+        '')
+        + (lib.optionalString (agents.nanomdm.config.EnvironmentVariables != null) ''
+          echo "the nanomdm agent sets EnvironmentVariables, which land in a world-readable plist" >&2
+          exit 1
+        '')
+      )}
+
+      for needle in NANOMDM_API ${lib.escapeShellArg apiKeyFile}; do
+        if grep -q -F -- "$needle" "$renderedPath"; then
+          echo "the launchd agent plist leaks $needle" >&2
+          exit 1
+        fi
+      done
+
+      # ... and the key really is obtained from the file at start time.
+      grep -q -F -- 'NANOMDM_API="$(cat "$apiKeyFile")"' "$wrapper"
+      grep -q -F -- ${lib.escapeShellArg apiKeyFile} "$wrapper"
+
+      echo "no key material in the launchd agent configuration"
+      touch "$out"
+    '';
+
+  # An enabled MDM pushes the System profile on change, and pushOnChange = false
+  # removes the hook again.
+  mdm-push-on-change =
+    let
+      enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
+      mk = push:
+        let
+          hm = mkHm [{
+            programs.macprofile = {
+              enable = true;
+              organizationIdentifier = "com.example.test";
+              payloads."apple-com-apple-loginwindow".default = {
+                enable = true;
+                SHOWFULLNAME = false;
+              };
+              mdm = {
+                enable = true;
+                apiKeyFile = "/tmp/fake.key";
+                inherit enrollmentId;
+                pushOnChange = push;
+              };
+            };
+          }];
+          path = hm.config.programs.macprofile.outputPaths.System;
+        in
+        hm.config.home.file.${path}.onChange;
+      hook = mk true;
+    in
+    pkgs.runCommand "check-mdm-push-on-change" { } ''
+      ${lib.concatMapStringsSep "\n"
+        (needle: lib.optionalString (!(lib.hasInfix needle hook)) ''
+          echo "push hook is missing ${needle}" >&2; exit 1
+        '')
+        [ "nixmagic-mdm" "push" "--scope system" enrollmentId ]}
+      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" (mk false)) ''
+        echo "pushOnChange = false should not install a push hook" >&2; exit 1
+      ''}
+      echo "the push hook is gated on pushOnChange"
+      touch "$out"
+    '';
+
+  # User-scope profiles can only be installed over a user-channel enrollment.
+  # With userEnrollmentId = null there is nothing to push to, so the hook must
+  # be omitted entirely rather than emitting a command that would fail on every
+  # activation.
+  mdm-push-user-scope-skipped =
+    let
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-mail-managed".work = {
+            enable = true;
+            EmailAddress = "jane@work.example";
+          };
+          mdm = {
+            enable = true;
+            apiKeyFile = "/tmp/fake.key";
+            userEnrollmentId = null;
+          };
+        };
+      }];
+      path = hm.config.programs.macprofile.outputPaths.User;
+      hook = hm.config.home.file.${path}.onChange;
+    in
+    pkgs.runCommand "check-mdm-push-user-scope-skipped" { } ''
+      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" hook) ''
+        echo "User profile got a push hook without a user-channel enrollment" >&2
+        exit 1
+      ''}
+      echo "the User profile is not pushed without userEnrollmentId"
+      touch "$out"
+    '';
+
+  # Regression test for the onChangeFor merge: openOnChange and the MDM push
+  # are independent and must both survive.
+  mdm-open-and-push-coexist =
+    let
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          openOnChange = true;
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            apiKeyFile = "/tmp/fake.key";
+            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
+          };
+        };
+      }];
+      path = hm.config.programs.macprofile.outputPaths.System;
+      hook = hm.config.home.file.${path}.onChange;
+    in
+    pkgs.runCommand "check-mdm-open-and-push-coexist" { } ''
+      ${lib.concatMapStringsSep "\n"
+        (needle: lib.optionalString (!(lib.hasInfix needle hook)) ''
+          echo "merged onChange hook is missing ${needle}" >&2; exit 1
+        '')
+        [ "/usr/bin/open" "nixmagic-mdm" ]}
+      echo "openOnChange and the MDM push coexist"
+      touch "$out"
+    '';
+
+  # The module must be genuinely inert when it is not configured, which is what
+  # justifies shipping it in homeModules.default. `launchd.agents` is only
+  # defined on darwin, so the selection falls back to an empty set on linux.
+  mdm-disabled-by-default =
+    let
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+        };
+      }];
+      path = hm.config.programs.macprofile.outputPaths.System;
+      hook = hm.config.home.file.${path}.onChange;
+      agents = hm.config.launchd.agents or { };
+    in
+    pkgs.runCommand "check-mdm-disabled-by-default" { } ''
+      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" hook) ''
+        echo "an unconfigured MDM module installed a push hook" >&2; exit 1
+      ''}
+      ${lib.optionalString (agents ? nanomdm) ''
+        echo "an unconfigured MDM module defined a nanomdm agent" >&2; exit 1
+      ''}
+      echo "the MDM module is inert when unused"
+      touch "$out"
+    '';
+
   # Enabling two instances of a pfm_unique payload must fail evaluation.
   unique-assertion = evalFailureTest "unique-assertion" "two instances of a pfm_unique payload"
     [{
@@ -489,4 +810,102 @@ in
         };
       };
     }];
+
+  # Replaces the old "mdm.enable without apiKeyFile is rejected" check: the
+  # option now always has a value, so that assertion could no longer fire and
+  # was removed. What matters instead is that the default agrees with the path
+  # the CLI generates and reads the key at (`<state-dir>/api.key`), and that a
+  # non-default value is actually handed to the CLI rather than silently
+  # diverging from it.
+  mdm-api-key-file-default =
+    let
+      stateDir = "/tmp/mdm-state";
+      mk = extraMdm: mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            inherit stateDir;
+            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
+          } // extraMdm;
+        };
+      }];
+      defaulted = (mk { }).config.programs.macprofile.mdm.apiKeyFile;
+      overridden = "/tmp/elsewhere/api-key";
+      hookWithOverride =
+        let hm = mk { apiKeyFile = overridden; };
+        in hm.config.home.file.${hm.config.programs.macprofile.outputPaths.System}.onChange;
+    in
+    pkgs.runCommand "check-mdm-api-key-file-default" { } ''
+      test ${lib.escapeShellArg defaulted} = ${lib.escapeShellArg "${stateDir}/api.key"}
+      ${lib.optionalString
+        (!(lib.hasInfix "--api-key-file ${overridden}" hookWithOverride)) ''
+        echo "the push hook does not pass the configured --api-key-file" >&2
+        exit 1
+      ''}
+      echo "apiKeyFile defaults to the CLI's key path and is passed through"
+      touch "$out"
+    '';
+
+  # `outputPath` is user-supplied and is interpolated into shell snippets. It
+  # must be escaped, not dropped into a double-quoted string, or a path
+  # containing a command substitution would execute at activation time.
+  profile-path-shell-injection =
+    let
+      hm = mkHm [{
+        programs.macprofile = {
+          enable = true;
+          organizationIdentifier = "com.example.test";
+          openOnChange = true;
+          outputPath = ''Library/x$(touch /tmp/pwned)`id`.mobileconfig'';
+          payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          mdm = {
+            enable = true;
+            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
+          };
+        };
+      }];
+      path = hm.config.programs.macprofile.outputPaths.System;
+      hook = hm.config.home.file.${path}.onChange;
+      activation = hm.config.home.activation.installMacProfile.data;
+      # `escapeShellArg` single-quotes the whole relative path, so the
+      # metacharacters can only ever appear inside single quotes.
+      quoted = "'${path}'";
+      unsafe = s:
+        lib.hasInfix ''"$HOME/'' s || !(lib.hasInfix quoted s);
+    in
+    pkgs.runCommand "check-profile-path-shell-injection" { } ''
+      ${lib.optionalString (unsafe hook) ''
+        echo "onChange hook interpolates outputPath unquoted" >&2; exit 1
+      ''}
+      ${lib.optionalString (unsafe activation) ''
+        echo "installMacProfile interpolates outputPath unquoted" >&2; exit 1
+      ''}
+      # Nothing may have run at evaluation time either.
+      test ! -e /tmp/pwned
+      echo "outputPath is shell-escaped everywhere it is interpolated"
+      touch "$out"
+    '';
+
+  # The MDM server only exists to install generated profiles, so enabling it
+  # without profile generation is rejected.
+  mdm-assertion-macprofile-disabled =
+    evalFailureTest "mdm-assertion-macprofile-disabled" "mdm.enable without macprofile.enable"
+      [{
+        programs.macprofile = {
+          enable = false;
+          mdm = {
+            enable = true;
+            apiKeyFile = "/tmp/fake.key";
+          };
+        };
+      }];
 }

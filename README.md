@@ -1,9 +1,9 @@
 # macOS Configuration Profile Generator for Nix/Home Manager
+
 > Home Manager modules from Apple ProfileManifests for managing macOS configuration profiles declaratively.
 
-The current issue with nix-darwin is that settings written by the `defaults` system are happily overwritten by applications. Enforcing these settings via the mdm tools apple allready offers fixes that. 
-This module generates a provisioning profile at a given path, which can then be installed (automatic install TBD) and enforces the settings defined in it at a system level. Furthermore this module provides all possible settings (they are found via community effort) as nix options, making the process declarative and typesafe. 
-
+The current issue with nix-darwin is that settings written by the `defaults` system are happily overwritten by applications. Enforcing these settings via the mdm tools apple allready offers fixes that.
+This module generates a provisioning profile at a given path, which can then be installed (automatic install TBD) and enforces the settings defined in it at a system level. Furthermore this module provides all possible settings (they are found via community effort) as nix options, making the process declarative and typesafe.
 
 ## Features
 
@@ -25,11 +25,11 @@ nix-profile-gen.url = "github:Hypercookie/nix-profile-gen";
 
 in your flake inputs, then import one of:
 
-| Module | Contents |
-|---|---|
-| `homeModules.profiles` | Core module + all payload options |
-| `homeModules.bridges` | Home Manager account bridges (needs `profiles`) |
-| `homeModules.default` | Both of the above |
+| Module                 | Contents                                        |
+| ---------------------- | ----------------------------------------------- |
+| `homeModules.profiles` | Core module + all payload options               |
+| `homeModules.bridges`  | Home Manager account bridges (needs `profiles`) |
+| `homeModules.default`  | Both of the above                               |
 
 Find configurable options:
 
@@ -114,12 +114,12 @@ enabling a second one fails evaluation with an explanatory assertion.
 Apple payloads are not all installable at the same scope. Each manifest
 declares `pfm_targets`:
 
-| Targets | Manifests | Examples |
-|---|---|---|
-| system + user | 159 | Dock, Restrictions |
-| system only | 95 | Login Window, FileVault, DNS Settings |
-| user only | 12 | Mail, CalDAV, CardDAV, LDAP |
-| unspecified | 16 | treated as "either" |
+| Targets       | Manifests | Examples                              |
+| ------------- | --------- | ------------------------------------- |
+| system + user | 159       | Dock, Restrictions                    |
+| system only   | 95        | Login Window, FileVault, DNS Settings |
+| user only     | 12        | Mail, CalDAV, CardDAV, LDAP           |
+| unspecified   | 16        | treated as "either"                   |
 
 The module therefore generates **up to two profiles** and routes each payload
 into the correct one automatically:
@@ -166,11 +166,11 @@ Importing `homeModules.bridges` **is** the opt-in. With
 `programs.macprofile.enable = true`, every eligible account is turned into the
 matching payload automatically:
 
-| Home Manager option | Payload | Notes |
-|---|---|---|
-| `accounts.email.accounts.<n>` | `com.apple.mail.managed` | IMAP accounts only |
-| `accounts.calendar.accounts.<n>` | `com.apple.caldav.account` | `remote.type = "caldav"` only |
-| `accounts.contact.accounts.<n>` | `com.apple.carddav.account` | `remote.type = "carddav"` only |
+| Home Manager option              | Payload                     | Notes                          |
+| -------------------------------- | --------------------------- | ------------------------------ |
+| `accounts.email.accounts.<n>`    | `com.apple.mail.managed`    | IMAP accounts only             |
+| `accounts.calendar.accounts.<n>` | `com.apple.caldav.account`  | `remote.type = "caldav"` only  |
+| `accounts.contact.accounts.<n>`  | `com.apple.carddav.account` | `remote.type = "carddav"` only |
 
 All three payloads are user-only, so they always land in the User profile
 regardless of the `scope` setting.
@@ -225,6 +225,25 @@ time. macOS prompts for the password when the profile is installed.
 - `imap.tls.useStartTls` — the payload only has a boolean `*UseSSL` key, so the STARTTLS distinction is lost. A warning is emitted.
 - `authentication` values `gssapi` and `xoauth2` — no equivalent; the key is left unset and a warning is emitted.
 - Calendar/contact remotes of type `http`, `google_calendar` and `google_contacts` — skipped with a warning.
+
+## Automatic installation via a local MDM server
+
+`openOnChange` still requires a click in System Settings. For fully hands-off
+installation, this repo also ships an optional local NanoMDM server that pushes
+each generated profile to the same Mac, so `home-manager switch` installs it
+without any interaction:
+
+```nix
+programs.macprofile.mdm = {
+  enable = true;
+  apiKeyFile = "/Users/jane/.local/state/nixmagic-mdm/api.key";
+};
+```
+
+It is opt-in and completely inert until `enable` is set, so importing
+`homeModules.default` costs nothing if you do not want it. Setup needs an APNs
+push certificate and a one-time enrollment. See [`mdm/README.md`](mdm/README.md)
+for the full walkthrough, the option reference and the security notes.
 
 ## Development
 

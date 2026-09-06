@@ -15,10 +15,14 @@
       homeModules = {
         profiles = ./nix-modules/generateMacOSProfile.nix;
         bridges = ./nix-modules/bridges;
+        # Local MDM server. Inert until programs.macprofile.mdm.enable is set,
+        # so including it in `default` costs nothing.
+        mdm = ./mdm/nix-modules/mdm.nix;
         default = {
           imports = [
             ./nix-modules/generateMacOSProfile.nix
             ./nix-modules/bridges
+            ./mdm/nix-modules/mdm.nix
           ];
         };
       };
@@ -33,6 +37,16 @@
           inherit pkgs system home-manager;
           inherit (nixpkgs) lib;
           modules = homeModules;
+        };
+
+        packages = {
+          nanomdm = pkgs.callPackage ./mdm/packages/nanomdm.nix { };
+          nixmagic-mdm = pkgs.callPackage ./mdm/packages/nixmagic-mdm.nix { };
+        };
+
+        apps.nixmagic-mdm = {
+          type = "app";
+          program = "${pkgs.callPackage ./mdm/packages/nixmagic-mdm.nix { }}/bin/nixmagic-mdm";
         };
 
         devShells.default = pkgs.mkShell {
