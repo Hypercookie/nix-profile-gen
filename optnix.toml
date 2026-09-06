@@ -9,17 +9,47 @@ nix eval --impure  --json   --expr '
       pkgs = import <nixpkgs> {};
       lib = pkgs.lib;
 
+      # Stub out Home Manager options the profile module writes into config.
+      # Only the `options` section is evaluated here, but the config block
+      # references these names so they must exist to avoid "option not found".
+      hmStub = {
+        options = {
+          assertions   = lib.mkOption { type = lib.types.listOf lib.types.unspecified; default = []; internal = true; };
+          warnings     = lib.mkOption { type = lib.types.listOf lib.types.str;         default = []; internal = true; };
+          home.file      = lib.mkOption { type = lib.types.attrsOf lib.types.unspecified; default = {}; internal = true; };
+          home.activation = lib.mkOption { type = lib.types.attrsOf lib.types.unspecified; default = {}; internal = true; };
+        };
+      };
+
       eval = lib.evalModules {
+        specialArgs = { inherit pkgs; };
         modules = [
-          ./nix-modules/payloads/all-payloads.nix
+          hmStub
+          ./nix-modules/generateMacOSProfile.nix
         ];
       };
 
-      optionsList =
-        builtins.filter
-          (opt: (opt.visible or true) && !(opt.internal or false))
-          (lib.optionAttrSetToDocList eval.options);
+      visible = o: (o.visible or true) && !(o.internal or false);
+
+      # Top-level programs.macprofile.* options (enable, profileName, scope …)
+      # plus the payload manifest options as a single entry each.
+      baseList = builtins.filter visible (lib.optionAttrSetToDocList eval.options);
+
+      # Expand each payload's attrsOf (submodule …) so its individual keys are
+      # visible when typing programs.macprofile.payloads.<manifest>.<name>.<key>.
+      payloadOpts = eval.options.programs.macprofile.payloads;
+
+      expandPayload = manifestName:
+        let
+          # attrsOf.getSubOptions appends <name> internally, so the prefix must
+          # end at the manifest name itself.
+          loc = ["programs" "macprofile" "payloads" manifestName];
+          sub = payloadOpts.${manifestName}.type.getSubOptions loc;
+        in
+        builtins.filter visible (lib.optionAttrSetToDocList sub);
+
+      expandedList = lib.concatMap expandPayload (builtins.attrNames payloadOpts);
     in
-      optionsList
+      baseList ++ expandedList
   '
 '''
