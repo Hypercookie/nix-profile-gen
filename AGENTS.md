@@ -99,6 +99,16 @@ git submodule update --remote ProfileManifests
 python3 nix_o_s_module_generator.py
 ```
 
+`.github/workflows/update-manifests.yml` does this daily and opens a pull
+request when upstream has moved. Note that `--remote` above means `master`,
+because `.gitmodules` declares no `branch`; the workflow resolves the remote's
+own `HEAD` instead so an upstream default-branch rename cannot silently
+freeze the sync.
+
+Review those pull requests even when green. The generator deletes modules for
+manifests that vanished upstream, and a renamed or retyped option evaluates
+fine while silently changing the option surface users configure against.
+
 ### Browse available options interactively
 
 ```bash
@@ -281,12 +291,13 @@ reachable only as `homeModules.<system>.profiles`.
 
 ### Configuration
 
-| File                       | Purpose                                     |
-| -------------------------- | ------------------------------------------- |
-| `treefmt.nix`              | Formatters and the shared exclude list      |
-| `ruff.toml`                | `ruff check` rules for the two Python files |
-| `statix.toml`              | statix ignores and disabled lints           |
-| `.github/workflows/ci.yml` | `check`, `format`, `lint`, `generator` jobs |
+| File                                     | Purpose                                     |
+| ---------------------------------------- | ------------------------------------------- |
+| `treefmt.nix`                            | Formatters and the shared exclude list      |
+| `ruff.toml`                              | `ruff check` rules for the two Python files |
+| `statix.toml`                            | statix ignores and disabled lints           |
+| `.github/workflows/ci.yml`               | `check`, `format`, `lint`, `generator` jobs |
+| `.github/workflows/update-manifests.yml` | Daily ProfileManifests sync, opens a PR     |
 
 Formatters: **nixpkgs-fmt** (Nix), **ruff-format** (Python), **prettier**
 (Markdown/YAML/JSON), **shfmt** (`.sh`/`.bash` only). nixpkgs-fmt was chosen
