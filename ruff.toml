@@ -1,0 +1,59 @@
+# Lint configuration for the two hand-written Python files:
+#   * nix_o_s_module_generator.py  -- the payload module generator
+#   * mdm/cli/nixmagic_mdm.py      -- the local MDM setup/push CLI
+#
+# Both are stdlib-only. Formatting is done by ruff-format via treefmt
+# (see treefmt.nix); this file governs `ruff check` only.
+
+# Must stay in sync with programs.ruff-format.lineLength in treefmt.nix.
+line-length = 100
+
+# Both files carry `from __future__ import annotations`, so they already parse
+# modern annotation syntax. py39 is the floor the code is written against.
+target-version = "py39"
+
+# Auto-generated / vendored trees are never linted.
+extend-exclude = [
+  "ProfileManifests",
+  "nix-modules/payloads",
+  ".venv",
+]
+
+[lint]
+select = [
+  "E", # pycodestyle errors
+  "F", # pyflakes
+  "W", # pycodestyle warnings
+  "I", # isort
+  "UP", # pyupgrade
+  "B", # flake8-bugbear
+]
+
+ignore = [
+  # Line length is owned by ruff-format, which reflows code to `line-length`
+  # automatically. Verified empirically: running ruff-format over both files
+  # takes E501 from 27 hits down to 4, and those 4 are long string literals
+  # and comments that the formatter cannot split. Keeping E501 on would leave
+  # only that irreducible noise, so the formatter is the single source of
+  # truth for line width.
+  "E501",
+
+  # PEP 585 / PEP 604 annotation modernisation:
+  #   UP006  typing.List[str]  -> list[str]
+  #   UP045  Optional[str]     -> str | None
+  #   UP035  deprecated typing imports (List/Dict/Tuple, typing.Iterable)
+  # The CLI consistently annotates in the typing.* style, and both files have
+  # `from __future__ import annotations` so the current style is correct and
+  # runs fine. Turning these on flags 40 sites across the two files, i.e. a
+  # pure-churn mass edit with no behavioural benefit. Revisit if the codebase
+  # is deliberately modernised.
+  "UP006",
+  "UP035",
+  "UP045",
+
+  # str.format() -> f-string. The MDM CLI uses "{}".format(...) consistently
+  # throughout (34 call sites). The style is internally consistent and
+  # correct; converting it is churn, not a fix.
+  "UP032",
+]
+

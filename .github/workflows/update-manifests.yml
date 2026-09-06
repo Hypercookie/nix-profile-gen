@@ -1,0 +1,159 @@
+name: Update ProfileManifests
+
+on:
+  schedule:
+    # 04:17 UTC daily. Deliberately not on the hour: GitHub's scheduler is
+    # heavily oversubscribed at :00 and delays runs by tens of minutes.
+    - cron: "17 4 * * *"
+  workflow_dispatch:
+
+# Needs more than the read-only default: the job commits a submodule bump plus
+# the regenerated payload modules and opens a pull request for them.
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-manifests
+  cancel-in-progress: false
+
+jobs:
+  update:
+    name: pull manifests and regenerate payloads
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: Update ProfileManifests to upstream HEAD
+        id: submodule
+        run: |
+          before="$(git -C ProfileManifests rev-parse HEAD)"
+
+          # Deliberately not `git submodule update --remote`: with no `branch`
+          # key in .gitmodules that silently means `master`, so an upstream
+          # default-branch rename would leave this job tracking a dead branch
+          # and reporting "already up to date" forever. Resolving the remote's
+          # own HEAD is branch-name agnostic.
+          git -C ProfileManifests fetch --prune origin
+          git -C ProfileManifests remote set-head origin --auto
+          git -C ProfileManifests checkout --detach origin/HEAD
+
+          after="$(git -C ProfileManifests rev-parse HEAD)"
+
+          echo "before=$before" >>"$GITHUB_OUTPUT"
+          echo "after=$after" >>"$GITHUB_OUTPUT"
+
+          if [ "$before" = "$after" ]; then
+            echo "changed=false" >>"$GITHUB_OUTPUT"
+            echo "ProfileManifests is already at $after; nothing to do."
+          else
+            echo "changed=true" >>"$GITHUB_OUTPUT"
+            echo "ProfileManifests $before -> $after"
+          fi
+
+      # Everything below is skipped when upstream did not move, so the usual
+      # no-op run costs one checkout instead of a full flake evaluation.
+      - name: Regenerate payload modules
+        if: steps.submodule.outputs.changed == 'true'
+        run: nix develop --command python3 nix_o_s_module_generator.py
+
+      - name: Summarise the payload diff
+        if: steps.submodule.outputs.changed == 'true'
+        id: diff
+        run: |
+          # --stat for the PR body; the full diff would be unreadable across
+          # ~260 generated files.
+          {
+            echo 'stat<<PAYLOAD_EOF'
+            git diff --stat -- nix-modules/payloads/ || true
+            echo 'PAYLOAD_EOF'
+          } >>"$GITHUB_OUTPUT"
+
+          if git diff --quiet -- nix-modules/payloads/; then
+            echo "payloads_changed=false" >>"$GITHUB_OUTPUT"
+          else
+            echo "payloads_changed=true" >>"$GITHUB_OUTPUT"
+          fi
+
+      # The checks run *here*, before the pull request is opened, and this is
+      # load-bearing rather than a duplicate of ci.yml: a pull request created
+      # with the default GITHUB_TOKEN does not trigger further workflow runs,
+      # by design, so ci.yml would never fire on the branch this job pushes.
+      # If these checks are removed, the PR arrives with no signal at all.
+      #
+      # A new upstream manifest can introduce a pfm type or structure the
+      # generator mishandles, which surfaces as an evaluation failure rather
+      # than a bad diff, so this must run before a human is asked to look.
+      # Two passes, for the same reason ci.yml splits them: building is
+      # restricted to this runner's own system, because several checks realise
+      # store paths and a Linux runner cannot build a darwin derivation. The
+      # evaluation-only pass then covers every system, which is what actually
+      # matters for a manifest bump -- a new pfm type breaks evaluation on all
+      # platforms at once.
+      - name: nix flake check (build, this system)
+        if: steps.submodule.outputs.changed == 'true'
+        run: nix flake check -L
+
+      - name: nix flake check (evaluate, all systems)
+        if: steps.submodule.outputs.changed == 'true'
+        run: nix flake check --all-systems --no-build -L
+
+      - name: Create pull request
+        if: steps.submodule.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v6
+        with:
+          branch: automated/update-profilemanifests
+          # Recreate the branch each run rather than stacking commits, so the
+          # PR always represents one clean bump to current upstream HEAD.
+          delete-branch: true
+          add-paths: |
+            ProfileManifests
+            nix-modules/payloads
+          commit-message: |
+            Update ProfileManifests and regenerate payload modules
+
+            ProfileManifests ${{ steps.submodule.outputs.before }}
+                          -> ${{ steps.submodule.outputs.after }}
+
+            nix-modules/payloads/ is regenerated output, not hand-written, so
+            it is committed together with the submodule bump that produced it.
+            The CI generator job compares the two byte for byte.
+          title: "Update ProfileManifests and regenerate payload modules"
+          body: |
+            Automated daily sync of the upstream
+            [ProfileManifests](https://github.com/ProfileManifests/ProfileManifests)
+            submodule, with `nix-modules/payloads/` regenerated from it by
+            `nix_o_s_module_generator.py`.
+
+            **Submodule**
+            `${{ steps.submodule.outputs.before }}` → `${{ steps.submodule.outputs.after }}`
+
+            **Regenerated payload modules**
+            ```
+            ${{ steps.diff.outputs.stat }}
+            ```
+
+            `nix flake check --all-systems` passed on this tree before the pull
+            request was opened. Note that GitHub does not run workflows on pull
+            requests created by the default `GITHUB_TOKEN`, so the checks in
+            this job are the only automated signal here.
+
+            Worth a human glance at the diff even when green: a manifest can
+            rename or retype an option, which evaluates fine but silently
+            changes the option surface users configure against. The generator
+            also deletes modules for manifests that disappeared upstream.
+          labels: |
+            automated
+            dependencies
+
+      - name: Report when the submodule moved but the payloads did not
+        if: >-
+          steps.submodule.outputs.changed == 'true' &&
+          steps.diff.outputs.payloads_changed == 'false'
+        run: |
+          echo "::notice::ProfileManifests moved to ${{ steps.submodule.outputs.after }} but produced no payload changes (docs or non-manifest commits upstream)."
