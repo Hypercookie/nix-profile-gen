@@ -1,0 +1,123 @@
+name: CI
+
+on:
+  push:
+    branches: [master, mdm]
+  pull_request:
+
+# Least-privilege default. `id-token: write` is required by
+# magic-nix-cache-action; every job below inherits this block.
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # Full flake evaluation plus the 26 Home Manager / profile tests, and the
+  # treefmt + lint + pre-commit checks wired into `checks`.
+  check:
+    name: flake check (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # macos-latest is included because this project targets macOS: the
+        # checks build Home Manager configurations and generate real
+        # .mobileconfig files for aarch64-darwin, which is the platform users
+        # actually run. Verified to pass on aarch64-darwin locally (26/26
+        # pre-existing checks green), and none of the checks need a signed
+        # Mac, a real device or the Apple toolchain -- the plist is written by
+        # a plain Python script inside a derivation.
+        os: [ubuntu-latest, macos-latest]
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          # ProfileManifests is a git submodule and is the source of truth for
+          # every payload module. Without it the generator and several checks
+          # have nothing to read.
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # --all-systems was verified to evaluate cleanly: checks for
+      # x86_64-linux, aarch64-linux, x86_64-darwin and aarch64-darwin all
+      # instantiate without error, so the stricter flag is practical here and
+      # catches per-system evaluation breakage that the default single-system
+      # run would miss.
+      - name: nix flake check
+        run: nix flake check --all-systems -L
+
+  # Formatting is also covered by `checks.<system>.treefmt` in the job above;
+  # this job exists to surface the actual diff as its own red/green signal.
+  format:
+    name: treefmt
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # NOTE: `treefmt --ci` rewrites files in place and then fails if
+      # anything changed. That is fine here because the runner's checkout is
+      # disposable, and it means the `git diff` step below can print exactly
+      # what needs reformatting. Do not run this against a working tree you
+      # care about.
+      - name: nix fmt --ci
+        run: nix fmt -- --ci
+
+      - name: Show required changes
+        if: failure()
+        run: git diff --stat && git diff
+
+  # ruff + statix + deadnix, via the same derivation `nix flake check` uses,
+  # so CI and local runs cannot drift apart.
+  lint:
+    name: lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      - name: ruff / statix / deadnix
+        run: nix build .#checks.x86_64-linux.lint -L
+
+  # Proves the ~260 checked-in payload modules really are what the generator
+  # produces from the pinned ProfileManifests submodule, so a stale or
+  # hand-edited generated file cannot go unnoticed.
+  #
+  # Verified deterministic: regenerating against the currently pinned
+  # submodule reproduces the checked-in tree byte-for-byte.
+  generator:
+    name: generated payloads are up to date
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - uses: DeterminateSystems/nix-installer-action@main
+      - uses: DeterminateSystems/magic-nix-cache-action@main
+
+      # Run through the devShell so the Python version matches the one the
+      # flake pins, rather than whatever the runner image happens to ship.
+      - name: Regenerate payload modules
+        run: nix develop --command python3 nix_o_s_module_generator.py
+
+      - name: Check for drift
+        run: |
+          if ! git diff --exit-code nix-modules/payloads/; then
+            echo "::error::nix-modules/payloads/ is out of sync with nix_o_s_module_generator.py."
+            echo "Run 'python3 nix_o_s_module_generator.py' and commit the result."
+            exit 1
+          fi

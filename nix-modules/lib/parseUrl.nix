@@ -13,15 +13,15 @@ in
 if url == null || match == null then
   null
 else
-let
-  scheme = builtins.elemAt match 0;
-  rawPort = builtins.elemAt match 3;
-  rawPath = builtins.elemAt match 4;
-in
-{
-  inherit scheme;
-  host = builtins.elemAt match 1;
-  port = if rawPort == null then null else lib.toInt rawPort;
-  path = if rawPath == null then "/" else rawPath;
-  useSSL = scheme == "https";
-}
+  let
+    scheme = builtins.elemAt match 0;
+    rawPort = builtins.elemAt match 3;
+    rawPath = builtins.elemAt match 4;
+  in
+  {
+    inherit scheme;
+    host = builtins.elemAt match 1;
+    port = if rawPort == null then null else lib.toInt rawPort;
+    path = if rawPath == null then "/" else rawPath;
+    useSSL = scheme == "https";
+  }

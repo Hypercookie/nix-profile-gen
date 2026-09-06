@@ -139,16 +139,16 @@ Two traps worth remembering when extending it:
 
 The generator (`nix_o_s_module_generator.py`) maps Apple pfm manifest types to Nix types:
 
-| pfm type | Nix type |
-|---|---|
-| `string` | `types.str` |
-| `boolean` | `types.bool` |
-| `integer` | `types.int` |
-| `real` | `types.float` |
-| `array` | `types.listOf <element-type>` |
-| `dictionary` | `types.submodule` or `types.attrs` |
-| enum with range list | `types.enum [...]` |
-| any pfm type | `types.nullOr <type>` (default: `null`) |
+| pfm type             | Nix type                                |
+| -------------------- | --------------------------------------- |
+| `string`             | `types.str`                             |
+| `boolean`            | `types.bool`                            |
+| `integer`            | `types.int`                             |
+| `real`               | `types.float`                           |
+| `array`              | `types.listOf <element-type>`           |
+| `dictionary`         | `types.submodule` or `types.attrs`      |
+| enum with range list | `types.enum [...]`                      |
+| any pfm type         | `types.nullOr <type>` (default: `null`) |
 
 Each manifest as a whole becomes:
 
@@ -168,12 +168,12 @@ options are emitted once into a `let`-bound `payloadModule` and reused.
 
 Payload names follow the pattern `<category>-<manifest-stem>` with dots replaced by dashes:
 
-| Category | Prefix | Example |
-|---|---|---|
-| `ManifestsApple/` | `apple-` | `apple-com-apple-dock` |
-| `ManagedPreferencesApple/` | `managed-apple-` | `managed-apple-com-apple-finder` |
-| `ManagedPreferencesApplications/` | `managed-applications-` | `managed-applications-com-google-Chrome` |
-| `ManagedPreferencesDeveloper/` | `managed-developer-` | `managed-developer-com-github-GitHubDesktop` |
+| Category                          | Prefix                  | Example                                      |
+| --------------------------------- | ----------------------- | -------------------------------------------- |
+| `ManifestsApple/`                 | `apple-`                | `apple-com-apple-dock`                       |
+| `ManagedPreferencesApple/`        | `managed-apple-`        | `managed-apple-com-apple-finder`             |
+| `ManagedPreferencesApplications/` | `managed-applications-` | `managed-applications-com-google-Chrome`     |
+| `ManagedPreferencesDeveloper/`    | `managed-developer-`    | `managed-developer-com-github-GitHubDesktop` |
 
 ---
 
@@ -187,14 +187,14 @@ Payloads are addressed as `programs.macprofile.payloads.<manifest>.<instance>.<k
 
 Every instance carries four internal options emitted by the generator:
 
-| Option | Purpose |
-|---|---|
-| `_domain` | `PayloadType` for the manifest |
-| `_unique` | From `pfm_unique`; drives the "only one instance" assertion |
-| `_displayName` | Per-instance `PayloadDisplayName` |
-| `_keyNames` | Payload key names, used to detect the pre-instance flat syntax |
-| `_targets` | From `pfm_targets`; routes the instance to the User or System profile |
-| `_scope` | User-facing override for `_targets` (not internal) |
+| Option         | Purpose                                                               |
+| -------------- | --------------------------------------------------------------------- |
+| `_domain`      | `PayloadType` for the manifest                                        |
+| `_unique`      | From `pfm_unique`; drives the "only one instance" assertion           |
+| `_displayName` | Per-instance `PayloadDisplayName`                                     |
+| `_keyNames`    | Payload key names, used to detect the pre-instance flat syntax        |
+| `_targets`     | From `pfm_targets`; routes the instance to the User or System profile |
+| `_scope`       | User-facing override for `_targets` (not internal)                    |
 
 `internalKeys` in `generateMacOSProfile.nix` must be kept in sync with these,
 otherwise plumbing leaks into the generated plist.
@@ -246,14 +246,78 @@ system-only, 12 are user-only, 159 accept either, and 16 declare nothing
 
 ## Flake Outputs
 
-| Output | Contents |
-|---|---|
-| `homeModules.profiles` | Core module + all payload options |
-| `homeModules.bridges` | Home Manager account bridges |
-| `homeModules.default` | Both |
-| `checks.<system>.*` | Test suite |
-| `devShells.<system>.default` | Python 3 for running the generator |
+| Output                       | Contents                                            |
+| ---------------------------- | --------------------------------------------------- |
+| `homeModules.profiles`       | Core module + all payload options                   |
+| `homeModules.bridges`        | Home Manager account bridges                        |
+| `homeModules.default`        | Both                                                |
+| `checks.<system>.*`          | Test suite, plus `treefmt`, `lint` and `pre-commit` |
+| `formatter.<system>`         | treefmt wrapper backing `nix fmt`                   |
+| `devShells.<system>.default` | Python 3, the generator, and all lint/format tools  |
 
 `homeModules` is deliberately declared **outside** `flake-utils.lib.eachDefaultSystem`;
 Home Manager modules are system-independent, and nesting them made them
 reachable only as `homeModules.<system>.profiles`.
+
+---
+
+## Formatting, Linting and CI
+
+### Commands
+
+| Command                                                                               | What it does                                                      |
+| ------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `nix fmt`                                                                             | Format the tree with treefmt                                      |
+| `nix build .#checks.$(nix eval --raw --impure --expr builtins.currentSystem).treefmt` | Check formatting **without writing**                              |
+| `nix build .#checks.<system>.lint`                                                    | ruff + statix + deadnix                                           |
+| `nix flake check`                                                                     | Everything: the profile tests, `treefmt`, `lint` and `pre-commit` |
+| `nix develop`                                                                         | Dev shell; its shell hook installs the git pre-commit hook        |
+
+> **`nix fmt -- --ci` rewrites files in place.** treefmt's `--ci` is
+> `--no-cache --fail-on-change`: it still formats, then fails if anything
+> changed. Use it only where the working tree is disposable (CI). To _check_
+> formatting non-destructively, build `checks.<system>.treefmt`, which runs in
+> a sandbox against a copy of the source.
+
+### Configuration
+
+| File                       | Purpose                                     |
+| -------------------------- | ------------------------------------------- |
+| `treefmt.nix`              | Formatters and the shared exclude list      |
+| `ruff.toml`                | `ruff check` rules for the two Python files |
+| `statix.toml`              | statix ignores and disabled lints           |
+| `.github/workflows/ci.yml` | `check`, `format`, `lint`, `generator` jobs |
+
+Formatters: **nixpkgs-fmt** (Nix), **ruff-format** (Python), **prettier**
+(Markdown/YAML/JSON), **shfmt** (`.sh`/`.bash` only). nixpkgs-fmt was chosen
+over nixfmt-rfc-style because the existing modules already match it: 170
+changed lines versus 1817 across the 11 hand-written `.nix` files.
+
+There is a lot of shell embedded in Nix strings (activation scripts, `onChange`
+hooks, `runCommand` bodies). treefmt cannot reach it and does not try.
+
+### The two exclusions
+
+`ProfileManifests/` and `nix-modules/payloads/` are excluded from **every**
+formatter and linter. They are declared in three places that must stay in
+sync — `treefmt.nix` (`settings.excludes`), `statix.toml` (`ignore`), and
+`flake.nix` (`lintSrc` for the lint check, `preCommitExcludes` for the hooks).
+The pre-commit path needs its own copy because pre-commit passes staged
+filenames straight to each hook.
+
+Reformatting `nix-modules/payloads/` would be actively harmful: the next
+generator run overwrites it, and the CI `generator` job compares the generated
+output byte-for-byte against what is checked in.
+
+### Pre-commit hooks
+
+Provided by `cachix/git-hooks.nix` and installed by entering `nix develop`.
+Hooks: `treefmt` (the same wrapper `nix fmt` uses), `ruff`, `statix`,
+`deadnix`, `check-merge-conflicts`, `check-added-large-files`, and
+`no-commit-to-branch` guarding `master`.
+
+`no-commit-to-branch` is installed by the shell hook but deliberately **left
+out of `checks.<system>.pre-commit`**: that check runs
+`pre-commit run --all-files` inside a sandbox where git-hooks.nix `git init`s a
+throwaway repo whose own default branch is `master`, so the guard would always
+trip. `flake.nix` therefore builds two hook sets from one shared definition.

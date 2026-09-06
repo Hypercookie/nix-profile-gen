@@ -1,0 +1,34 @@
+# statix configuration. Used by checks.<system>.lint and by the statix
+# pre-commit hook.
+
+# Never lint upstream or auto-generated Nix. checks.lint already strips these
+# trees from its source, but the pre-commit hook runs against the working tree,
+# so the exclusion is stated here too.
+ignore = [
+  "ProfileManifests",
+  "nix-modules/payloads",
+  ".direnv",
+  ".venv",
+]
+
+# Two purely stylistic lints are disabled rather than mass-editing the
+# hand-written modules to satisfy them.
+#
+#   repeated_keys (W20)
+#     Flags `home.username = ...; home.homeDirectory = ...;` and wants
+#     `home = { username = ...; ... }`. Writing one dotted key per line is the
+#     dominant idiom in NixOS/Home Manager configuration and is what this repo
+#     uses throughout; it also keeps diffs to a single line when an option is
+#     added. Three sites in tests/default.nix, all correct as written.
+#
+#   manual_inherit_from (W04)
+#     Flags `mdm = hm.config.programs.macprofile.mdm;` and wants
+#     `inherit (hm.config.programs.macprofile) mdm;`. Equivalent, and the
+#     explicit form reads better next to the surrounding let bindings that
+#     cannot be written as inherits. Two sites in tests/default.nix.
+#
+# Everything else statix knows about stays enabled.
+disabled = [
+  "repeated_keys",
+  "manual_inherit_from",
+]
