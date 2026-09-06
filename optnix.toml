@@ -35,7 +35,6 @@ nix eval --impure  --json   --expr '
       # plus the payload manifest options as a single entry each.
       baseList = builtins.filter visible (lib.optionAttrSetToDocList eval.options);
 
-      # Expand each payload's attrsOf (submodule …) so its individual keys are
       # visible when typing programs.macprofile.payloads.<manifest>.<name>.<key>.
       payloadOpts = eval.options.programs.macprofile.payloads;
 
