@@ -95,6 +95,10 @@ jobs:
       # evaluation-only pass then covers every system, which is what actually
       # matters for a manifest bump -- a new pfm type breaks evaluation on all
       # platforms at once.
+      - name: Stage new payload files for Nix flake visibility
+        if: steps.submodule.outputs.changed == 'true'
+        run: git add -N nix-modules/payloads/
+
       - name: nix flake check (build, this system)
         if: steps.submodule.outputs.changed == 'true'
         run: nix flake check -L
