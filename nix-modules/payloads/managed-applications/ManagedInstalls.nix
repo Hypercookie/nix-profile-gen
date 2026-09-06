@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "SoftwareRepoURL" "PFC_SegmentedControl_0" "ClientIdentifier" "ManagedInstallDir" "LocalOnlyManifest" "SuppressAutoInstall" "SuppressLoginwindowInstall" "InstallAppleSoftwareUpdates" "AppleSoftwareUpdatesOnly" "UnattendedAppleUpdates" "PerformAuthRestarts" "RecoveryKeyFile" "EmulateProfileSupport" "SuppressUserNotification" "SuppressStopButtonOnInstall" "InstallRequiresLogout" "ShowRemovalDetail" "ShowOptionalInstallsForHigherOSVersions" "DaysBetweenNotifications" "UseNotificationCenterDays" "MSCOfferToQuitBlockingApps" "MSCOfferToForceQuitBlockingApps" "MSCOfferToUpdateOthers" "PackageVerificationMode" "MSCAllowNotificationWindow" "MSCAllowedNotificationWindowStart" "MSCAllowedNotificationWindowEnd" "FollowHTTPRedirects" "AdditionalHttpHeaders" "IgnoreSystemProxies" "DownloadRetries" "DownloadRetrySleepSeconds" "PackageURL" "CatalogURL" "ManifestURL" "IconURL" "ClientResourceURL" "ClientResourcesFilename" "HelpURL" "LicenseInfoURL" "SoftwareUpdateServerURL" "UseClientCertificate" "UseClientCertificateCNAsClientIdentifier" "ClientCertificatePath" "ClientKeyPath" "SoftwareRepoCAPath" "SoftwareRepoCACertificate" "LogFile" "LogToSyslog" "LoggingLevel" "MSULogEnabled" "MSUDebugLogEnabled" "PFC_SegmentedControl_Plugins" "AccessKey" "Region" "SecretKey" "S3Endpoint" "IgnoreMiddleware" "AggressiveUpdateNotificationDays" ];
+        default = [ "SoftwareRepoURL" "PFC_SegmentedControl_0" "ClientIdentifier" "ManagedInstallDir" "LocalOnlyManifest" "SuppressAutoInstall" "SuppressLoginwindowInstall" "InstallAppleSoftwareUpdates" "AppleSoftwareUpdatesOnly" "AppleSoftwareUpdatesIncludeMajorOSUpdates" "UnattendedAppleUpdates" "PerformAuthRestarts" "RecoveryKeyFile" "EmulateProfileSupport" "SuppressUserNotification" "SuppressStopButtonOnInstall" "InstallRequiresLogout" "ShowRemovalDetail" "ShowOptionalInstallsForHigherOSVersions" "DaysBetweenNotifications" "UseNotificationCenterDays" "MSCOfferToQuitBlockingApps" "MSCOfferToForceQuitBlockingApps" "MSCOfferToUpdateOthers" "PackageVerificationMode" "MSCAllowNotificationWindow" "MSCAllowedNotificationWindowStart" "MSCAllowedNotificationWindowEnd" "FollowHTTPRedirects" "AdditionalHttpHeaders" "IgnoreSystemProxies" "DownloadRetries" "DownloadRetrySleepSeconds" "PackageURL" "CatalogURL" "ManifestURL" "IconURL" "ClientResourceURL" "ClientResourcesFilename" "HelpURL" "LicenseInfoURL" "SoftwareUpdateServerURL" "UseClientCertificate" "ClientCertificateAcceptableCAs" "UseClientCertificateCNAsClientIdentifier" "ClientCertificatePath" "ClientKeyPath" "SoftwareRepoCAPath" "SoftwareRepoCACertificate" "LogFile" "LogToSyslog" "LoggingLevel" "MSULogEnabled" "MSUDebugLogEnabled" "PFC_SegmentedControl_Plugins" "AccessKey" "Region" "SecretKey" "S3Endpoint" "IgnoreMiddleware" "AggressiveUpdateNotificationDays" "CustomSidebarItems" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -99,19 +99,25 @@ let
       InstallAppleSoftwareUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "Install updates from an Apple Software Update server, in addition to \"regular\" Munki updates.";
+        description = "Install updates from an Apple Software Update server, in addition to \"regular\" Munki updates. Prior to Munki 7, this controlled whether Munki would notify about AND install Apple updates. With Munki 7+, only notification occurs; Apple updates must be installed manually with Apple's tools.";
       };
 
       AppleSoftwareUpdatesOnly = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "Only install updates from an Apple Software Update server. No Munki repository is needed or used.";
+        description = "Only install updates from an Apple Software Update server. No Munki repository is needed or used. No longer really useful in Munki 7+, since Munki 7 only notifies about Apple updates rather than installing them.";
+      };
+
+      AppleSoftwareUpdatesIncludeMajorOSUpdates = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If true (and InstallAppleSoftwareUpdates is also true), include major OS updates when displaying/notifying about available Apple updates. If false (the default), major OS upgrades (for example, a Ventura upgrade offered while running Monterey) are filtered out.";
       };
 
       UnattendedAppleUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "Updates that declare no \"must-close\" applications, or have one or more \"must-close\" applications, none of which is running, and do not require a logout or restart will be installed as part of a normal periodic background run without notifying the user.";
+        description = "Updates that declare no \"must-close\" applications, or have one or more \"must-close\" applications, none of which is running, and do not require a logout or restart will be installed as part of a normal periodic background run without notifying the user. Does nothing useful in Munki 7+, since Apple updates are no longer installed by Munki.";
       };
 
       PerformAuthRestarts = lib.mkOption {
@@ -129,13 +135,13 @@ let
       EmulateProfileSupport = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "A bit of hack and not supported by Apple, it is disabled by default. To emulate profile installs, configuration profiles are read, and if they contain managed preferences, they are converted to MCX data that is added to a ComputerGroup in the local Open Directory store. Configuration profile payloads that are not managed preferences are ignored/skipped.";
+        description = "A bit of hack and not supported by Apple, it is disabled by default. To emulate profile installs, configuration profiles are read, and if they contain managed preferences, they are converted to MCX data that is added to a ComputerGroup in the local Open Directory store. Configuration profile payloads that are not managed preferences are ignored/skipped. Munki 7 drops all support for installation of Configuration Profiles, including support for Configuration Profile Emulation, so this preference has no effect in Munki 7+.";
       };
 
       SuppressUserNotification = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "Managed Software Center will never notify the user of available updates.";
+        description = "Managed Software Center will never notify the user of available updates. Managed Software Center can still be manually invoked to discover and install updates.";
       };
 
       SuppressStopButtonOnInstall = lib.mkOption {
@@ -183,7 +189,7 @@ let
       MSCOfferToForceQuitBlockingApps = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If this (and MSCOfferToQuitBlockingApps) is true, if a \"polite\" attempt to quit an application fails, a button to force quit the application will be displayed.";
+        description = "If this (and MSCOfferToQuitBlockingApps) is true, if a \"polite\" attempt to quit an application fails, a button to force quit the application will be displayed. If false or undefined, a message telling the user to manually quit the app is displayed instead.";
       };
 
       MSCOfferToUpdateOthers = lib.mkOption {
@@ -195,7 +201,7 @@ let
       PackageVerificationMode = lib.mkOption {
         type = types.nullOr (types.enum [ "none" "hash" "hash_strict" ]);
         default = null;
-        description = "Controls how Munki verifies the integrity of downloaded packages. (none = No integrity check is performed, hash = Integrity check is performed if package info contains checksum information, hash_strict = Integrity check is performed, and fails if package info does not contain checksum information.)";
+        description = "Controls how Munki verifies the integrity of downloaded packages. (none = No integrity check is performed, hash = Integrity check is performed if package info contains checksum information, hash_strict = Integrity check is performed, and fails if package info does not contain checksum information.) Defaults to hash.";
       };
 
       MSCAllowNotificationWindow = lib.mkOption {
@@ -306,6 +312,12 @@ let
         description = "Use an SSL client certificate when communicating with the Munki server. Requires an https:// URL for the Munki repo.";
       };
 
+      ClientCertificateAcceptableCAs = lib.mkOption {
+        type = types.nullOr (types.listOf (types.str));
+        default = null;
+        description = "Acceptable client certificate issuing CA distinguished names. Meant to be used when a server does not advertise CA names. Values must use RFC 4514-style distinguished names like \"CN=Munki Client CA,O=ExampleOrg\". Requires UseClientCertificate to be true.";
+      };
+
       UseClientCertificateCNAsClientIdentifier = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
@@ -327,7 +339,7 @@ let
       SoftwareRepoCAPath = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "Path to the directory that stores your CA certificate(s).";
+        description = "Path to the directory that stores your CA certificate(s). See the curl man page for more details on this parameter.";
       };
 
       SoftwareRepoCACertificate = lib.mkOption {
@@ -405,6 +417,30 @@ let
         type = types.nullOr (types.int);
         default = null;
         description = "This preference controls how many days after one or more pending updates are ignored that aggressive user notification begins. Setting this to 0 never triggers this aggressive behavior.";
+      };
+
+      CustomSidebarItems = lib.mkOption {
+        type = types.nullOr (types.listOf (types.submodule {
+          options = {
+            title = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "The display title of this sidebar item.";
+            };
+            icon = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "The name of the SF Symbol to use as this sidebar item's icon.";
+            };
+            page = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "The munki:// URL this sidebar item navigates to.";
+            };
+          };
+        }));
+        default = null;
+        description = "Custom sidebar configuration for Managed Software Center, overriding the default Software/Categories/My Items/Updates sidebar. Each array item is a dict with 'title', 'icon' (an SF Symbol name), and 'page' (a munki:// URL) key. Requires macOS 11 or later.";
       };
 
     };
