@@ -186,7 +186,7 @@
           packages = [
             # Runs nix_o_s_module_generator.py.
             pkgs.python3
-
+            pkgs.optnix
             # Everything the hooks and CI invoke, so a contributor can run
             # any of them by hand from inside the shell.
             pkgs.ruff
