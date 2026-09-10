@@ -51,8 +51,13 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "ManagedByOrganizationName" "ManagedByCaption" "ManagedByURL" "SUEnableAutomaticChecks" "SUAutomaticallyUpdate" "ApplyUpdates" "UnstableUpdates" "TailscaleStartOnLogin" "ForceEnabled" "HideDHCP121Warnings" "Tailnet" "LoginURL" "ExitNodeID" "KeyExpirationNotice" "ExitNodeAllowLANAccess" "UseTailscaleSubnets" "Hostname" "UseTailscaleDNSSettings" "AllowIncomingConnections" "PostureChecking" "ExitNodesPicker" "ManageTailnetLock" "ResetToDefaults" "RunExitNode" "StartOnLoginMenuItem" "TestMenu" "UpdateMenu" "HiddenNetworkDevices" "IPAddressCopiedAlertSuppressed" "CLIIntegration" "TailscaleOnboardingSeen" "VPNOnDemandSettings" ];
+        default = [ "PFC_SegmentedControl_0" "ManagedByOrganizationName" "ManagedByCaption" "ManagedByURL" "SUEnableAutomaticChecks" "SUAutomaticallyUpdate" "ApplyUpdates" "UnstableUpdates" "TailscaleStartOnLogin" "AlwaysOn.Enabled" "AlwaysOn.OverrideWithReason" "ReconnectAfter" "ForceEnabled" "HideDHCP121Warnings" "Tailnet" "LoginURL" "AuthKey" "AuthBrowser.macos" "EncryptState" "ExitNodeID" "ExitNode.AllowOverride" "AllowedSuggestedExitNodes" "AdvertiseExitNode" "KeyExpirationNotice" "ExitNodeAllowLANAccess" "UseTailscaleSubnets" "Hostname" "UseTailscaleDNSSettings" "AllowIncomingConnections" "PostureChecking" "ExitNodesPicker" "ManageTailnetLock" "ResetToDefaults" "RunExitNode" "StartOnLoginMenuItem" "TestMenu" "UpdateMenu" "HiddenNetworkDevices" "IPAddressCopiedAlertSuppressed" "AppIntroShown" "HideDockIcon" "CLIIntegration" "OnboardingFlow" "TailscaleOnboardingSeen" "VPNOnDemandSettings" "VPNOnDemandIsUserConfigured" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
+      };
+
+      PFC_SegmentedControl_0 = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
       };
 
       ManagedByOrganizationName = lib.mkOption {
@@ -103,6 +108,24 @@ let
         description = "The first time the application is opened on a Mac, Tailscale installs a macOS login helper. This allows Tailscale to start automatically when the user logs into their account. This boolean controls whether the login helper should start Tailscale at login time.";
       };
 
+      "AlwaysOn.Enabled" = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Prevents users from disconnecting from the tailnet or exiting the client. When this policy is enabled, you can also enable AlwaysOn.OverrideWithReason to require a reason for disconnecting, and ReconnectAfter to set how long the client can stay disconnected.";
+      };
+
+      "AlwaysOn.OverrideWithReason" = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Requires users to submit a reason when disconnecting the Tailscale client. User-provided reasons display in the Configuration logs page of the admin console. On macOS, a user can provide a reason in the client UI dialog or with the CLI command tailscale down --reason \"DNS issues\".";
+      };
+
+      ReconnectAfter = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Sets how long the client can remain disconnected from the tailnet before automatically reconnecting. Use a Go-style duration string, for example 24h or 5h25m30s. An empty string or a zero duration disables automatic reconnection. Can be used with or without AlwaysOn.Enabled.";
+      };
+
       ForceEnabled = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
@@ -118,7 +141,7 @@ let
       Tailnet = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "Specify a tailnet, and its identity provider will be used on the login page. If the policy value is prefixed with \"required:\"\", Tailscale will force that identity provider to be used and won’t allow logging in with anything else.";
+        description = "Specifies one or more tailnets to suggest or require during device registration. Set to a comma-separated list of tailnet IDs or organization IDs such as T123456CNTRL,o123456CNTRL. Prefix the value with required: to require one of those values and disallow registration in any other tailnet.";
       };
 
       LoginURL = lib.mkOption {
@@ -127,10 +150,46 @@ let
         description = "The LoginURL policy can be used to specify a custom control server URL. This should not be changed unless you are not using the standard Tailscale server. Use this policy if you’re deploying your own server, such as Headscale.";
       };
 
+      AuthKey = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Specifies an auth key used to authenticate managed devices without user interaction. Clients automatically try to use the auth key when launched unless already logged in. Use a one-off auth key tagged for the device, with access control policies that grant only necessary access.";
+      };
+
+      "AuthBrowser.macos" = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Controls the browser used to open authentication URLs. Set this to the bundle identifier of the preferred browser. If the specified bundle is not present, the user's default system browser is used.";
+      };
+
+      EncryptState = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Instructs Tailscale to store the node state file in encrypted format on disk. The node state file contains credentials, like the node and machine keys, that could be copied to a different device if stored unencrypted. The Mac App Store variant always stores the state file encrypted regardless of this policy; this key applies to the Standalone variant only.";
+      };
+
       ExitNodeID = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "Forces the Tailscale client to always use the given exit node. This can be useful if you wish to route all Internet traffic through a node for inspection or logging purposes. Users won't be able to disable or choose another exit node when this policy is active. A message will be displayed in the client UI informing users about this restriction. The value for this key should be the ID of an exit node device. You can find the ID for any device in your tailnet by looking at the Machines page of the admin console, or by using the Tailscale API. Note that if a forced exit node goes offline, Internet connectivity will be unavailable on client devices until the exit node comes back online.";
+        description = "Forces the Tailscale client to always use the given exit node. This can be useful if you wish to route all Internet traffic through a node for inspection or logging purposes. Users won't be able to disable or choose another exit node when this policy is active unless ExitNode.AllowOverride is also enabled. The value should be the ID of an exit node device, or auto:any to require any regionally-routed exit node. You can optionally restrict permitted nodes with AllowedSuggestedExitNodes. If a forced exit node goes offline, Internet connectivity will be unavailable until it returns.";
+      };
+
+      "ExitNode.AllowOverride" = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Lets users select a different exit node when ExitNodeID is set to auto:any, which requires the use of an exit node. It does not allow disabling exit node usage entirely.";
+      };
+
+      AllowedSuggestedExitNodes = lib.mkOption {
+        type = types.nullOr (types.listOf (types.str));
+        default = null;
+        description = "Controls which exit nodes are recommended in the Tailscale client and through tailscale exit-node suggest. When ExitNodeID is set to auto:any, this list specifies the allowed regionally-routed exit nodes. If unset, all exit nodes are allowed. If set but empty, no exit nodes are allowed. Other exit nodes not specified by this policy can still be used, but they will not be recommended.";
+      };
+
+      AdvertiseExitNode = lib.mkOption {
+        type = types.nullOr (types.enum [ "always" "never" "user-decides" ]);
+        default = null;
+        description = "Controls whether the device advertises itself as an exit node for use by other users and their devices.";
       };
 
       KeyExpirationNotice = lib.mkOption {
@@ -229,10 +288,28 @@ let
         description = "When you use the Tailscale menu bar item to copy to the Clipboard the IP address of a device, a notification displaying the IP address is presented. Use this to suppress this Copied IP address to clipboard notification.";
       };
 
+      AppIntroShown = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Set to true to suppress the \"Welcome to the Tailscale app\" modal window introduction that appears when you log in to Tailscale on a device for the first time.";
+      };
+
+      HideDockIcon = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "The Tailscale dock icon on macOS appears whenever an application window exists. By default, Tailscale leaves an icon in the dock to support quickly reopening the main application window. Set this to true to hide the dock icon after all windows close.";
+      };
+
       CLIIntegration = lib.mkOption {
         type = types.nullOr (types.enum [ "show" "hide" ]);
         default = null;
         description = "When set to hide, the user will not be able to install the CLI helper, and will instead be told to contact their administrator.";
+      };
+
+      OnboardingFlow = lib.mkOption {
+        type = types.nullOr (types.enum [ "show" "hide" ]);
+        default = null;
+        description = "Shows or hides the client onboarding flow that appears the first time Tailscale starts on a device. Hide it if end-users are already familiar with the product. On macOS, typically deploy a VPN configuration profile when hiding the onboarding flow.";
       };
 
       TailscaleOnboardingSeen = lib.mkOption {
@@ -245,6 +322,12 @@ let
         type = types.nullOr (types.enum [ "show" "hide" ]);
         default = null;
         description = "The VPNOnDemandSettings policy can be used to show or hide the VPN On Demand menu item. You might want to use this setting if you're deploying your own VPN configuration profile for Tailscale, and you don't want your users to interact with the on-demand VPN configuration you set up for them.";
+      };
+
+      VPNOnDemandIsUserConfigured = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Instructs Tailscale not to modify the VPN On Demand configuration, so that MDM-deployed OnDemandRules remain in effect. Deploy this together with VPNOnDemandSettings set to hide when providing your own VPN On Demand rules.";
       };
 
     };
