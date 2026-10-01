@@ -277,7 +277,7 @@ let
       allowDefinitionLookup = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables definition lookup.";
+        description = "If 'false', the system disables definition lookup.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowDeprecatedWebKitTLS = lib.mkOption {
@@ -331,7 +331,7 @@ let
       ratingApps = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions.\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
+        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions (https://developer.apple.com/help/app-store-connect/reference/age-ratings-values-and-definitions).\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
       };
 
       ratingMovies = lib.mkOption {
@@ -407,7 +407,7 @@ let
       allowTimeMachineBackup = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prevents modification of Time Machine settings in System Settings. This restriction is not supported on the user channel.";
+        description = "If 'false', the system prevents modification of Time Machine settings in System Settings. This restriction isn't supported on the user channel.";
       };
 
       allowUIConfigurationProfileInstallation = lib.mkOption {
@@ -473,43 +473,43 @@ let
       allowUSBRestrictedMode = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system allows iOS devices to always connect to USB accessories while locked. In macOS, allows new USB and Thunderbolt accessories, and SD cards to connect without authorization. If the system has Lockdown mode enabled, it ignores this value. This restriction is not supported on the user channel.";
+        description = "If 'false', the system allows iOS devices to always connect to USB accessories while locked. In macOS, allows new USB and Thunderbolt accessories, and SD cards to connect without authorization. If the system has Lockdown mode enabled, it ignores this value. This restriction isn't supported on the user channel.";
       };
 
       allowAssistant = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables Siri.";
+        description = "If 'false', the system disables Siri.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       forceAssistantProfanityFilter = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system forces the use of the profanity filter for Siri and dictation. Requires a supervised device in iOS.";
+        description = "If 'true', the system forces the use of the profanity filter for Siri and dictation. Requires a supervised device in iOS.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       forceDelayedSoftwareUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.";
+        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowRapidSecurityResponseInstallation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prohibits installation of Background Security Improvements.";
+        description = "If 'false', the system prohibits installation of Background Security Improvements.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowRapidSecurityResponseRemoval = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prohibits removal of Background Security Improvements.";
+        description = "If 'false', the system prohibits removal of Background Security Improvements.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedSoftwareUpdateMinorOSDeferredInstallDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "This restriction allows the administrator to set the number of days to delay a minor OS software update on the device. When this restriction is in place, the user sees a software update only after the specified delay after the release of the software update. This value controls the delay for 'forceDelayedSoftwareUpdates'.";
+        description = "This restriction allows the administrator to set the number of days to delay a minor OS software update on the device. When this restriction is in place, the user sees a software update only after the specified delay after the release of the software update. This value controls the delay for 'forceDelayedSoftwareUpdates'.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       forceDelayedAppSoftwareUpdates = lib.mkOption {
@@ -521,25 +521,25 @@ let
       enforcedSoftwareUpdateDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.";
+        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedSoftwareUpdateNonOSDeferredInstallDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "This restriction allows the administrator to set the number of days to delay an app software update on the device. When this restriction is in place, the user sees a non-OS software update only after the specified delay after the release of the software. This value controls the delay for 'forceDelayedAppSoftwareUpdates'.";
+        description = "This restriction allows the administrator to set the number of days to delay an app software update on the device. When this restriction is in place, the user sees a non-OS software update only after the specified delay after the release of the software. This value controls the delay for 'forceDelayedAppSoftwareUpdates'.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       forceDelayedMajorSoftwareUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system delays user visibility of major OS updates.";
+        description = "If 'true', the system delays user visibility of major OS updates.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedSoftwareUpdateMajorOSDeferredInstallDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "This restriction allows the administrator to set the number of days to delay a major software upgrade on the device. When this restriction is in place, the user sees a software upgrade only after the specified delay after the release of the software upgrade. This value controls the delay for 'forceDelayedMajorSoftwareUpdates'.";
+        description = "This restriction allows the administrator to set the number of days to delay a major software upgrade on the device. When this restriction is in place, the user sees a software upgrade only after the specified delay after the release of the software upgrade. This value controls the delay for 'forceDelayedMajorSoftwareUpdates'.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedFingerprintTimeout = lib.mkOption {
@@ -551,13 +551,13 @@ let
       allowDictation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disallows dictation input.";
+        description = "If 'false', the system disallows dictation input.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       forceOnDeviceOnlyDictation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables connections to Siri servers for the purposes of dictation.";
+        description = "If 'true', the system disables connections to Siri servers for the purposes of dictation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       safariAllowAutoFill = lib.mkOption {
@@ -581,13 +581,13 @@ let
       allowGenmoji = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', prohibits creating new Genmoji.";
+        description = "If 'false', prohibits creating new Genmoji.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowImagePlayground = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', prohibits the use of image generation.";
+        description = "If 'false', prohibits the use of image generation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowiPhoneMirroring = lib.mkOption {
@@ -599,19 +599,19 @@ let
       allowWritingTools = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables Apple Intelligence writing tools.";
+        description = "If 'false', disables Apple Intelligence writing tools.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowMailSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables the ability to create summaries of email messages manually. This doesn't affect automatic summary generation.";
+        description = "If 'false', disables the ability to create summaries of email messages manually. This doesn't affect automatic summary generation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowMailSmartReplies = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables smart replies in Mail.";
+        description = "If 'false', disables smart replies in Mail.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowMediaSharingModification = lib.mkOption {
@@ -629,43 +629,43 @@ let
       allowExternalIntelligenceIntegrations = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables the use of external, cloud-based intelligence services with Siri. In iOS, this restriction is temporarily allowed on unsupervised and user enrollments. In a future release, this restriction will require supervision, and will be ignored on unsupervised devices.";
+        description = "If 'false', disables the use of external, cloud-based intelligence services with Siri. In iOS, this restriction is temporarily allowed on unsupervised and user enrollments. In a future release, this restriction will require supervision, and will be ignored on unsupervised devices.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowExternalIntelligenceIntegrationsSignIn = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', forces external intelligence providers into anonymous mode. If a user is already signed in to an external intelligence provider, applying this restriction signs them out when attempting the next request.";
+        description = "If 'false', forces external intelligence providers into anonymous mode. If a user is already signed in to an external intelligence provider, applying this restriction signs them out when attempting the next request.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowedExternalIntelligenceWorkspaceIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "An array of strings, but currently restricted to a single element. If present, Apple Intelligence allows use of only the given external integration workspace ID, and requires a sign-in to make requests. The user is required to sign in to integrations that support signing in. Multiple payloads combine using an intersect operation. This means the allowed set of workspace IDs can become the empty set if multiple payloads specify conflicting values.";
+        description = "An array of strings, but currently restricted to a single element. If present, Apple Intelligence allows use of only the given external integration workspace ID, and requires a sign-in to make requests. The user is required to sign in to integrations that support signing in. Multiple payloads combine using an intersect operation. This means the allowed set of workspace IDs can become the empty set if multiple payloads specify conflicting values.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowNotesTranscriptionSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables transcription summarization in Notes.";
+        description = "If 'false', disables transcription summarization in Notes.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowNotesTranscription = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables transcription in Notes.";
+        description = "If 'false', disables transcription in Notes.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowAppleIntelligenceReport = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables Apple Intelligence reports.";
+        description = "If 'false', the system disables Apple Intelligence reports.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowSafariSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables the ability to summarize content in Safari.";
+        description = "If 'false', the system disables the ability to summarize content in Safari.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowSafariHistoryClearing = lib.mkOption {
@@ -695,7 +695,7 @@ let
       allowRosettaUsageAwareness = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables Rosetta usage awareness. When Rosetta usage awareness is active, a pop-up dialog is displayed to the user when an app that is using Rosetta is launched. The pop-up dialog indicates that Rosetta will be removed in a future version of the operating system so that the user can contact the app vendor regarding a replacement for the current app.";
+        description = "If 'false', disables Rosetta usage awareness. When Rosetta usage awareness is active, the device displays a pop-up dialog to the user when launching an app that uses Rosetta. The pop-up dialog indicates that Rosetta will be removed in a future version of the operating system so that the user can contact the app vendor regarding a replacement for the current app.";
       };
 
     };

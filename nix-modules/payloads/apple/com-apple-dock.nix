@@ -112,7 +112,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Applications side of the Dock and cannot be removed from that location.";
+        description = "An array of items located on the Applications side of the Dock that users can't remove from that location.";
       };
 
       static_others = lib.mkOption {
@@ -192,7 +192,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Documents side of the Dock and cannot be removed from that location.";
+        description = "An array of items located on the Documents side of the Dock that users can't remove from that location.";
       };
 
       persistent_apps = lib.mkOption {
@@ -252,7 +252,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Applications side of the Dock that can be removed from the Dock.";
+        description = "An array of items located on the Applications side of the Dock that users can remove from the Dock.";
       };
 
       persistent_others = lib.mkOption {
@@ -332,7 +332,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Documents side of the Dock that can be removed from the Dock.";
+        description = "An array of items located on the Documents side of the Dock that users can remove from the Dock.";
       };
 
       tilesize = lib.mkOption {
@@ -464,13 +464,13 @@ let
       AllowDockFixupOverride = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', use the file in '/Library/Preferences/com.apple.dockfixup.plist' when a new user or migrated user logs in. This option has no effect for existing users. Available in macOS 10.12 and later. Only available on the device channel.";
+        description = "If 'true', use the file in '/Library/Preferences/com.apple.dockfixup.plist' when a new user or migrated user logs in. This option has no effect for existing users. Only available on the device channel.";
       };
 
       MCXDockSpecialFolders = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "AddDockMCXMyApplicationsFolder" "AddDockMCXDocumentsFolder" "AddDockMCXSharedFolder" "AddDockMCXOriginalNetworkHomeFolder" ]));
         default = null;
-        description = "One or more special folders that may be created at user login time and placed in the Dock.\nThe \"My Applications\" item is only used for Simple Finder environments. The \"Original Network Home\" item is only used for mobile account users.";
+        description = "One or more special folders that the device may create at user login time and place in the Dock.\nThe \"My Applications\" item is only used for Simple Finder environments. The \"Original Network Home\" item is only used for mobile account users.";
       };
 
       wvous_tl_corner = lib.mkOption {

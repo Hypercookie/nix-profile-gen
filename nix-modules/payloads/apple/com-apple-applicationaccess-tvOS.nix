@@ -93,25 +93,25 @@ let
       blockedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "If present, the system prevents showing or launching apps with bundle IDs in the array. Include the value 'com.apple.webapp' to restrict all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nNote: Denying system apps may disable other functionality. For example, denying the App Store app may prevent users from accepting the terms and conditions for the user-based Volume Purchase Program (VPP).";
+        description = "If present, the system prevents showing or launching apps with bundle IDs in the array. Include the value 'com.apple.webapp' to restrict all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nDeprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.\nNote: Denying system apps may disable other functionality. For example, denying the App Store app may prevent users from accepting the terms and conditions for the user-based Volume Purchase Program (VPP).";
       };
 
       blacklistedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "Use 'blockedAppBundleIDs' instead.";
+        description = "Deprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       allowListedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "If present, the system only shows or can launch apps with bundle IDs in the array. Include the value 'com.apple.webapp' to allow all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).";
+        description = "If present, the system only shows or can launch apps with bundle IDs in the array. Include the value 'com.apple.webapp' to allow all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nDeprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       whitelistedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "Use 'allowListedAppBundleIDs' instead.";
+        description = "Deprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       forceAssistantProfanityFilter = lib.mkOption {
@@ -135,7 +135,7 @@ let
       ratingApps = lib.mkOption {
         type = types.nullOr (types.enum [ 1000 900 800 700 600 500 400 300 200 100 0 ]);
         default = null;
-        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions.\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
+        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions (https://developer.apple.com/help/app-store-connect/reference/age-ratings-values-and-definitions).\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
       };
 
       ratingMovies = lib.mkOption {
@@ -189,13 +189,13 @@ let
       forceDelayedSoftwareUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.";
+        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedSoftwareUpdateDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.";
+        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowDeviceSleep = lib.mkOption {

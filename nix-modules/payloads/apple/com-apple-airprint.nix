@@ -76,7 +76,7 @@ let
             ForceTLS = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', AirPrint connections are secured by Transport Layer Security (TLS). Available only in iOS 11 and later.";
+              description = "If 'true', Transport Layer Security (TLS) secures AirPrint connections. Available only in iOS 11 and later.";
             };
           };
         }));

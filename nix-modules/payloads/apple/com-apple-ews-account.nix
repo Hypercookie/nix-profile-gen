@@ -130,7 +130,7 @@ let
       OAuth = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system enables OAuth for authentication. Don't specify a password if 'OAuth' is 'true'. Available in macOS 10.14 and later";
+        description = "If 'true', the system enables OAuth for authentication. Don't specify a password if 'OAuth' is 'true'.";
       };
 
       OAuthSignInURL = lib.mkOption {
