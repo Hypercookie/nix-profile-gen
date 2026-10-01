@@ -81,7 +81,7 @@ let
             SupplementalMatchDomains = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "A list of domain strings used to determine which DNS queries use the DNS server. If not set, all domains use the DNS server.\nThe system supports a single wildcard ('*') prefix, but it's not required. For example, both '*.example.com' and 'example.com' match against 'mydomain.example.com' and 'your.domain.example.com', but don't match against 'mydomain-example.com'.";
+              description = "A list of domain strings used to determine which DNS queries use the DNS server. If not set, all domains use the DNS server.\nThe system supports a single wildcard ('\\*') prefix, but it's not required. For example, both '\\*.example.com' and 'example.com' match against 'mydomain.example.com' and 'your.domain.example.com', but don't match against 'mydomain-example.com'.";
             };
             AllowFailover = lib.mkOption {
               type = types.nullOr (types.bool);
@@ -123,12 +123,12 @@ let
             DNSDomainMatch = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "An array of domain names. This rule matches if any of the domain names in the specified list matches any domain in the device's search domains list.\nThe system supports a single wildcard ('*') prefix, but it's not required. For example, both '*.example.com' and 'example.com' match against 'mydomain.example.com' and 'your.domain.example.com', but don't match against 'mydomain-example.com'.";
+              description = "An array of domain names. This rule matches if any of the domain names in the specified list matches any domain in the device's search domains list.\nThe system supports a single wildcard ('\\*') prefix, but it's not required. For example, both '\\*.example.com' and 'example.com' match against 'mydomain.example.com' and 'your.domain.example.com', but don't match against 'mydomain-example.com'.";
             };
             DNSServerAddressMatch = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "An array of IP addresses. This rule matches if any of the network's specified DNS servers match any entry in the array.\nThe system supports matching with a single wildcard. For example, '17.*' matches any DNS server in the 17.0.0.0/8 subnet.";
+              description = "An array of IP addresses. This rule matches if any of the network's specified DNS servers match any entry in the array.\nThe system supports matching with a single wildcard. For example, '17.\\*' matches any DNS server in the 17.0.0.0/8 subnet.";
             };
             InterfaceTypeMatch = lib.mkOption {
               type = types.nullOr (types.enum [ "Ethernet" "WiFi" "Cellular" ]);

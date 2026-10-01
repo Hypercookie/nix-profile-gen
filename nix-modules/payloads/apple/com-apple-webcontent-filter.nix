@@ -241,7 +241,7 @@ let
       FilterURLs = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system filters URL requests. Use when 'FilterType' is 'Plugin'. Available in iOS 26 and macOS 26, and later.";
+        description = "If 'true', the system filters URL requests. Use when 'FilterType' is 'Plugin'.";
       };
 
       URLFilterParameters = lib.mkOption {
@@ -285,7 +285,7 @@ let
           };
         });
         default = null;
-        description = "A dictionary containing URL filter parameters. Required when 'FilterURLs' is 'true'. Available in iOS 26 and macOS 26 and later.";
+        description = "A dictionary containing URL filter parameters. Required when 'FilterURLs' is 'true'.";
       };
 
       SafariHistoryRetentionEnabled = lib.mkOption {

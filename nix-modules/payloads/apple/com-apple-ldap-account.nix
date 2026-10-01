@@ -112,7 +112,7 @@ let
       VPNUUID = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The VPNUUID of the per-app VPN the account uses for network communication. Available in iOS 14 and later.";
+        description = "The VPNUUID of the per-app VPN the account uses for network communication.";
       };
 
     };
