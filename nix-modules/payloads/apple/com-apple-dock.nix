@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "static_apps" "static_others" "persistent_apps" "persistent_others" "tilesize" "size_immutable" "magnification" "magnify_immutable" "largesize" "magsize_immutable" "orientation" "position_immutable" "mineffect" "mineffect_immutable" "minimize_to_application" "minintoapp_immutable" "launchanim" "launchanim_immutable" "autohide" "autohide_immutable" "show_process_indicators" "show_recents" "show_recent_count" "static_only" "contents_immutable" "AllowDockFixupOverride" "MCXDockSpecialFolders" "wvous_tl_corner" "wvous_tl_modifier" "wvous_tr_corner" "wvous_tr_modifier" "wvous_bl_corner" "wvous_bl_modifier" "wvous_br_corner" "wvous_br_modifier" "windowtabbing" "windowtabbing_immutable" "dblclickbehavior" "dblclickbehavior_immutable" "showindicators_immutable" "showrecents_immutable" ];
+        default = [ "static_apps" "static_others" "persistent_apps" "persistent_others" "tilesize" "size_immutable" "magnification" "magnify_immutable" "largesize" "magsize_immutable" "orientation" "position_immutable" "mineffect" "mineffect_immutable" "minimize_to_application" "minintoapp_immutable" "launchanim" "launchanim_immutable" "autohide" "autohide_immutable" "autohide_delay" "autohide_time_modifier" "show_process_indicators" "show_recents" "show_recent_count" "static_only" "contents_immutable" "AllowDockFixupOverride" "MCXDockSpecialFolders" "wvous_tl_corner" "wvous_tl_modifier" "wvous_tr_corner" "wvous_tr_modifier" "wvous_bl_corner" "wvous_bl_modifier" "wvous_br_corner" "wvous_br_modifier" "windowtabbing" "windowtabbing_immutable" "dblclickbehavior" "dblclickbehavior_immutable" "showindicators_immutable" "showrecents_immutable" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -112,7 +112,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Applications side of the Dock and cannot be removed from that location.";
+        description = "An array of items located on the Applications side of the Dock that users can't remove from that location.";
       };
 
       static_others = lib.mkOption {
@@ -192,7 +192,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Documents side of the Dock and cannot be removed from that location.";
+        description = "An array of items located on the Documents side of the Dock that users can't remove from that location.";
       };
 
       persistent_apps = lib.mkOption {
@@ -252,7 +252,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Applications side of the Dock that can be removed from the Dock.";
+        description = "An array of items located on the Applications side of the Dock that users can remove from the Dock.";
       };
 
       persistent_others = lib.mkOption {
@@ -332,7 +332,7 @@ let
           };
         }));
         default = null;
-        description = "An array of items located on the Documents side of the Dock that can be removed from the Dock.";
+        description = "An array of items located on the Documents side of the Dock that users can remove from the Dock.";
       };
 
       tilesize = lib.mkOption {
@@ -431,6 +431,18 @@ let
         description = "If 'true', locks \"Automatically hide.\"";
       };
 
+      autohide_delay = lib.mkOption {
+        type = types.nullOr (types.float);
+        default = null;
+        description = "Delay in seconds before a hidden Dock is shown.";
+      };
+
+      autohide_time_modifier = lib.mkOption {
+        type = types.nullOr (types.float);
+        default = null;
+        description = "Duration in seconds of Dock show and hide sliding animations.";
+      };
+
       show_process_indicators = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
@@ -464,13 +476,13 @@ let
       AllowDockFixupOverride = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', use the file in '/Library/Preferences/com.apple.dockfixup.plist' when a new user or migrated user logs in. This option has no effect for existing users. Available in macOS 10.12 and later. Only available on the device channel.";
+        description = "If 'true', use the file in '/Library/Preferences/com.apple.dockfixup.plist' when a new user or migrated user logs in. This option has no effect for existing users. Only available on the device channel.";
       };
 
       MCXDockSpecialFolders = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "AddDockMCXMyApplicationsFolder" "AddDockMCXDocumentsFolder" "AddDockMCXSharedFolder" "AddDockMCXOriginalNetworkHomeFolder" ]));
         default = null;
-        description = "One or more special folders that may be created at user login time and placed in the Dock.\nThe \"My Applications\" item is only used for Simple Finder environments. The \"Original Network Home\" item is only used for mobile account users.";
+        description = "One or more special folders that the device may create at user login time and place in the Dock.\nThe \"My Applications\" item is only used for Simple Finder environments. The \"Original Network Home\" item is only used for mobile account users.";
       };
 
       wvous_tl_corner = lib.mkOption {

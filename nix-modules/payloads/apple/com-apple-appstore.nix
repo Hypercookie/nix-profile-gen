@@ -64,19 +64,19 @@ let
       restrict_store_softwareupdate_only = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system prevents App Store from launching. Available in macOS 10.14 and later. Restricts installations to software updates only in macOS 10.10 through 10.13.";
+        description = "If 'true', the system prevents App Store from launching. Restricts installations to software updates only in macOS 10.10 through 10.13.";
       };
 
       restrict_store_disable_app_adoption = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables app adoption by users. Available in macOS 10.10 and later.";
+        description = "If 'true', the system disables app adoption by users.";
       };
 
       DisableSoftwareUpdateNotifications = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables software update notifications. Available in macOS 10.10 and later.";
+        description = "If 'true', the system disables software update notifications.";
       };
 
       restrict_store_mdm_install_softwareupdate_only = lib.mkOption {

@@ -61,22 +61,22 @@ let
             NotificationsEnabled = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', enables notifications for this app.\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "If 'true', enables notifications for this app.";
             };
             BundleIdentifier = lib.mkOption {
               type = types.nullOr (types.str);
               default = null;
-              description = "The bundle identifier of the app to which to apply these notification settings.\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "The bundle identifier of the app to which to apply these notification settings.";
             };
             ShowInNotificationCenter = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', enables notifications in the notification center for this app.\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "If 'true', enables notifications in the Notification Center for this app.";
             };
             ShowInLockScreen = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', enables notifications on the Lock Screen for this app.\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "If 'true', enables notifications on the Lock Screen for this app.";
             };
             SoundsEnabled = lib.mkOption {
               type = types.nullOr (types.bool);
@@ -86,17 +86,17 @@ let
             BadgesEnabled = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', enables badges for this app.\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "If 'true', enables badges for this app.";
             };
             AlertType = lib.mkOption {
               type = types.nullOr (types.enum [ 0 1 2 ]);
               default = null;
-              description = "The type of alert for notifications for this app:\n'0': None\n'1': Temporary Banner\n'2': Persistent Banner\nAvailable in iOS 9.3 and later and macOS 10.15 and later.";
+              description = "The type of alert for notifications for this app:\n'0': None\n'1': Temporary Banner\n'2': Persistent Banner";
             };
             CriticalAlertEnabled = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', enables critical alerts that can ignore Do Not Disturb and ringer settings for this app.\nAvailable in iOS 12 and later and macOS 10.15 and later.";
+              description = "If 'true', enables critical alerts that can ignore Do Not Disturb and ringer settings for this app.";
             };
           };
         }));

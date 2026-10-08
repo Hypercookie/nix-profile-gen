@@ -58,7 +58,7 @@ let
       SkipSetupItems = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "Accessibility" "ActionButton" "Android" "Appearance" "AppleID" "AppStore" "Biometric" "CameraButton" "DeviceToDeviceMigration" "Diagnostics" "DisplayTone" "EnableLockdownMode" "FileVault" "HomeButtonSensitivity" "iCloudDiagnostics" "iCloudStorage" "iMessageAndFaceTime" "Intelligence" "Keyboard" "Location" "MessagingActivationUsingPhoneNumber" "Multitasking" "OnBoarding" "OSShowcase" "Passcode" "Payment" "Privacy" "Restore" "RestoreCompleted" "Safety" "SafetyAndHandling" "ScreenTime" "SIMSetup" "Siri" "SpokenLanguage" "SoftwareUpdate" "TermsOfAddress" "TOS" "Tips" "UnlockWithWatch" "UpdateCompleted" "Wallpaper" "WatchMigration" "Welcome" "Zoom" ]));
         default = null;
-        description = "An array of strings that describe the setup items to skip. 'SkipKeys' provides a list of valid strings and their meanings. Available in iOS 14 and later, and macOS 15 and later.";
+        description = "An array of strings that describe the setup items to skip. 'SkipKeys' provides a list of valid strings and their meanings.";
       };
 
       SkipAppearance = lib.mkOption {

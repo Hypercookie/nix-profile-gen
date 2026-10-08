@@ -232,6 +232,7 @@
     ./managed-applications/com-northpolesec-santa.nix
     ./managed-applications/com-okta-mobile-auth-service-extension.nix
     ./managed-applications/com-okta-mobile.nix
+    ./managed-applications/com-openai-codex.nix
     ./managed-applications/com-papercut-printdeploy-client.nix
     ./managed-applications/com-parallels-desktop-managedprefs.nix
     ./managed-applications/com-pratikkumar-airserver-mac.nix

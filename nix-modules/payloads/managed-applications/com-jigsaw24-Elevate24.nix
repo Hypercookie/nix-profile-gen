@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "LicenseKey" "LicenseAPIKey" "newUI" "message" "iconPath" "heading" "subheading" "mainbutton" "HideLogo" "DisableUserElevation" "AllowCliElevation" "Enabletimelist" "enableReason" "blockExtend" "Sessiontime" "times" "reasons" "sessionExpiryReminder" "AllowUserDefinedScripts" "ElevateScriptPath" "ElevateScriptHash" "DemoteScriptPath" "DemoteScriptHash" "DisableDefaultLog" "siemURL" "siemAuthHeader" "siemAuthToken" "microsoftsentinel" "EnableSessionMonitoring" "enableAppleAuth" "GoogleAuth" "standardAtLoad" "demoteAllAdmin" "demoteAllAdminQuit" "demoteExclusions" "killterminalsessions" "UseSystemExtension" "userElevateAdmin" "useCurrentUserAsAdmin" "adminUserName" "ComplexPassword" "PasswordUppercase" "PasswordLowercase" "PasswordNumbers" "PasswordSymbols" "showAdminPasswordGrace" ];
+        default = [ "PFC_SegmentedControl_0" "LicenseKey" "LicenseAPIKey" "newUI" "message" "iconPath" "heading" "subheading" "mainbutton" "HideLogo" "DisableUserElevation" "AllowCliElevation" "Enabletimelist" "enableReason" "blockExtend" "Sessiontime" "times" "reasons" "advancedReasons" "sessionExpiryReminder" "AllowUserDefinedScripts" "ElevateScriptPath" "ElevateScriptHash" "DemoteScriptPath" "DemoteScriptHash" "CooldownMinutes" "CooldownOverrideEnabled" "CooldownOverrideMessage" "DisableDefaultLog" "siemURL" "siemAuthHeader" "siemAuthToken" "formatLogMessageSplunk" "microsoftsentinel" "EnableSessionMonitoring" "enableAppleAuth" "GoogleAuth" "standardAtLoad" "demoteAllAdmin" "demoteAllAdminQuit" "demoteExclusions" "killterminalsessions" "UseSystemExtension" "userElevateAdmin" "useCurrentUserAsAdmin" "adminUserName" "ComplexPassword" "PasswordUppercase" "PasswordLowercase" "PasswordNumbers" "PasswordSymbols" "showAdminPasswordGrace" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -162,6 +162,30 @@ let
         description = "The reasons to choose for needing elevated rights in dropbox within the application.";
       };
 
+      advancedReasons = lib.mkOption {
+        type = types.nullOr (types.listOf (types.submodule {
+          options = {
+            reason = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "Reason";
+            };
+            requireFreeText = lib.mkOption {
+              type = types.nullOr (types.bool);
+              default = null;
+              description = "Require Free Text";
+            };
+            freeTextPlaceholder = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "Free Text Placeholder";
+            };
+          };
+        }));
+        default = null;
+        description = "New reason type that can require a free-text note. Combined with the existing Reasons list. The selected reason is logged to Reason, the note to ReasonText.";
+      };
+
       sessionExpiryReminder = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
@@ -198,6 +222,24 @@ let
         description = "Elevate24 2.4+ Only. Optionally provide the SHA256 hash of the demotion script specified in DemoteScriptPath. When configured, Elevate24 will verify the script's integrity before execution and refuse to run it if the hash does not match, protecting against unauthorised modification of the script.";
       };
 
+      CooldownMinutes = lib.mkOption {
+        type = types.nullOr (types.int);
+        default = null;
+        description = "Enforces a wait between elevations: once a session ends the machine cannot re-elevate for a configurable period. Enforced per-computer inside the system extension (covers UI, CLI, and automatic session expiry), and resistant to clock tampering. The elevate window shows a live countdown while a cooldown is active. Set to 0 to disable.";
+      };
+
+      CooldownOverrideEnabled = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Lets a helpdesk grant a one-time, short code that clears an active cooldown while the device is offline. Uses a Secure Enclave key so no reusable secret is stored on the device; codes are single-use and rate-limited. Presented discreetly behind an ⓘ icon on the countdown (only when enrolled), with customisable contact text. Requires a Secure Enclave (Apple silicon / T2), a roughly-correct device clock, and the backend enrollment/generation service. Enables enrollment + override.";
+      };
+
+      CooldownOverrideMessage = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Custom helpdesk contact text shown in the offline cooldown override popover. If unset, a built-in message is used.";
+      };
+
       DisableDefaultLog = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
@@ -217,6 +259,12 @@ let
       siemAuthToken = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
+      };
+
+      formatLogMessageSplunk = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Enable to ensure correct formatting of logs when using Splunk as the endpoint. Available in Elevate24 2.6.0 and later.";
       };
 
       microsoftsentinel = lib.mkOption {

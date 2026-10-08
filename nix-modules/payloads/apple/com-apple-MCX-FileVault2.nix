@@ -130,7 +130,7 @@ let
       ForceEnableInSetupAssistant = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', and installation of this payload occurs after enrolling with MDM in Setup Assistant, the system requests Setup Assistant to enable FileVault at setup time.\nTo use this, enable the Await Device Configured DEP configuration option and send this profile with this key set, before sending the 'DeviceConfiguredCommand'.\nAn admin SecureToken user is required, otherwise the FileVault pane does not appear.";
+        description = "If 'true', and installation of this payload occurs after enrolling with MDM in Setup Assistant, the system requests Setup Assistant to enable FileVault at setup time.\nTo use this, enable the Await Device Configured ADE configuration option and send this profile with this key set, before sending the 'DeviceConfiguredCommand'.\nAn admin SecureToken user is required, otherwise the FileVault pane doesn't appear.";
       };
 
     };
