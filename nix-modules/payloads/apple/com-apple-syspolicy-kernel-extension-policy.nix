@@ -64,7 +64,7 @@ let
       AllowNonAdminUserApprovals = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', nonadministrative users can approve additional kernel extensions in the Security & Privacy preferences.\nAvailable in macOS 11 and later.";
+        description = "If 'true', nonadministrative users can approve additional kernel extensions in the Security & Privacy preferences.";
       };
 
       AllowedTeamIdentifiers = lib.mkOption {

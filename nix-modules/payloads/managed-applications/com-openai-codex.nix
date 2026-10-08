@@ -1,8 +1,8 @@
-# Auto-generated from ProfileManifests: com.apple.security.pkcs12.plist
-# Domain: com.apple.security.pkcs12
-# Title: Certificate (PKCS #12)
-# Platforms: iOS, macOS, tvOS
-# Unique: no
+# Auto-generated from ProfileManifests: com.openai.codex.plist
+# Domain: com.openai.codex
+# Title: ChatGPT / Codex
+# Platforms: macOS
+# Unique: yes
 # Targets: system, user
 
 { lib, ... }:
@@ -12,19 +12,19 @@ with lib;
 let
   payloadModule = {
     options = {
-      enable = lib.mkEnableOption "Certificate (PKCS #12)";
+      enable = lib.mkEnableOption "ChatGPT / Codex";
 
       _domain = lib.mkOption {
         internal = true;
         type = lib.types.str;
-        default = "com.apple.security.pkcs12";
+        default = "com.openai.codex";
         description = "The payload domain (PayloadType) for this manifest.";
       };
 
       _unique = lib.mkOption {
         internal = true;
         type = lib.types.bool;
-        default = false;
+        default = true;
         description = "Whether macOS allows only one instance of this payload per profile.";
       };
 
@@ -51,35 +51,29 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "Password" "AllowAllAppsAccess" "KeyIsExtractable" ];
+        default = [ "config_toml_base64" "requirements_toml_base64" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
-      Password = lib.mkOption {
+      config_toml_base64 = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The password to the identity.";
+        description = "Base64-encoded TOML that supplies managed default configuration. It is applied as the highest-precedence configuration layer, above /etc/codex/managed_config.toml and the user's config.toml, so values set here override user settings. Encode the TOML with 'base64' without line wrapping. Users must restart ChatGPT or Codex for changes to take effect.";
       };
 
-      AllowAllAppsAccess = lib.mkOption {
-        type = types.nullOr (types.bool);
+      requirements_toml_base64 = lib.mkOption {
+        type = types.nullOr (types.str);
         default = null;
-        description = "If 'true', the system allows apps access to the private key.";
-      };
-
-      KeyIsExtractable = lib.mkOption {
-        type = types.nullOr (types.bool);
-        default = null;
-        description = "If 'false', the system doesn't tag the private key data as extractable in the keychain.";
+        description = "Base64-encoded TOML that supplies enforced requirements, such as allowed approval policies, sandbox modes, and MCP servers. Requirements constrain what users can configure. This layer is applied below the system /etc/codex/requirements.toml and any cloud-managed requirements. Encode the TOML with 'base64' without line wrapping. Users must restart ChatGPT or Codex for changes to take effect.";
       };
 
     };
   };
 in
 {
-  options.programs.macprofile.payloads."apple-com-apple-security-pkcs12" = lib.mkOption {
+  options.programs.macprofile.payloads."managed-applications-com-openai-codex" = lib.mkOption {
     type = types.attrsOf (types.submodule payloadModule);
     default = { };
-    description = "Certificate (PKCS #12) (com.apple.security.pkcs12) payload instances, keyed by instance name. Use \"default\" if you only need one.";
+    description = "ChatGPT / Codex (com.openai.codex) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

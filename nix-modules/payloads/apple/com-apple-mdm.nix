@@ -58,7 +58,7 @@ let
       ServerURL = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The URL that the device contacts to retrieve device management instructions. The URL must begin with the 'https://' URL scheme, and may contain a port number (':1234', for example).\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "The URL that the device contacts to retrieve device management instructions. The URL must begin with the 'https://' URL scheme, and may contain a port number (':1234', for example).\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
       ServerURLPinningCertificateUUIDs = lib.mkOption {
@@ -76,7 +76,7 @@ let
       Topic = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The topic that MDM listens to for push notifications. The certificate that the server uses to send push notifications must have the same topic in its subject. The topic must begin with the 'com.apple.mgmt.' prefix.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "The topic that MDM listens to for push notifications. The certificate that the server uses to send push notifications must have the same topic in its subject. The topic must begin with the 'com.apple.mgmt.' prefix.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
       IdentityCertificateUUID = lib.mkOption {
@@ -100,7 +100,7 @@ let
       CheckInURL = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The URL that the device should use to check in during installation. The URL must begin with the 'https://' URL scheme and may contain a port number (':1234', for example). If not set, the system uses 'ServerURL'.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "The URL that the device should use to check in during installation. The URL must begin with the 'https://' URL scheme and may contain a port number (':1234', for example). If not set, the system uses 'ServerURL'.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
       CheckInURLPinningCertificateUUIDs = lib.mkOption {
@@ -124,7 +124,7 @@ let
       PromptUserToAllowBootstrapTokenForAuthentication = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system warns the user that they need to reboot into RecoveryOS and allow the MDM to use the bootstrap token for authentication for certain sensitive operations such as enabling kernel extensions or installing some types of software updates. If the MDM doesn't need to perform these operations, it can leave this key set to 'false', and the user isn't notified. The SettingsCommand.Command.Settings.MDMOptions.MDMOptions command overrides this default value. This setting only applies to devices that have 'BootstrapTokenRequiredForSoftwareUpdate' or 'BootstrapTokenRequiredForKernelExtensionApproval' set to 'true' in their SecurityInfoResponse.SecurityInfo. DEP-enrolled devices are automatically allowed to use the bootstrap token for authentication. Available in macOS 11 and later.";
+        description = "If 'true', the system warns the user that they need to reboot into RecoveryOS and allow the MDM to use the bootstrap token for authentication for certain sensitive operations such as enabling kernel extensions or installing some types of software updates. If the MDM doesn't need to perform these operations, it can leave this key set to 'false', and the user isn't notified. The SettingsCommand.Command.Settings.MDMOptions.MDMOptions command overrides this default value. This setting only applies to devices that have 'BootstrapTokenRequiredForSoftwareUpdate' or 'BootstrapTokenRequiredForKernelExtensionApproval' set to 'true' in their SecurityInfoResponse.SecurityInfo. ADE-enrolled devices are automatically allowed to use the bootstrap token for authentication.";
       };
 
       SignMessage = lib.mkOption {
@@ -142,19 +142,19 @@ let
       AssignedManagedAppleID = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The Managed Apple Account pre-assigned to the authenticated user. Required for account-driven enrollments. Available in iOS 15 and later, and macOS 14 and later.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "The Managed Apple Account pre-assigned to the authenticated user. Required for account-driven enrollments.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
       EnrollmentMode = lib.mkOption {
         type = types.nullOr (types.enum [ "BYOD" "ADDE" ]);
         default = null;
-        description = "The enrollment mode the server indicates to use when enrolling. Required for account-driven enrollment. Available in iOS 15 and macOS 14, and later.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "The enrollment mode the server indicates to use when enrolling. Required for account-driven enrollment.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
       RequiredAppIDForMDM = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "This property specifies an iTunes Store ID for an app the system can install with the InstallApplicationCommand, without any approval from the user. The MDM vendor or managing organization generally provides this app, which enhances the management experience for the user. The device shows the user details about this app in the account-driven enrollment process prior to installing the MDM profile. Use this property with account-driven MDM enrollments that normally require user approval for app installs through MDM. Only account-driven enrollments support this property and other enrollment types ignore it. Available in iOS 15.1 and later.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the update is rejected.";
+        description = "This property specifies an iTunes Store ID for an app the system can install with the InstallApplicationCommand, without any approval from the user. The MDM vendor or managing organization generally provides this app, which enhances the management experience for the user. The device shows the user details about this app in the account-driven enrollment process prior to installing the MDM profile. Use this property with account-driven MDM enrollments that normally require user approval for app installs through MDM. Only account-driven enrollments support this property and other enrollment types ignore it.\nNote: When updating the payload, the value of this key must not change. Any change is an error, and the system rejects the update.";
       };
 
     };

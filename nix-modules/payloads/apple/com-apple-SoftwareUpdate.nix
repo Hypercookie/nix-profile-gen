@@ -58,7 +58,7 @@ let
       CatalogURL = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The URL of the software update catalog. This property is not supported in macOS 11 and later.";
+        description = "The URL of the software update catalog. This property isn't supported in macOS 11 and later.";
       };
 
       SUDisableEVCheck = lib.mkOption {

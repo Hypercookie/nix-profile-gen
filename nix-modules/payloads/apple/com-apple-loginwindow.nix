@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "AdminHostInfo" "LoginwindowText" "SHOWFULLNAME" "HideLocalUsers" "HideMobileAccounts" "IncludeNetworkUser" "HideAdminUsers" "SHOWOTHERUSERS_MANAGED" "SleepDisabled" "RestartDisabled" "ShutDownDisabled" "RestartDisabledWhileLoggedIn" "ShutDownDisabledWhileLoggedIn" "PowerOffDisabledWhileLoggedIn" "LogOutDisabledWhileLoggedIn" "DisableScreenLockImmediate" "com.apple.login.mcx.DisableAutoLoginClient" "AutologinUsername" "AutologinPassword" "DisableFDEAutoLogin" "DisableConsoleAccess" "EnableExternalAccounts" "AdminMayDisableMCX" "TALLogoutSavesState" "UseComputerNameForComputerRecordName" "AllowList" "DenyList" "LocalUserLoginEnabled" "LocalUsersHaveWorkgroups" "FlattenUserWorkgroups" "CombineUserWorkgroups" "AlwaysShowWorkgroupDialog" "ChangePasswordDisabled" "RetriesUntilHint" "showInputMenu" "HiddenUsersList" ];
+        default = [ "PFC_SegmentedControl_0" "AdminHostInfo" "LoginwindowText" "SHOWFULLNAME" "HideLocalUsers" "HideMobileAccounts" "IncludeNetworkUser" "HideAdminUsers" "SHOWOTHERUSERS_MANAGED" "SleepDisabled" "RestartDisabled" "ShutDownDisabled" "RestartDisabledWhileLoggedIn" "ShutDownDisabledWhileLoggedIn" "PowerOffDisabledWhileLoggedIn" "LogOutDisabledWhileLoggedIn" "DisableScreenLockImmediate" "com.apple.login.mcx.DisableAutoLoginClient" "AutologinUsername" "AutologinPassword" "DisableFDEAutoLogin" "DisableConsoleAccess" "EnableExternalAccounts" "AdminMayDisableMCX" "TALLogoutSavesState" "UseComputerNameForComputerRecordName" "AllowList" "DenyList" "LocalUserLoginEnabled" "LocalUsersHaveWorkgroups" "FlattenUserWorkgroups" "CombineUserWorkgroups" "AlwaysShowWorkgroupDialog" "ChangePasswordDisabled" "RetriesUntilHint" "showInputMenu" "HiddenUsersList" "ForceWifiConfigurationOnLockScreen" "ForceCaptivePortalConnectionFromLockScreen" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -147,13 +147,13 @@ let
       LogOutDisabledWhileLoggedIn = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables the Log Out menu item when the user is logged in. Available in macOS 10.13 and later.";
+        description = "If 'true', the system disables the Log Out menu item when the user is logged in.";
       };
 
       DisableScreenLockImmediate = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables the immediate Screen Lock functions. Available in macOS 10.13 and later.";
+        description = "If 'true', the system disables the immediate Screen Lock functions.";
       };
 
       "com.apple.login.mcx.DisableAutoLoginClient" = lib.mkOption {
@@ -195,7 +195,7 @@ let
       AdminMayDisableMCX = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "Allows Mac administrators on the computer to refresh or disable the management features.";
+        description = "If 'true', a local administrator user can bypass or disable managed preferences (MCX settings) for their login session. The device presents the user with this option at login only when the user is a local administrator, and other users are not logged in.";
       };
 
       TALLogoutSavesState = lib.mkOption {
@@ -261,7 +261,7 @@ let
       RetriesUntilHint = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "Number of tries until password hint is shown (0 = disable password hints).";
+        description = "If specified, allows a certain number of retries until the device shows a password hint. The device shows no hints if set to a value of 0.";
       };
 
       showInputMenu = lib.mkOption {
@@ -274,6 +274,18 @@ let
         type = types.nullOr (types.listOf (types.str));
         default = null;
         description = "Hides users defined in the list from the login window under the Other button";
+      };
+
+      ForceWifiConfigurationOnLockScreen = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system allows the user to select WiFi networks at login or unlock.";
+      };
+
+      ForceCaptivePortalConnectionFromLockScreen = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'true', the system allows use of the captive WiFi portal at login or unlock.";
       };
 
     };

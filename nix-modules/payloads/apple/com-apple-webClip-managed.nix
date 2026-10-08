@@ -94,13 +94,13 @@ let
       IgnoreManifestScope = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', a full screen web clip can navigate to an external web site without showing Safari UI. Otherwise, Safari UI appears when navigating away from the web clip's URL. This key has no effect when 'FullScreen' is 'false'. Available in iOS 14 and later.";
+        description = "If 'true', a full screen web clip can navigate to an external web site without showing Safari UI. Otherwise, Safari UI appears when navigating away from the web clip's URL. This key has no effect when 'FullScreen' is 'false'.";
       };
 
       TargetApplicationBundleIdentifier = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The application bundle identifier of the application that opens the URL. To use this property, install the profile through MDM. Available in iOS 14 and later.";
+        description = "The application bundle identifier of the application that opens the URL. To use this property, install the profile through MDM.";
       };
 
     };
