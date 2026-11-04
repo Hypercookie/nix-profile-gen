@@ -58,13 +58,13 @@ let
       RedirectURL = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The URL to which FDE recovery keys should be sent instead of to Apple. The URL must begin with https://.";
+        description = "The URL to which the device sends FDE recovery keys instead of to Apple. The URL must begin with https://.";
       };
 
       EncryptCertPayloadUUID = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The UUID of a payload within the same profile that contains a certificate used to encrypt the recovery key when it's sent to the redirected URL. The referenced payload must be of type `com.apple.security.pkcs1`.";
+        description = "The UUID of a payload within the same profile that contains a certificate used to encrypt the recovery key when the device sends it to the redirected URL. The referenced payload must be of type 'com.apple.security.pkcs1'.";
       };
 
     };

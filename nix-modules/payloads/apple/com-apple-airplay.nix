@@ -99,7 +99,7 @@ let
             DeviceName = lib.mkOption {
               type = types.nullOr (types.str);
               default = null;
-              description = "The name of the AirPlay destination; used in iOS, and available in macOS 15 and later.";
+              description = "The name of the AirPlay destination.";
             };
             DeviceID = lib.mkOption {
               type = types.nullOr (types.str);

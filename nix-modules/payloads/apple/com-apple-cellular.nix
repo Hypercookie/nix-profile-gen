@@ -91,27 +91,27 @@ let
             DefaultProtocolMask = lib.mkOption {
               type = types.nullOr (types.enum [ 1 2 3 ]);
               default = null;
-              description = "The default Internet Protocol versions. Available in iOS 10.3 but no longer used in iOS 11 and later. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
+              description = "The default Internet Protocol versions. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
             };
             AllowedProtocolMask = lib.mkOption {
               type = types.nullOr (types.enum [ 1 2 3 ]);
               default = null;
-              description = "The Internet Protocol versions that the system supports. Available in iOS 10.3 and later. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
+              description = "The Internet Protocol versions that the system supports. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
             };
             AllowedProtocolMaskInRoaming = lib.mkOption {
               type = types.nullOr (types.enum [ 1 2 3 ]);
               default = null;
-              description = "The Internet Protocol versions that the system supports while roaming. Available in iOS 10.3 and later. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
+              description = "The Internet Protocol versions that the system supports while roaming. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
             };
             AllowedProtocolMaskInDomesticRoaming = lib.mkOption {
               type = types.nullOr (types.enum [ 1 2 3 ]);
               default = null;
-              description = "The Internet Protocol versions that the system supports while roaming. Available in iOS 10.3 and later. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
+              description = "The Internet Protocol versions that the system supports while roaming. Allowed values:\n'1': IPv4\n'2': IPv6\n'3': Both";
             };
             EnableXLAT464 = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', the system enables XLAT464. Available in iOS 16 and later and watchOS 9 and later.";
+              description = "If 'true', the system enables XLAT464.";
             };
           };
         }));

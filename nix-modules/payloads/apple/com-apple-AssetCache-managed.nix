@@ -1,6 +1,6 @@
 # Auto-generated from ProfileManifests: com.apple.AssetCache.managed.plist
 # Domain: com.apple.AssetCache.managed
-# Title: Content Caching
+# Title: Content Caching Service
 # Platforms: macOS
 # Unique: yes
 # Targets: system
@@ -12,7 +12,7 @@ with lib;
 let
   payloadModule = {
     options = {
-      enable = lib.mkEnableOption "Content Caching";
+      enable = lib.mkEnableOption "Content Caching Service";
 
       _domain = lib.mkOption {
         internal = true;
@@ -88,7 +88,7 @@ let
       AutoEnableTetheredCaching = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system automatically enables Internet connection sharing when possible and prevent disabling Internet connection sharing. 'DenyTetheredCaching' overrides 'AutoEnableTetheredCaching'. Tethered caching requires Content Caching.\nAvailable in macOS 10.15.4 and later.";
+        description = "If 'true', the system automatically enables Internet connection sharing when possible and prevent disabling Internet connection sharing. 'DenyTetheredCaching' overrides 'AutoEnableTetheredCaching'. Tethered caching requires Content Caching.";
       };
 
       Port = lib.mkOption {
@@ -154,19 +154,19 @@ let
       AllowCacheDelete = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If true, the system purges content from the cache automatically when it needs disk space for other apps when free disk space runs low on the computer. Set to 'false' to maximize effectiveness of Content Caching. Available in macOS 10.15 and later.";
+        description = "If true, the system purges content from the cache automatically when it needs disk space for other apps when free disk space runs low on the computer. Set to 'false' to maximize effectiveness of Content Caching.";
       };
 
       DisplayAlerts = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', Content Caching displays exceptional conditions (alerts) as system notifications in the upper corner of the screen. Alerts were automatically displayed starting in macOS 10.13. In macOS 10.15 the alerts are off by default, but still available through this setting. Available in macOS 10.15 and later.";
+        description = "If 'true', Content Caching displays exceptional conditions (alerts) as system notifications in the upper corner of the screen. The device automatically displayed alerts starting in macOS 10.13. In macOS 10.15 the alerts are off by default, but still available through this setting.";
       };
 
       KeepAwake = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system prevents the computer from sleeping as long as Content Caching is on (System Preferences > Sharing > Content Caching is on). Customers who want Content Caching to be as available as much as possible should turn this setting on. Available in macOS 10.15 and later.";
+        description = "If 'true', the system prevents the computer from sleeping as long as Content Caching is on (System Preferences > Sharing > Content Caching is on). Customers who want Content Caching to be as available as much as possible should turn this setting on.";
       };
 
       AgeForLowSpaceAlert = lib.mkOption {
@@ -467,6 +467,6 @@ in
   options.programs.macprofile.payloads."apple-com-apple-AssetCache-managed" = lib.mkOption {
     type = types.attrsOf (types.submodule payloadModule);
     default = { };
-    description = "Content Caching (com.apple.AssetCache.managed) payload instances, keyed by instance name. Use \"default\" if you only need one.";
+    description = "Content Caching Service (com.apple.AssetCache.managed) payload instances, keyed by instance name. Use \"default\" if you only need one.";
   };
 }

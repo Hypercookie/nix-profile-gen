@@ -78,7 +78,7 @@ let
             __value__ = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "The mapping of team identifiers to arrays of bundle identifiers, where the bundle identifier is that of the system extension to be installed.";
+              description = "The mapping of team identifiers to arrays of bundle identifiers, where the bundle identifier defines the system extension to install.";
             };
           };
         });
@@ -97,7 +97,7 @@ let
             __value__ = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "DriverExtension" "NetworkExtension" "EndpointSecurityExtension" ]));
               default = null;
-              description = "The mapping of team identifier to an array of strings, where each string is a type of system extension that may be installed for that team identifier.";
+              description = "The mapping of team identifier to an array of strings, where each string is a type of system extension that you can install for that team identifier.";
             };
           };
         });
@@ -121,7 +121,7 @@ let
           };
         });
         default = null;
-        description = "A dictionary of system extensions that are allowed to remove themselves from the machine. The dictionary maps team identifiers (keys) to arrays of bundle identifiers, where the bundle identifier defines the system extension. An application using the 'OSSystemExtensionDeactivationRequest' API can deactivate the specified system extensions without requiring an administrator to authorize the operation.\nAvailable in macOS 12 and later.";
+        description = "A dictionary of system extensions that are allowed to remove themselves from the machine. The dictionary maps team identifiers (keys) to arrays of bundle identifiers, where the bundle identifier defines the system extension. An application using the 'OSSystemExtensionDeactivationRequest' API can deactivate the specified system extensions without requiring an administrator to authorize the operation.";
       };
 
       NonRemovableSystemExtensions = lib.mkOption {
@@ -157,7 +157,7 @@ let
           };
         });
         default = null;
-        description = "A dictionary of system extensions on the computer. The dictionary maps the team identifiers (keys) to arrays of bundle identifiers, where the bundle identifier defines the system extension which can't be disabled or uninstalled from System Settings or Finder. The set of system extensions between 'RemovableSystemExtensions' and 'NonRemovableFromUISystemExtensions' can to overlap.";
+        description = "A dictionary of system extensions on the computer. The dictionary maps the team identifiers (keys) to arrays of bundle identifiers, where the bundle identifier defines the system extension which can't be disabled or uninstalled from System Settings or Finder. The set of system extensions between 'RemovableSystemExtensions' and 'NonRemovableFromUISystemExtensions' can't overlap.";
       };
 
     };

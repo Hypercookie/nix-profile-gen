@@ -112,13 +112,13 @@ let
       AllowSigned = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows built-in software to receive incoming connections. Available in macOS 12.3 and later.\nNote: The system ensures that 'AllowSigned' always has a value. If missing from the payload, the system sets it to 'true'.";
+        description = "If 'true', the system allows built-in software to receive incoming connections.\nNote: The system ensures that 'AllowSigned' always has a value. If missing from the payload, the system sets it to 'true'.";
       };
 
       AllowSignedApp = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows downloaded signed software to receive incoming connections. Available in macOS 12.3 and later.\nNote: The system ensures that 'AllowSignedApp' always has a value. If missing from the payload, the system sets it to 'true'.";
+        description = "If 'true', the system allows downloaded signed software to receive incoming connections.\nNote: The system ensures that 'AllowSignedApp' always has a value. If missing from the payload, the system sets it to 'true'.";
       };
 
     };

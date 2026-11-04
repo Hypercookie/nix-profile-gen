@@ -64,7 +64,7 @@ let
       SHKDeniedShareServices = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "com.apple.share.AirDrop" "com.apple.share.Facebook" "com.apple.share.LinkedIn.post" "com.apple.share.Twitter" "com.apple.share.Mail" "com.apple.share.Messages" "com.apple.Notes.SharingExtension" "com.apple.reminders.RemindersShareExtension" "com.apple.share.Video" "com.apple.share.addtoiphoto" "com.apple.share.addtoaperture" "com.apple.share.readlater" "com.apple.share.SinaWeibo" ]));
         default = null;
-        description = "The list of plugin IDs that won't show up in the user's Share menu. This key is used only if there is no 'SHKAllowedShareServices' key.";
+        description = "The list of plugin IDs that won't show up in the user's Share menu. This key is used only if there's no 'SHKAllowedShareServices' key.";
       };
 
     };

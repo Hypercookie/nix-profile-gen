@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "allowCamera" "allowedCameraRestrictionBundleIDs" "allowVideoConferencing" "allowCloudBackup" "allowCloudPhotoLibrary" "allowPhotoStream" "allowSharedStream" "allowPasswordAutoFill" "allowAutoUnlock" "allowFingerprintForUnlock" "allowBookstore" "allowChat" "allowiTunes" "allowMusicService" "allowNews" "allowPodcasts" "allowRadioService" "allowYouTube" "allowAppsToBeHidden" "allowAppsToBeLocked" "allowCloudDocumentSync" "allowCloudKeychainSync" "allowDefinitionLookup" "allowDeprecatedWebKitTLS" "allowAirPrint" "allowAirPrintiBeaconDiscovery" "forceAirPrintTrustedTLSRequirement" "allowScreenShot" "allowRemoteScreenObservation" "forceClassroomUnpromptedScreenObservation" "forceUnpromptedManagedClassroomScreenObservation" "allowVoiceDialing" "allowAssistant" "allowAssistantWhileLocked" "forceAssistantProfanityFilter" "allowAssistantUserGeneratedContent" "allowSiriServerLogging" "allowSpotlightInternetResults" "allowAppInstallation" "allowUIAppInstallation" "allowAutomaticAppDownloads" "allowMarketplaceAppInstallation" "allowWebDistributionAppInstallation" "allowAppRemoval" "allowAppClips" "allowSystemAppRemoval" "allowInAppPurchases" "forceITunesStorePasswordEntry" "allowManagedAppsCloudSync" "allowEnterpriseBookBackup" "allowEnterpriseBookMetadataSync" "allowCloudPrivateRelay" "allowGlobalBackgroundFetchWhenRoaming" "forceEncryptedBackup" "allowEraseContentAndSettings" "forcePreserveESIMOnErase" "allowUntrustedTLSPrompt" "allowEnterpriseAppTrust" "allowOTAPKIUpdates" "allowUIConfigurationProfileInstallation" "allowVPNCreation" "forceAutomaticDateAndTime" "forceClassroomUnpromptedAppAndDeviceLock" "forceClassroomAutomaticallyJoinClasses" "forceClassroomRequestPermissionToLeaveClasses" "allowAccountModification" "allowBluetoothModification" "allowAppCellularDataModification" "allowCellularPlanModification" "allowESIMModification" "allowFindMyFriendsModification" "allowNotificationsModification" "allowNFC" "allowPasscodeModification" "allowFingerprintModification" "allowEnablingRestrictions" "allowWallpaperModification" "allowUSBRestrictedMode" "allowHostPairing" "allowiPhoneWidgetsOnMac" "allowUnpairedExternalBootToRecovery" "allowOpenFromManagedToUnmanaged" "allowOpenFromUnmanagedToManaged" "allowUnmanagedToReadManagedContacts" "allowManagedToWriteUnmanagedContacts" "requireManagedPasteboard" "allowAirDrop" "forceAirDropUnmanaged" "allowActivityContinuation" "allowDiagnosticSubmission" "allowDiagnosticSubmissionModification" "forceAuthenticationBeforeAutoFill" "allowPairedWatch" "forceWatchWristDetection" "forceWiFiPowerOn" "forceWiFiToAllowedNetworksOnly" "forceWiFiWhitelisting" "allowProximitySetupToNewDevice" "allowPredictiveKeyboard" "allowKeyboardShortcuts" "allowAutoCorrection" "allowContinuousPathKeyboard" "allowSpellCheck" "allowSharedDeviceTemporarySession" "allowDictation" "forceOnDeviceOnlyDictation" "forceOnDeviceOnlyTranslation" "allowPassbookWhileLocked" "allowPersonalHotspotModification" "allowLiveVoicemail" "allowLockScreenControlCenter" "allowLockScreenNotificationsView" "allowLockScreenTodayView" "forceAirPlayOutgoingRequestsPairingPassword" "allowAirPrintCredentialsStorage" "forceLimitAdTracking" "allowApplePersonalizedAdvertising" "allowMailPrivacyProtection" "allowAutoDim" "allowGameCenter" "allowAddingGameCenterFriends" "allowMultiplayerGaming" "allowSafari" "safariAllowAutoFill" "safariForceFraudWarning" "safariAllowJavaScript" "safariAllowPopups" "safariAcceptCookies" "allowDeviceNameModification" "blockedAppBundleIDs" "blacklistedAppBundleIDs" "allowListedAppBundleIDs" "whitelistedAppBundleIDs" "autonomousSingleAppModePermittedAppIDs" "ratingRegion" "ratingApps" "ratingMovies" "ratingTVShows" "allowExplicitContent" "allowFilesUSBDriveAccess" "allowBookstoreErotica" "allowPasswordSharing" "allowPasswordProximityRequests" "forceDelayedSoftwareUpdates" "enforcedSoftwareUpdateDelay" "allowRapidSecurityResponseInstallation" "allowRapidSecurityResponseRemoval" "allowFindMyDevice" "allowFindMyFriends" "allowFilesNetworkDriveAccess" "allowESIMOutgoingTransfers" "allowGenmoji" "allowImagePlayground" "allowImageWand" "allowiPhoneMirroring" "allowPersonalizedHandwritingResults" "allowWritingTools" "allowCallRecording" "allowMailSummary" "allowMailSmartReplies" "allowRCSMessaging" "allowDefaultBrowserModification" "allowDefaultCallingAppModification" "allowDefaultMessagingAppModification" "allowExternalIntelligenceIntegrations" "allowExternalIntelligenceIntegrationsSignIn" "allowedExternalIntelligenceWorkspaceIDs" "allowNotesTranscriptionSummary" "allowNotesTranscription" "allowVisualIntelligenceSummary" "allowSatelliteConnection" "allowAppleIntelligenceReport" "allowSafariSummary" "allowVideoConferencingRemoteControl" "allowSafariHistoryClearing" "allowSafariPrivateBrowsing" "deniedICCIDsForiMessageFaceTime" "deniedICCIDsForRCS" "ratingAppsExemptedBundleIDs" ];
+        default = [ "PFC_SegmentedControl_0" "allowCamera" "allowedCameraRestrictionBundleIDs" "allowVideoConferencing" "allowCloudBackup" "allowCloudPhotoLibrary" "allowPhotoStream" "allowSharedStream" "allowPasswordAutoFill" "allowAutoUnlock" "allowFingerprintForUnlock" "allowBookstore" "allowChat" "allowiTunes" "allowMusicService" "allowNews" "allowPodcasts" "allowRadioService" "allowYouTube" "allowAppsToBeHidden" "allowAppsToBeLocked" "allowCloudDocumentSync" "allowCloudKeychainSync" "allowDefinitionLookup" "allowDeprecatedWebKitTLS" "allowAirPrint" "allowAirPrintiBeaconDiscovery" "forceAirPrintTrustedTLSRequirement" "allowScreenShot" "allowRemoteScreenObservation" "forceClassroomUnpromptedScreenObservation" "forceUnpromptedManagedClassroomScreenObservation" "allowVoiceDialing" "allowAssistant" "allowAssistantWhileLocked" "forceAssistantProfanityFilter" "allowAssistantUserGeneratedContent" "allowSiriServerLogging" "allowSpotlightInternetResults" "allowAppInstallation" "allowUIAppInstallation" "allowAutomaticAppDownloads" "allowMarketplaceAppInstallation" "allowWebDistributionAppInstallation" "allowAppRemoval" "allowAppClips" "allowSystemAppRemoval" "allowInAppPurchases" "forceITunesStorePasswordEntry" "allowManagedAppsCloudSync" "allowEnterpriseBookBackup" "allowEnterpriseBookMetadataSync" "allowCloudPrivateRelay" "allowGlobalBackgroundFetchWhenRoaming" "forceEncryptedBackup" "allowEraseContentAndSettings" "forcePreserveESIMOnErase" "allowUntrustedTLSPrompt" "allowEnterpriseAppTrust" "allowOTAPKIUpdates" "allowUIConfigurationProfileInstallation" "allowVPNCreation" "forceAutomaticDateAndTime" "forceClassroomUnpromptedAppAndDeviceLock" "forceClassroomAutomaticallyJoinClasses" "forceClassroomRequestPermissionToLeaveClasses" "allowAccountModification" "allowBluetoothModification" "allowAppCellularDataModification" "allowCellularPlanModification" "allowESIMModification" "allowFindMyFriendsModification" "allowNotificationsModification" "allowNFC" "allowPasscodeModification" "allowFingerprintModification" "allowEnablingRestrictions" "allowWallpaperModification" "allowUSBRestrictedMode" "allowHostPairing" "allowiPhoneWidgetsOnMac" "allowUnpairedExternalBootToRecovery" "allowOpenFromManagedToUnmanaged" "allowOpenFromUnmanagedToManaged" "allowUnmanagedToReadManagedContacts" "allowManagedToWriteUnmanagedContacts" "requireManagedPasteboard" "allowAirDrop" "forceAirDropUnmanaged" "allowActivityContinuation" "allowDiagnosticSubmission" "allowDiagnosticSubmissionModification" "forceAuthenticationBeforeAutoFill" "allowPairedWatch" "forceWatchWristDetection" "forceWiFiPowerOn" "forceWiFiToAllowedNetworksOnly" "forceWiFiWhitelisting" "allowProximitySetupToNewDevice" "allowPredictiveKeyboard" "allowKeyboardShortcuts" "allowAutoCorrection" "allowContinuousPathKeyboard" "allowSpellCheck" "allowSharedDeviceTemporarySession" "allowDictation" "forceOnDeviceOnlyDictation" "forceOnDeviceOnlyTranslation" "allowPassbookWhileLocked" "allowPersonalHotspotModification" "allowLiveVoicemail" "allowLockScreenControlCenter" "allowLockScreenNotificationsView" "allowLockScreenTodayView" "forceAirPlayOutgoingRequestsPairingPassword" "allowAirPrintCredentialsStorage" "forceLimitAdTracking" "allowApplePersonalizedAdvertising" "allowMailPrivacyProtection" "allowAutoDim" "allowGameCenter" "allowAddingGameCenterFriends" "allowMultiplayerGaming" "allowSafari" "safariAllowAutoFill" "safariForceFraudWarning" "safariAllowJavaScript" "safariAllowPopups" "safariAcceptCookies" "allowDeviceNameModification" "blockedAppBundleIDs" "blacklistedAppBundleIDs" "allowListedAppBundleIDs" "whitelistedAppBundleIDs" "autonomousSingleAppModePermittedAppIDs" "ratingRegion" "ratingApps" "ratingMovies" "ratingTVShows" "allowExplicitContent" "allowFilesUSBDriveAccess" "allowBookstoreErotica" "allowPasswordSharing" "allowPasswordProximityRequests" "forceDelayedSoftwareUpdates" "enforcedSoftwareUpdateDelay" "allowRapidSecurityResponseInstallation" "allowRapidSecurityResponseRemoval" "allowFindMyDevice" "allowFindMyFriends" "allowFilesNetworkDriveAccess" "allowESIMOutgoingTransfers" "allowGenmoji" "allowImagePlayground" "allowImageWand" "allowiPhoneMirroring" "allowPersonalizedHandwritingResults" "allowWritingTools" "allowCallRecording" "allowMailSummary" "allowMailSmartReplies" "allowRCSMessaging" "allowDefaultBrowserModification" "allowDefaultCallingAppModification" "allowDefaultMessagingAppModification" "allowExternalIntelligenceIntegrations" "allowExternalIntelligenceIntegrationsSignIn" "allowedExternalIntelligenceWorkspaceIDs" "allowNotesTranscriptionSummary" "allowNotesTranscription" "allowVisualIntelligenceSummary" "allowSatelliteConnection" "allowAppleIntelligenceReport" "allowSafariSummary" "allowVideoConferencingRemoteControl" "allowSafariHistoryClearing" "allowSafariPrivateBrowsing" "deniedICCIDsForiMessageFaceTime" "deniedICCIDsForRCS" "ratingAppsExemptedBundleIDs" "allowSiriAI" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -195,7 +195,7 @@ let
       allowDefinitionLookup = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables definition lookup.";
+        description = "If 'false', the system disables definition lookup.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowDeprecatedWebKitTLS = lib.mkOption {
@@ -255,25 +255,25 @@ let
       allowAssistant = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables Siri.";
+        description = "If 'false', the system disables Siri.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       allowAssistantWhileLocked = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables Siri when the device is locked. The system ignores this restriction if the device doesn't have a passcode set.";
+        description = "If 'false', the system disables Siri when the device is locked. The system ignores this restriction if the device doesn't have a passcode set.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       forceAssistantProfanityFilter = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system forces the use of the profanity filter for Siri and dictation. Requires a supervised device in iOS.";
+        description = "If 'true', the system forces the use of the profanity filter for Siri and dictation. Requires a supervised device in iOS.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       allowAssistantUserGeneratedContent = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prevents Siri from querying user-generated content from the web.";
+        description = "If 'false', the system prevents Siri from querying user-generated content from the web.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
       allowSiriServerLogging = lib.mkOption {
@@ -477,7 +477,7 @@ let
       allowESIMModification = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables modifications of eSIMs.";
+        description = "If 'false', the system disables modifications of eSIMs. This also disables the phone number sharing setup on iPhones, in iOS 27 and later.";
       };
 
       allowFindMyFriendsModification = lib.mkOption {
@@ -525,7 +525,7 @@ let
       allowUSBRestrictedMode = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system allows iOS devices to always connect to USB accessories while locked. In macOS, allows new USB and Thunderbolt accessories, and SD cards to connect without authorization. If the system has Lockdown mode enabled, it ignores this value. This restriction is not supported on the user channel.";
+        description = "If 'false', the system allows iOS devices to always connect to USB accessories while locked. In macOS, allows new USB and Thunderbolt accessories, and SD cards to connect without authorization. If the system has Lockdown mode enabled, it ignores this value. This restriction isn't supported on the user channel.";
       };
 
       allowHostPairing = lib.mkOption {
@@ -573,7 +573,7 @@ let
       requireManagedPasteboard = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', copy-and-paste functionality is limited by the 'allowOpenFromManagedToUnmanaged' and 'allowOpenFromUnmanagedToManaged' restrictions.";
+        description = "If 'true', the 'allowOpenFromManagedToUnmanaged' and 'allowOpenFromUnmanagedToManaged' restrictions also limit copy-and-paste functionality.";
       };
 
       allowAirDrop = lib.mkOption {
@@ -651,31 +651,31 @@ let
       allowPredictiveKeyboard = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables predictive keyboards.";
+        description = "If 'false', the system disables predictive keyboards.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowKeyboardShortcuts = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables keyboard shortcuts.";
+        description = "If 'false', the system disables keyboard shortcuts.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowAutoCorrection = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables keyboard autocorrection.";
+        description = "If 'false', the system disables keyboard autocorrection.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowContinuousPathKeyboard = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables QuickPath keyboard.";
+        description = "If 'false', the system disables QuickPath keyboard.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowSpellCheck = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables the keyboard spell checker.";
+        description = "If 'false', the system disables the keyboard spell checker.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       allowSharedDeviceTemporarySession = lib.mkOption {
@@ -687,19 +687,19 @@ let
       allowDictation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disallows dictation input.";
+        description = "If 'false', the system disallows dictation input.\nDeprecated: use the declarative management 'com.apple.configuration.keyboard.settings' configuration.";
       };
 
       forceOnDeviceOnlyDictation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system disables connections to Siri servers for the purposes of dictation.";
+        description = "If 'true', the system disables connections to Siri servers for the purposes of dictation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       forceOnDeviceOnlyTranslation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the device can't connect to Siri servers for the purposes of translation.";
+        description = "If 'true', the device can't connect to Siri servers for the purposes of translation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowPassbookWhileLocked = lib.mkOption {
@@ -837,25 +837,25 @@ let
       blockedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "If present, the system prevents showing or launching apps with bundle IDs in the array. Include the value 'com.apple.webapp' to restrict all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nNote: Denying system apps may disable other functionality. For example, denying the App Store app may prevent users from accepting the terms and conditions for the user-based Volume Purchase Program (VPP).";
+        description = "If present, the system prevents showing or launching apps with bundle IDs in the array. Include the value 'com.apple.webapp' to restrict all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nDeprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.\nNote: Denying system apps may disable other functionality. For example, denying the App Store app may prevent users from accepting the terms and conditions for the user-based Volume Purchase Program (VPP).";
       };
 
       blacklistedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "Use 'blockedAppBundleIDs' instead.";
+        description = "Deprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       allowListedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "If present, the system only shows or can launch apps with bundle IDs in the array. Include the value 'com.apple.webapp' to allow all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).";
+        description = "If present, the system only shows or can launch apps with bundle IDs in the array. Include the value 'com.apple.webapp' to allow all webclips. This applies to App Store apps, marketplace apps, and locally installed apps (using Configurator, Xcode, and so forth).\nDeprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       whitelistedAppBundleIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "Use 'allowListedAppBundleIDs' instead.";
+        description = "Deprecated: use the declarative management 'com.apple.configuration.app.settings' configuration.";
       };
 
       autonomousSingleAppModePermittedAppIDs = lib.mkOption {
@@ -873,7 +873,7 @@ let
       ratingApps = lib.mkOption {
         type = types.nullOr (types.enum [ 1000 900 800 700 600 500 400 300 200 100 0 ]);
         default = null;
-        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions.\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
+        description = "The maximum level of app content allowed on the device. Starting with iOS 26.2, this rating may apply to certain system apps.\nAge bands and the number of discrete age values vary by region, but the values are consistent across regions. For example, in a region that defines rating level 14+, its value is guaranteed to be larger than 300 (12+) and smaller than 600 (17+). Also, the value of rating level 15+ is guaranteed to be larger than the assigned value of rating level 14+. For more information about age ratings, see Age ratings values and definitions (https://developer.apple.com/help/app-store-connect/reference/age-ratings-values-and-definitions).\nBelow is the complete list of age rating values used across all App Store regions.\n'1000': All\n'621': 21+\n'620': 20+\n'619': 19+\n'618': 18+\n'600': 17+\n'416': 16+\n'415': 15+\n'314': 14+\n'313': 13+\n'300': 12+\n'211': 11+\n'210': 10+\n'200': 9+\n'108': 8+\n'107': 7+\n'106': 6+\n'105': 5+\n'100': 4+\n'3': 3+\n'2': 2+\n'1': 1+\n'0': None\nThis restriction will require supervision in a future release.";
       };
 
       ratingMovies = lib.mkOption {
@@ -921,25 +921,25 @@ let
       forceDelayedSoftwareUpdates = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.";
+        description = "If 'true', the system delays user visibility of software updates. In macOS, the system allows seed build updates without delay. The delay is 30 days unless you set 'enforcedSoftwareUpdateDelay' to another value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       enforcedSoftwareUpdateDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.";
+        description = "How many days to delay a software update on the device. With this restriction in place, the user doesn't see a software update until the specified number of days after the software update release date. The restrictions 'forceDelayedAppSoftwareUpdates' and 'forceDelayedSoftwareUpdates' use this value.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowRapidSecurityResponseInstallation = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prohibits installation of Background Security Improvements.";
+        description = "If 'false', the system prohibits installation of Background Security Improvements.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowRapidSecurityResponseRemoval = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system prohibits removal of Background Security Improvements.";
+        description = "If 'false', the system prohibits removal of Background Security Improvements.\nRemoved: use the declarative management 'com.apple.configuration.softwareupdate.settings' configuration.";
       };
 
       allowFindMyDevice = lib.mkOption {
@@ -969,19 +969,19 @@ let
       allowGenmoji = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', prohibits creating new Genmoji.";
+        description = "If 'false', prohibits creating new Genmoji.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowImagePlayground = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', prohibits the use of image generation.";
+        description = "If 'false', prohibits the use of image generation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowImageWand = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', prohibits the use of Image Wand.";
+        description = "If 'false', prohibits the use of Image Wand.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowiPhoneMirroring = lib.mkOption {
@@ -993,13 +993,13 @@ let
       allowPersonalizedHandwritingResults = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If false, prevents the system from generating text in the user's handwriting.";
+        description = "If false, prevents the system from generating text in the user's handwriting.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowWritingTools = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables Apple Intelligence writing tools.";
+        description = "If 'false', disables Apple Intelligence writing tools.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowCallRecording = lib.mkOption {
@@ -1011,13 +1011,13 @@ let
       allowMailSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables the ability to create summaries of email messages manually. This doesn't affect automatic summary generation.";
+        description = "If 'false', disables the ability to create summaries of email messages manually. This doesn't affect automatic summary generation.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowMailSmartReplies = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables smart replies in Mail.";
+        description = "If 'false', disables smart replies in Mail.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowRCSMessaging = lib.mkOption {
@@ -1047,37 +1047,37 @@ let
       allowExternalIntelligenceIntegrations = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables the use of external, cloud-based intelligence services with Siri. In iOS, this restriction is temporarily allowed on unsupervised and user enrollments. In a future release, this restriction will require supervision, and will be ignored on unsupervised devices.";
+        description = "If 'false', disables the use of external, cloud-based intelligence services with Siri. In iOS, this restriction is temporarily allowed on unsupervised and user enrollments. In a future release, this restriction will require supervision, and will be ignored on unsupervised devices.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowExternalIntelligenceIntegrationsSignIn = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', forces external intelligence providers into anonymous mode. If a user is already signed in to an external intelligence provider, applying this restriction signs them out when attempting the next request.";
+        description = "If 'false', forces external intelligence providers into anonymous mode. If a user is already signed in to an external intelligence provider, applying this restriction signs them out when attempting the next request.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowedExternalIntelligenceWorkspaceIDs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "An array of strings, but currently restricted to a single element. If present, Apple Intelligence allows use of only the given external integration workspace ID, and requires a sign-in to make requests. The user is required to sign in to integrations that support signing in. Multiple payloads combine using an intersect operation. This means the allowed set of workspace IDs can become the empty set if multiple payloads specify conflicting values.";
+        description = "An array of strings, but currently restricted to a single element. If present, Apple Intelligence allows use of only the given external integration workspace ID, and requires a sign-in to make requests. The user is required to sign in to integrations that support signing in. Multiple payloads combine using an intersect operation. This means the allowed set of workspace IDs can become the empty set if multiple payloads specify conflicting values.\nDeprecated: use the declarative management 'com.apple.configuration.external-intelligence.settings' configuration.";
       };
 
       allowNotesTranscriptionSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables transcription summarization in Notes.";
+        description = "If 'false', disables transcription summarization in Notes.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowNotesTranscription = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', disables transcription in Notes.";
+        description = "If 'false', disables transcription in Notes.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowVisualIntelligenceSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables visual intelligence summarization.";
+        description = "If 'false', the system disables visual intelligence summarization.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowSatelliteConnection = lib.mkOption {
@@ -1089,13 +1089,13 @@ let
       allowAppleIntelligenceReport = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables Apple Intelligence reports.";
+        description = "If 'false', the system disables Apple Intelligence reports.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowSafariSummary = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the system disables the ability to summarize content in Safari.";
+        description = "If 'false', the system disables the ability to summarize content in Safari.\nDeprecated: use the declarative management 'com.apple.configuration.intelligence.settings' configuration.";
       };
 
       allowVideoConferencingRemoteControl = lib.mkOption {
@@ -1132,6 +1132,12 @@ let
         type = types.nullOr (types.listOf (types.str));
         default = null;
         description = "If present, the system exempts apps with bundle IDs in the array from age-based rating restrictions. The system uses intersection combine rules to combine multiple payloads and any exceptions that parental control apps provide, including ScreenTime.";
+      };
+
+      allowSiriAI = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', the system disables Apple Intelligence integration in Siri.\nDeprecated: use the declarative management 'com.apple.configuration.siri.settings' configuration.";
       };
 
     };
