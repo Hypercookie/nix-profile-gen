@@ -64,7 +64,7 @@ let
       AllowAllAppsAccess = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows apps access to the private key. Available in macOS 10.10 and later.";
+        description = "If 'true', the system allows apps access to the private key.";
       };
 
       KeyIsExtractable = lib.mkOption {

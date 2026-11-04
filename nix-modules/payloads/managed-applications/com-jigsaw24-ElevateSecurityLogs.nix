@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "siemUploadURL" "siemUploadHeaders" "siemNewLineSeperated" "SentinelTennantId" "SentinelClientId" "SentinelClientSecret" "SentinelUploadURL" "MaxDataUploadSize" "DefaultFilterRules" "SelfProtectionRules" "DisableAll" "UploadEventsToJigsaw" "UploadOnHotspot" "HideBlockedEventHistory" "FileOperationRules" "ExecuteProcessRules" "logAllEventTypes" "EventsToLog" "filterRules" ];
+        default = [ "PFC_SegmentedControl_0" "siemUploadURL" "siemUploadHeaders" "siemNewLineSeperated" "formatLogMessageSplunk" "SentinelTennantId" "SentinelClientId" "SentinelClientSecret" "SentinelUploadURL" "MaxDataUploadSize" "DefaultFilterRules" "SelfProtectionRules" "DisableAll" "UploadEventsToJigsaw" "UploadOnHotspot" "HideBlockedEventHistory" "FileOperationRules" "ExecuteProcessRules" "logAllEventTypes" "EventsToLog" "filterRules" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -89,6 +89,12 @@ let
         type = types.nullOr (types.bool);
         default = null;
         description = "By default events are uploaded in JSON format as an array of events. Some systems require events to be seperated with a new line.";
+      };
+
+      formatLogMessageSplunk = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Enable to ensure correct formatting of logs when using Splunk as the endpoint. Available in Elevate24 2.6.0 and later.";
       };
 
       SentinelTennantId = lib.mkOption {

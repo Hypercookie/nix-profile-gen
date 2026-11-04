@@ -231,7 +231,7 @@ let
             TLSTrustedServerNames = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "The list of accepted server certificate common names. If a server presents a certificate that isn't in this list, the system doesn't trust it. If you specify this property, the system disables dynamic trust (the certificate dialog) unless you also specify 'TLSAllowTrustExceptions' with the value 'true'. If necessary, use wildcards to specify the name, such as 'wpa.*.example.com'.";
+              description = "The list of accepted server certificate common names. If a server presents a certificate that isn't in this list, the system doesn't trust it. If you specify this property, the system disables dynamic trust (the certificate dialog) unless you also specify 'TLSAllowTrustExceptions' with the value 'true'. If necessary, use a single \"*\" character to specify a wildcard for an individual component of the name, such as 'wpa.*.example.com'.";
             };
             TLSAllowTrustExceptions = lib.mkOption {
               type = types.nullOr (types.bool);

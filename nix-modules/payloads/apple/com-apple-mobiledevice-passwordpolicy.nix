@@ -107,7 +107,7 @@ let
           };
         });
         default = null;
-        description = "Specifies a regular expression, and its description, used to enforce password compliance. Use the simpler passcode restrictions whenever possible, and rely on regular expression matching only when necessary. Mistakes in regular expressions can lead to frustrating user experiences, such as unsatisfiable passcode policies, or policy descriptions that don't match the enforced policy.\nAvailable in macOS 14 and later.";
+        description = "Specifies a regular expression, and its description, used to enforce password compliance. Use the simpler passcode restrictions whenever possible, and rely on regular expression matching only when necessary. Mistakes in regular expressions can lead to frustrating user experiences, such as unsatisfiable passcode policies, or policy descriptions that don't match the enforced policy.";
       };
 
       maxPINAgeInDays = lib.mkOption {
@@ -125,7 +125,7 @@ let
       changeAtNextAuth = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system causes a password reset to occur the next time the user tries to authenticate. If this key is set in a device profile, the setting takes effect for all users, and admin authentications may fail until the admin user password is also reset. Available in macOS 10.13 and later.";
+        description = "If 'true', the system causes a password reset to occur the next time the user tries to authenticate. If this key is set in a device profile, the setting takes effect for all users, and admin authentications may fail until the admin user password is also reset.";
       };
 
       forcePIN = lib.mkOption {
@@ -155,7 +155,7 @@ let
       minutesUntilFailedLoginReset = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "The number of minutes before the system resets the login after the maximum number of unsuccessful login attempts is reached. This key requires setting 'maxFailedAttempts'. Available in macOS 10.10 and later.";
+        description = "The number of minutes before the system resets the login after the maximum number of unsuccessful login attempts is reached. This key requires setting 'maxFailedAttempts'.";
       };
 
     };

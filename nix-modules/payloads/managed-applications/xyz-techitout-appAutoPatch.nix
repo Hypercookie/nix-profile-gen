@@ -51,7 +51,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "DaysUntilReset" "PatchWeekStartDay" "DeadlineCountFocus" "DeadlineCountHard" "DeadlineDaysFocus" "DeadlineDaysHard" "DeferralTimerDefault" "DeferralTimerError" "DeferralTimerFocus" "DeferralTimerMenu" "DeferralTimerWorkflowRelaunch" "MonthlyPatchingCadenceEnabled" "MonthlyPatchingCadenceOrdinalValue" "MonthlyPatchingCadenceWeekdayIndex" "MonthlyPatchingCadenceStartTime" "DiscoveryFrequency" "ZoomCallActiveCheck" "DialogOnTop" "ShowDockIcon" "DialogQuitHandlingDiscoveryStaging" "ShowNotificationsAll" "ShowNotificationsSilentUpdated" "ShowNotificationsAppsQueued" "ShowNotificationsSilentAndQueued" "DialogTimeoutDeferral" "DialogTimeoutDeferralAction" "DialogTimeoutConfirmInstall" "UnattendedExit" "UnattendedExitSeconds" "UseOverlayIcon" "DialogIcon" "BannerImage" "BannerTitle" "BannerHeight" "IgnoredLabels" "ExcludedBackgroundLabels" "RequiredLabels" "OptionalLabels" "AppTitle" "ConvertAppsInHomeFolder" "IgnoreAppsInHomeFolder" "SkipPreUpdateVerification" "InstallomatorOptions" "InstallomatorUpdateDisable" "GitHubAPIAuthEnabled" "GitHubAPIToken" "PrePatchScript" "PostPatchScript" "PrePatchScriptFailAction" "PostPatchScriptFailAction" "PatchScriptTimeoutSeconds" "StaleProcessTimeoutSeconds" "InstallomatorVersion" "InstallomatorVersionCustomRepoPath" "InstallomatorVersionCustomBranchName" "InteractiveMode" "RemoveInstallomatorPath" "SupportTeamName" "SupportTeamEmail" "SupportTeamPhone" "SupportTeamWebsite" "WebhookFeature" "WebhookURLSlack" "WebhookURLTeams" "WorkflowDisableAppDiscovery" "WorkflowBackgroundPatchClosedApps" "WorkflowStageUpdates" "IgnoreDNDApps" "WorkflowScheduledDiscovery" "WorkflowDisableRelaunch" "BusinessHours" "BusinessHoursRespectHardDeadline" "BusinessHoursSilentDuring" "BusinessHoursAllowDiscovery" "WorkflowInstallNowPatchingStatusAction" "SelfUpdateEnabled" "SelfUpdateFrequency" "VersionComparisonMethod" "VersionComparisonInstallomatorFallback" "userInterface" ];
+        default = [ "PFC_SegmentedControl_0" "DaysUntilReset" "PatchWeekStartDay" "DeadlineCountFocus" "DeadlineCountHard" "DeadlineDaysFocus" "DeadlineDaysHard" "DeferralTimerDefault" "DeferralTimerError" "DeferralTimerFocus" "DeferralTimerMenu" "DeferralTimerWorkflowRelaunch" "MonthlyPatchingCadenceEnabled" "MonthlyPatchingCadenceOrdinalValue" "MonthlyPatchingCadenceWeekdayIndex" "MonthlyPatchingCadenceStartTime" "DiscoveryFrequency" "ZoomCallActiveCheck" "DialogOnTop" "ShowDockIcon" "DialogQuitHandlingDiscoveryStaging" "ShowNotificationsAll" "ShowNotificationsSilentUpdated" "ShowNotificationsAppsQueued" "ShowNotificationsSilentAndQueued" "DialogTimeoutDeferral" "DialogTimeoutDeferralAction" "DialogTimeoutConfirmInstall" "UnattendedExit" "UnattendedExitSeconds" "UseOverlayIcon" "DialogIcon" "BannerImage" "BannerTitle" "BannerHeight" "IgnoredLabels" "ExcludedBackgroundLabels" "RequiredLabels" "OptionalLabels" "AppTitle" "ConvertAppsInHomeFolder" "IgnoreAppsInHomeFolder" "SkipPreUpdateVerification" "InstallomatorOptions" "InstallomatorUpdateDisable" "GitHubAPIAuthEnabled" "GitHubAPIToken" "PrePatchScript" "PostPatchScript" "PrePatchScriptFailAction" "PostPatchScriptFailAction" "PatchScriptTimeoutSeconds" "StaleProcessTimeoutSeconds" "InstallomatorVersion" "InstallomatorVersionCustomRepoPath" "InstallomatorVersionCustomBranchName" "InteractiveMode" "RemoveInstallomatorPath" "SupportTeamName" "SupportTeamEmail" "SupportTeamPhone" "SupportTeamWebsite" "WebhookFeature" "WebhookURLSlack" "WebhookURLTeams" "WebhookURLGoogleChat" "MosyleConsoleURL" "WorkflowDisableAppDiscovery" "WorkflowBackgroundPatchClosedApps" "WorkflowStageUpdates" "IgnoreDNDApps" "WorkflowScheduledDiscovery" "WorkflowDisableRelaunch" "BusinessHours" "BusinessHoursRespectHardDeadline" "BusinessHoursSilentDuring" "BusinessHoursAllowDiscovery" "WorkflowInstallNowPatchingStatusAction" "SelfUpdateEnabled" "SelfUpdateFrequency" "VersionComparisonMethod" "VersionComparisonInstallomatorFallback" "userInterface" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -441,6 +441,18 @@ let
         type = types.nullOr (types.str);
         default = null;
         description = "The Teams Webhook URL to use if WebhookFeature is set to TRUE";
+      };
+
+      WebhookURLGoogleChat = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "The Google Chat incoming webhook URL to use if WebhookFeature is set to ALL or FAILURES. The card includes the same status, serial, user, labels, errors, and MDM device link as the Slack and Teams webhooks.";
+      };
+
+      MosyleConsoleURL = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "Override the Mosyle admin console host used in Slack/Teams \"View in Mosyle\" device links. The enrollment ServerURL (for example https://biz-1234.mosyle.com) is the MDM check-in endpoint, not the console. Leave unset to map Business enrollments (biz-* / *business.mosyle*) to https://mybusiness.mosyle.com and other Mosyle enrollments to https://my.mosyle.com (Manager/Education).";
       };
 
       WorkflowDisableAppDiscovery = lib.mkOption {
