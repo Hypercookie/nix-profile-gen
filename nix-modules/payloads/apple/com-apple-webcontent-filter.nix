@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -241,7 +248,7 @@ let
       FilterURLs = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system filters URL requests. Use when 'FilterType' is 'Plugin'. Available in iOS 26 and macOS 26, and later.";
+        description = "If 'true', the system filters URL requests. Use when 'FilterType' is 'Plugin'.";
       };
 
       URLFilterParameters = lib.mkOption {
@@ -285,7 +292,7 @@ let
           };
         });
         default = null;
-        description = "A dictionary containing URL filter parameters. Required when 'FilterURLs' is 'true'. Available in iOS 26 and macOS 26 and later.";
+        description = "A dictionary containing URL filter parameters. Required when 'FilterURLs' is 'true'.";
       };
 
       SafariHistoryRetentionEnabled = lib.mkOption {

@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -51,13 +58,19 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "disable_shadow" "location" ];
+        default = [ "disable_shadow" "show_thumbnail" "location" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
       disable_shadow = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
+      };
+
+      show_thumbnail = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "Show Floating Thumbnail Preview";
       };
 
       location = lib.mkOption {

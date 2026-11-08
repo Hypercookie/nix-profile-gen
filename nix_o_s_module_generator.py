@@ -339,6 +339,15 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     lines.append("      };")
     lines.append("")
 
+    # pfm_platforms: operating systems supported by this payload.
+    lines.append("      _platforms = lib.mkOption {")
+    lines.append("        internal = true;")
+    lines.append("        type = lib.types.listOf lib.types.str;")
+    lines.append(f"        default = {nix_value(platforms)};")
+    lines.append('        description = "Supported Apple platforms (pfm_platforms).";')
+    lines.append("      };")
+    lines.append("")
+
     # Escape hatch for manifests whose pfm_targets is missing or wrong.
     lines.append("      _scope = lib.mkOption {")
     lines.append('        type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);')

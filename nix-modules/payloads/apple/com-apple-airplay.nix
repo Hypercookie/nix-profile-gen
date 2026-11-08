@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -99,7 +106,7 @@ let
             DeviceName = lib.mkOption {
               type = types.nullOr (types.str);
               default = null;
-              description = "The name of the AirPlay destination; used in iOS, and available in macOS 15 and later.";
+              description = "The name of the AirPlay destination.";
             };
             DeviceID = lib.mkOption {
               type = types.nullOr (types.str);

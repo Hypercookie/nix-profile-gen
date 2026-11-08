@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -51,7 +58,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "AppBundleIdentifier" "ProviderBundleIdentifier" "ProviderConfiguration" "DNSProxyUUID" ];
+        default = [ "AppBundleIdentifier" "ProviderBundleIdentifier" "ProviderConfiguration" "DNSProxyUUID" "ProviderDesignatedRequirement" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -68,7 +75,19 @@ let
       };
 
       ProviderConfiguration = lib.mkOption {
-        type = types.nullOr (types.attrsOf types.anything);
+        type = types.nullOr (types.submodule {
+          options = {
+            __key__ = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+            };
+            __value__ = lib.mkOption {
+              type = types.nullOr (types.str);
+              default = null;
+              description = "Key/value pairs.";
+            };
+          };
+        });
         default = null;
         description = "The dictionary of vendor-specific configuration items.";
       };
@@ -77,6 +96,12 @@ let
         type = types.nullOr (types.str);
         default = null;
         description = "A globally unique identifier for this DNS proxy configuration. The proxy processes DNS lookups traffic for managed apps with the same 'DNSProxyUUID' in their app attributes. This key is required for user enrollment.";
+      };
+
+      ProviderDesignatedRequirement = lib.mkOption {
+        type = types.nullOr (types.str);
+        default = null;
+        description = "The designated requirement string that the system embeds in the code signature of the DNS proxy network extension. Use this to correctly identify the DNS proxy extension when 'ProviderBundleIdentifier' is present.";
       };
 
     };

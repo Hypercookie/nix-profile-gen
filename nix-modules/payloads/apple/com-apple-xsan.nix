@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -70,7 +77,7 @@ let
       sanAuthMethod = lib.mkOption {
         type = types.nullOr (types.enum [ "auth_secret" ]);
         default = null;
-        description = "The authentication method for the SAN. This key is required for all Xsan SANs. It's optional for StorNext SANs but should be set if the StorNext SAN uses an 'auth_secret' file.\nOnly one value is accepted: 'auth_secret'";
+        description = "The authentication method for the SAN. This key is required for all Xsan SANs. It's optional for StorNext SANs but should be set if the StorNext SAN uses an 'auth_secret' file.\nThe SAN accepts only one value: 'auth_secret'";
       };
 
       sharedSecret = lib.mkOption {

@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -67,7 +74,7 @@ let
             AppIdentifierMatches = lib.mkOption {
               type = types.nullOr (types.listOf (types.str));
               default = null;
-              description = "The list of app identifiers that the system allows to use this login. If this field missing, the system matches all app identifiers with this login.\nDon't set an empty array. The array needs to contain strings that match App Bundle IDs. These strings can be exact matches such as 'com.mycompany.myapp', or they may specify a prefix match on the Bundle ID by using the '*' wildcard character. The wildcard character needs to appear after a period ('.'), and may only appear once, at the end of the string, for example, 'com.mycompany.*'. When you provide a wildcard, the system grants access to the account to any app with a Bundle ID that begins with the prefix.";
+              description = "The list of app identifiers that the system allows to use this login. If this field missing, the system matches all app identifiers with this login.\nDon't set an empty array. The array needs to contain strings that match App Bundle IDs. These strings can be exact matches such as 'com.mycompany.myapp', or they may specify a prefix match on the Bundle ID by using the '\\*' wildcard character. The wildcard character needs to appear after a period ('.'), and may only appear once, at the end of the string, for example, 'com.mycompany.\\*'. When you provide a wildcard, the system grants access to the account to any app with a Bundle ID that begins with the prefix.";
             };
             PrincipalName = lib.mkOption {
               type = types.nullOr (types.str);

@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -71,7 +78,7 @@ let
             EnableDirectDownloads = lib.mkOption {
               type = types.nullOr (types.bool);
               default = null;
-              description = "If 'true', the system enables direct download of data for this domain instead of through a CDN. Set the entitlement value for this domain to 'service:domain?mode=managed'; otherwise, the system ignores this value. Available in macOS 11 and later.";
+              description = "If 'true', the system enables direct download of data for this domain instead of through a CDN. Set the entitlement value for this domain to 'service:domain?mode=managed'; otherwise, the system ignores this value.";
             };
           };
         }));
