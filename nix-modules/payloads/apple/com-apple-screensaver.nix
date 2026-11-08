@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -58,13 +65,13 @@ let
       askForPassword = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the user is prompted for a password when the screen saver is unlocked or stopped. When you use this prompt, you must also provide 'askForPasswordDelay'. Available in macOS 10.13 and later.";
+        description = "If 'true', the device prompts the user for a password when the screen saver is unlocked or stopped. When you use this prompt, you must also provide 'askForPasswordDelay'.";
       };
 
       askForPasswordDelay = lib.mkOption {
         type = types.nullOr (types.int);
         default = null;
-        description = "The number of seconds to delay before the password will be required to unlock or stop the screen saver (the grace period). A value of '2147483647' (for example, '0x7FFFFFFF') disables this requirement. To use this option, you must set 'askForPassword' to 'true'. Available in macOS 10.13 and later.";
+        description = "The number of seconds to delay before the device requires a password to unlock or stop the screen saver (the grace period). A value of '2147483647' (hexadecimal equivalent of '0x7FFFFFFF') disables this requirement, and a value of '0' immediately requires the password. To use this option, you must set 'askForPassword' to 'true'.";
       };
 
       loginWindowModulePath = lib.mkOption {

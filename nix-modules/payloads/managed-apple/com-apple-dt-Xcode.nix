@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -51,7 +58,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "IDEProhibitOnDeviceModelInteraction" "IDEProhibitRemoteModelInteraction" "CodingAssistantAllowExternalIntegrations" ];
+        default = [ "IDEProhibitOnDeviceModelInteraction" "IDEProhibitRemoteModelInteraction" "CodingAssistantAllowExternalIntegrations" "DVTTextShowCompletionsOnEsc" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -71,6 +78,12 @@ let
         type = types.nullOr (types.bool);
         default = null;
         description = "Controls whether the coding assistant is allowed.";
+      };
+
+      DVTTextShowCompletionsOnEsc = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "If 'false', disables the showing of completions when Escape is pressed.";
       };
 
     };

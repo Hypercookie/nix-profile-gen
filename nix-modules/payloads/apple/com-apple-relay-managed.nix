@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" "tvOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -117,13 +124,13 @@ let
       MatchFQDNs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "A list of Fully Qualified Domain Names (FQDNs) to be routed through the servers contained in 'Relays'. Any connection that matches an FQDN in the list exactly uses the relay servers. If this list and 'MatchDomains' are empty, the system routes traffic to all domains to the relay servers, except those that match an excluded domain or excluded FQDN.";
+        description = "A list of Fully Qualified Domain Names (FQDNs) to route through the servers contained in 'Relays'. Any connection that matches an FQDN in the list exactly uses the relay servers. If this list and 'MatchDomains' are empty, the system routes traffic to all domains to the relay servers, except those that match an excluded domain or excluded FQDN.";
       };
 
       ExcludedFQDNs = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;
-        description = "A list of Fully Qualified Domain Names (FQDNs) to exclude from routing through the servers contained in 'Relays'. Any connection that matches an FQDN in the list exactly won't use the relay server. When 'MatchDomains' is also present, any FQDN listed in the list should be a subdomain of at least one 'MatchDomain' value, otherwise it will not have any effect.";
+        description = "A list of Fully Qualified Domain Names (FQDNs) to exclude from routing through the servers contained in 'Relays'. Any connection that matches an FQDN in the list exactly won't use the relay server. When 'MatchDomains' is also present, any FQDN listed in the list should be a subdomain of at least one 'MatchDomain' value, otherwise it won't have any effect.";
       };
 
       UIToggleEnabled = lib.mkOption {

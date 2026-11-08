@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" "tvOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -64,7 +71,7 @@ let
       AllowAllAppsAccess = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows apps access to the private key. Available in macOS 10.10 and later.";
+        description = "If 'true', the system allows apps access to the private key.";
       };
 
       KeyIsExtractable = lib.mkOption {

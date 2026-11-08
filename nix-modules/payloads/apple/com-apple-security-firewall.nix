@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -112,13 +119,13 @@ let
       AllowSigned = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows built-in software to receive incoming connections. Available in macOS 12.3 and later.\nNote: The system ensures that 'AllowSigned' always has a value. If missing from the payload, the system sets it to 'true'.";
+        description = "If 'true', the system allows built-in software to receive incoming connections.\nNote: The system ensures that 'AllowSigned' always has a value. If missing from the payload, the system sets it to 'true'.";
       };
 
       AllowSignedApp = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system allows downloaded signed software to receive incoming connections. Available in macOS 12.3 and later.\nNote: The system ensures that 'AllowSignedApp' always has a value. If missing from the payload, the system sets it to 'true'.";
+        description = "If 'true', the system allows downloaded signed software to receive incoming connections.\nNote: The system ensures that 'AllowSignedApp' always has a value. If missing from the payload, the system sets it to 'true'.";
       };
 
     };

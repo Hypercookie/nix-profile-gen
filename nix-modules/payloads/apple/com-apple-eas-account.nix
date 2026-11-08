@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -76,7 +83,7 @@ let
       OverridePreviousPassword = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system overrides the previous user/EAS password with the new EAS password in the payload. Available in iOS 14 and later.";
+        description = "If 'true', the system overrides the previous user/EAS password with the new EAS password in the payload.";
       };
 
       Host = lib.mkOption {
@@ -136,7 +143,7 @@ let
       SMIMESigningEnabled = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system enables S/MIME signing for this account. Available in iOS 10.0 and later.";
+        description = "If 'true', the system enables S/MIME signing for this account.";
       };
 
       SMIMESigningCertificateUUID = lib.mkOption {
@@ -148,7 +155,7 @@ let
       SMIMEEncryptionEnabled = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system enables S/MIME encryption for this account. Available in iOS 10.0 and later. As of iOS 12.0, this key is deprecated. Use 'SMIMEEncryptByDefault' instead.";
+        description = "If 'true', the system enables S/MIME encryption for this account. This key is deprecated. Use 'SMIMEEncryptByDefault' instead.";
       };
 
       SMIMEEncryptionCertificateUUID = lib.mkOption {
@@ -160,43 +167,43 @@ let
       SMIMEEnablePerMessageSwitch = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI.\nAvailable in iOS 8.0 and later. As of iOS 12.0, this key is deprecated. Use 'SMIMEEnableEncryptionPerMessageSwitch' instead.";
+        description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI.\nThis key is deprecated. Use 'SMIMEEnableEncryptionPerMessageSwitch' instead.";
       };
 
       SMIMESigningUserOverrideable = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the user can turn S/MIME signing on or off in Settings. Available in iOS 12.0 and later.";
+        description = "If 'true', the user can turn S/MIME signing on or off in Settings.";
       };
 
       SMIMESigningCertificateUUIDUserOverrideable = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the user can select the signing identity. Available in iOS 12.0 and later.";
+        description = "If 'true', the user can select the signing identity.";
       };
 
       SMIMEEncryptByDefault = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system enables S/MIME encryption by default. If 'SMIMEEnableEncryptionPerMessageSwitch' is 'false', the user can't change this default. Available in iOS 12.0 and later.";
+        description = "If 'true', the system enables S/MIME encryption by default. If 'SMIMEEnableEncryptionPerMessageSwitch' is 'false', the user can't change this default.";
       };
 
       SMIMEEncryptByDefaultUserOverrideable = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system enables encryption by default and the user can't change it. Available in iOS 12.0 and later.";
+        description = "If 'true', the system enables encryption by default and the user can't change it.";
       };
 
       SMIMEEncryptionCertificateUUIDUserOverrideable = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the user can select the S/MIME encryption identity, and encryption is on.Available in iOS 12.0 and later.";
+        description = "If 'true', the user can select the S/MIME encryption identity, and encryption is on.";
       };
 
       SMIMEEnableEncryptionPerMessageSwitch = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI. Available in iOS 12.0 and later.";
+        description = "If 'true', the system displays the per-message encryption switch in the Mail Compose UI.";
       };
 
       EnableCalendars = lib.mkOption {
@@ -296,7 +303,7 @@ let
       VPNUUID = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
-        description = "The VPNUUID of the per-app VPN the account uses for network communication. Available in iOS 14 and later.";
+        description = "The VPNUUID of the per-app VPN the account uses for network communication.";
       };
 
       HeaderMagic = lib.mkOption {

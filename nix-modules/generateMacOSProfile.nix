@@ -29,10 +29,14 @@ let
     "_displayName"
     "_keyNames"
     "_targets"
+    "_platforms"
     "_scope"
   ];
 
-  scopes = [ "User" "System" ];
+  scopes =
+    if cfg.platform == "iOS"
+    then [ "System" ]
+    else [ "User" "System" ];
 
   # Which profile a payload instance belongs in.
   #
@@ -45,7 +49,8 @@ let
       canUser = lib.elem "user" icfg._targets;
       canSystem = lib.elem "system" icfg._targets;
     in
-    if canUser && canSystem then cfg.scope
+    if cfg.platform == "iOS" then "System"
+    else if canUser && canSystem then cfg.scope
     else if canUser then "User"
     else if canSystem then "System"
     else cfg.scope;
@@ -130,7 +135,47 @@ let
         '';
       })
     manifestNames;
+  platformAssertions = lib.concatMap
+    (manifestName:
+      lib.mapAttrsToList
+        (instanceName: icfg: {
+          assertion =
+            !icfg.enable
+            || icfg._platforms == [ ]
+            || lib.elem cfg.platform icfg._platforms;
 
+          message = ''
+            programs.macprofile.payloads."${manifestName}"."${instanceName}"
+            does not support platform "${cfg.platform}".
+
+            Supported platforms according to its Apple manifest:
+            ${lib.concatStringsSep ", " icfg._platforms}
+          '';
+        })
+        payloadsConfig.${manifestName})
+    manifestNames;
+
+  iosScopeAssertions = [
+    {
+      assertion = cfg.platform != "iOS" || cfg.scope == "System";
+      message = "iOS configuration profiles must use System scope.";
+    }
+  ] ++ lib.concatMap
+    (manifestName:
+      lib.mapAttrsToList
+        (instanceName: icfg: {
+          assertion =
+            cfg.platform != "iOS"
+              || !icfg.enable
+              || scopeOf icfg == "System";
+
+          message = ''
+            iOS payload "${manifestName}.${instanceName}" cannot be
+            forced into User scope.
+          '';
+        })
+        payloadsConfig.${manifestName})
+    manifestNames;
   # Best-effort detection of the pre-instance (flat) configuration syntax, e.g.
   #   payloads."apple-com-apple-dnsSettings-managed".DNSSettings = { ... };
   # instead of
@@ -357,7 +402,7 @@ in
 
     scope = mkOption {
       type = types.enum [ "User" "System" ];
-      default = "User";
+      default = if cfg.platform == "iOS" then "System" else "User";
       description = ''
         Preferred scope for payloads whose manifest accepts either.
 
@@ -369,6 +414,21 @@ in
 
         Override an individual payload with
         `payloads.<manifest>.<instance>._scope`.
+      '';
+    };
+
+    platform = mkOption {
+      type = types.enum [
+        "iOS"
+        "macOS"
+        "tvOS"
+        "watchOS"
+        "visionOS"
+      ];
+      default = "macOS";
+      description = ''
+        Target Apple platform. Enabled payloads are checked against their
+        manifest's pfm_platforms metadata when available.
       '';
     };
 
@@ -425,7 +485,11 @@ in
   };
 
   config = mkIf cfg.enable {
-    assertions = uniqueAssertions ++ legacyAssertions;
+    assertions =
+      uniqueAssertions
+      ++ legacyAssertions
+      ++ platformAssertions
+      ++ iosScopeAssertions;
     warnings = scopeWarnings;
 
     # One file per scope that actually has payloads.

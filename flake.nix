@@ -18,14 +18,14 @@
   outputs = { self, nixpkgs, home-manager, flake-utils, treefmt-nix, git-hooks }:
     let
       # Home Manager modules are system-independent, so they must live outside
-      # eachDefaultSystem. (They used to be nested inside it, which made them
-      # reachable only as homeModules.<system>.profiles.)
+      # eachDefaultSystem.
       homeModules = {
         profiles = ./nix-modules/generateMacOSProfile.nix;
         bridges = ./nix-modules/bridges;
-        # Local MDM server. Inert until programs.macprofile.mdm.enable is set,
-        # so including it in `default` costs nothing.
+
+        # Local MDM server. Inert until programs.macprofile.mdm.enable is set.
         mdm = ./mdm/nix-modules/mdm.nix;
+
         default = {
           imports = [
             ./nix-modules/generateMacOSProfile.nix
@@ -34,22 +34,71 @@
           ];
         };
       };
+
+      # Build a standalone .mobileconfig without requiring a Home Manager
+      # activation. The caller supplies pkgs for the target architecture.
+      mkProfile =
+        { pkgs
+        , modules
+        , platform ? "iOS"
+        , name ? "profile"
+        , scope ? "System"
+        , username ? "nixmagic"
+        , homeDirectory ? "/var/empty"
+        , stateVersion ? "24.11"
+        ,
+        }:
+
+        let
+          hm = home-manager.lib.homeManagerConfiguration {
+            inherit pkgs;
+
+            modules = [
+              self.homeModules.profiles
+
+              ({ lib, ... }: {
+                home.username = lib.mkDefault username;
+                home.homeDirectory = lib.mkDefault homeDirectory;
+                home.stateVersion = lib.mkDefault stateVersion;
+
+                programs.macprofile = {
+                  enable = true;
+                  inherit platform scope;
+                  profileName = lib.mkDefault name;
+                  outputPath = "profile.mobileconfig";
+                };
+              })
+            ] ++ modules;
+          };
+
+          profilePath =
+            hm.config.programs.macprofile.outputPaths.${scope};
+
+          profileSource =
+            hm.config.home.file.${profilePath}.source;
+
+        in
+        pkgs.runCommand "${name}.mobileconfig" { } ''
+          cp ${profileSource} "$out"
+        '';
     in
-    { inherit homeModules; }
+    {
+      inherit homeModules;
+
+      lib = {
+        inherit mkProfile;
+      };
+    }
     // flake-utils.lib.eachDefaultSystem (system:
       let
         pkgs = import nixpkgs { inherit system; };
         inherit (nixpkgs) lib;
 
-        # treefmt, evaluated via the plain-flake integration (this flake uses
-        # flake-utils, not flake-parts). Drives `nix fmt`, checks.treefmt and
-        # the pre-commit `treefmt` hook, so all three share one config and one
-        # set of exclusions.
+        # treefmt, evaluated via the plain-flake integration.
         treefmtEval = treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
 
-        # The linters must never see the auto-generated payload modules or the
-        # upstream manifest submodule, so they are stripped from the source
-        # the lint check runs against rather than being filtered per-tool.
+        # The generated payload modules and upstream manifests are excluded
+        # from linting.
         lintSrc = lib.cleanSourceWith {
           name = "nixmagic-lint-src";
           src = ./.;
@@ -61,7 +110,7 @@
                 || lib.hasPrefix "nix-modules/payloads" rel);
         };
 
-        # deadnix, statix and ruff over the hand-written sources only.
+        # deadnix, statix and ruff over hand-written sources.
         lint = pkgs.runCommand "nixmagic-lint"
           {
             nativeBuildInputs = [ pkgs.ruff pkgs.statix pkgs.deadnix ];
@@ -69,21 +118,12 @@
           cd ${lintSrc}
 
           echo "== ruff check =="
-          # Configured by ruff.toml at the source root.
           ruff check --no-cache .
 
           echo "== statix =="
           statix check .
 
           echo "== deadnix =="
-          # --no-lambda-arg / --no-lambda-pattern-names: the bridges and the
-          # profile module take (name: acct:) and ({ pkgs, lib, ... }:)
-          # signatures where ignoring an argument is deliberate and part of
-          # the interface, not dead code.
-          #
-          # tests/default.nix is excluded for one real finding: the
-          # `mkProfile` let binding at line 32 is genuinely unused. Remove it
-          # and then drop this exclusion.
           deadnix \
             --no-lambda-arg \
             --no-lambda-pattern-names \
@@ -93,11 +133,7 @@
           touch "$out"
         '';
 
-        # Belt and braces: the generated payloads and the vendored submodule
-        # are already excluded by treefmt.nix and by lintSrc, but pre-commit
-        # feeds staged filenames straight to the hooks, so the same exclusions
-        # must be repeated here or a commit touching a generated module would
-        # reformat it.
+        # Same exclusions for treefmt and pre-commit.
         preCommitExcludes = [
           "^ProfileManifests/"
           "^nix-modules/payloads/"
@@ -105,7 +141,6 @@
         ];
 
         preCommitHooks = {
-          # Reuses the exact wrapper `nix fmt` uses, config and all.
           treefmt = {
             enable = true;
             packageOverrides.treefmt = treefmtEval.config.build.wrapper;
@@ -121,17 +156,14 @@
               noLambdaArg = true;
               noLambdaPatternNames = true;
             };
-            # Same single known finding as the lint check above.
             excludes = [ "^tests/default\\.nix$" ];
           };
 
-          # Upstream calls this hook `check-merge-conflicts` (plural).
           check-merge-conflicts.enable = true;
           check-added-large-files.enable = true;
         };
 
-        # Installed into devShells.default via its shellHook. This variant
-        # carries the branch guard.
+        # Developer pre-commit hooks, including the branch guard.
         preCommit = git-hooks.lib.${system}.run {
           src = ./.;
           excludes = preCommitExcludes;
@@ -143,15 +175,7 @@
           };
         };
 
-        # The same hooks as a flake check, minus the branch guard.
-        #
-        # no-commit-to-branch is deliberately omitted here: the check runs
-        # `pre-commit run --all-files` inside a build sandbox, where
-        # git-hooks.nix `git init`s a throwaway repo whose default branch is
-        # itself `master`. The guard would therefore always trip, failing the
-        # check for a reason that has nothing to do with the commit being
-        # made. It only carries meaning against a developer's real working
-        # tree, which is exactly where `preCommit` above installs it.
+        # CI pre-commit checks, without the branch guard.
         preCommitCheck = git-hooks.lib.${system}.run {
           src = ./.;
           excludes = preCommitExcludes;
@@ -184,11 +208,8 @@
 
         devShells.default = pkgs.mkShell {
           packages = [
-            # Runs nix_o_s_module_generator.py.
             pkgs.python3
             pkgs.optnix
-            # Everything the hooks and CI invoke, so a contributor can run
-            # any of them by hand from inside the shell.
             pkgs.ruff
             pkgs.statix
             pkgs.deadnix
@@ -198,7 +219,6 @@
             pkgs.shfmt
           ];
 
-          # Installs the git pre-commit hook on shell entry.
           inherit (preCommit) shellHook;
         };
       }

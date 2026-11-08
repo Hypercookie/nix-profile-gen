@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" "tvOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -77,7 +84,7 @@ let
           };
         }));
         default = null;
-        description = "An array of certificates for which certificate transparency is disabled. One of the following conditions needs to be met to disable certificate transparency enforcement when this policy is set:\nThe hash is of the server certificate's 'subjectPublicKeyInfo'.\nThe hash is of a 'subjectPublicKeyInfo' that appears in a CA certificate in the certificate chain; the CA certificate is constrained through the X.509v3 'nameConstraints' extension. One or more 'directoryName' 'nameConstraints' are present in the 'permittedSubtrees', and the 'directoryName' contains an 'organizationName' attribute.\nThe hash is of a 'subjectPublicKeyInfo' that appears in a CA certificate in the certificate chain. The CA certificate has one or more 'organizationName' attributes in the certificate 'Subject', and the server's certificate contains the same number of 'organizationName' attributes, in the same order, and with byte-for-byte identical values.";
+        description = "An array of certificates for which certificate transparency is disabled. One of the following conditions needs to be met to disable certificate transparency enforcement when this policy is set:\nThe hash is of the server certificate's 'subjectPublicKeyInfo'.\nThe hash is of a 'subjectPublicKeyInfo' that appears in a CA certificate in the certificate chain; the X.509v3 'nameConstraints' extension constrains the CA certificate. One or more 'directoryName' 'nameConstraints' are present in the 'permittedSubtrees', and the 'directoryName' contains an 'organizationName' attribute.\nThe hash is of a 'subjectPublicKeyInfo' that appears in a CA certificate in the certificate chain. The CA certificate has one or more 'organizationName' attributes in the certificate 'Subject', and the server's certificate contains the same number of 'organizationName' attributes, in the same order, and with byte-for-byte identical values.";
       };
 
     };

@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -74,7 +81,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -94,7 +101,7 @@ let
                 };
               }));
               default = null;
-              description = "Specifies the policies for the app via the Accessibility subsystem. The ability to grant access by this profile is deprecated as of macOS 26.2, and will be removed in macOS 27.0.";
+              description = "Specifies the policies for the app via the Accessibility subsystem. In macOS 27.0, the device shows a non-blocking notification for each application when this setting is applied, and it allows the user to make changes to the setting in the System Settings app.\nDeprecated: use the 'Privacy' key in the declarative management 'com.apple.configuration.app.settings' configuration.";
             };
             AppleEvents = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -112,7 +119,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -165,7 +172,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -185,7 +192,7 @@ let
                 };
               }));
               default = null;
-              description = "Specifies the policies for the app to access Bluetooth devices.";
+              description = "Specifies the policies for the app to access Bluetooth devices.\nDeprecated: use the 'Privacy' key in the declarative management 'com.apple.configuration.app.settings' configuration.";
             };
             Calendar = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -203,7 +210,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -241,7 +248,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -261,7 +268,7 @@ let
                 };
               }));
               default = null;
-              description = "A system camera. Access to the camera can't be given in a profile; it can only be denied.";
+              description = "A system camera. A profile can't grant access to the camera; it can only deny it.";
             };
             AddressBook = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -279,7 +286,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -317,7 +324,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -355,7 +362,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -375,7 +382,7 @@ let
                 };
               }));
               default = null;
-              description = "Allows the application to use CoreGraphics and HID APIs to listen to (receive) CGEvents and HID events from all processes. Access to these events can't be given in a profile; it can only be denied.";
+              description = "Allows the application to use CoreGraphics and HID APIs to listen to (receive) CGEvents and HID events from all processes. A profile can't grant access to these events; it can only deny it.";
             };
             MediaLibrary = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -393,7 +400,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -431,7 +438,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -451,7 +458,7 @@ let
                 };
               }));
               default = null;
-              description = "A system microphone. Access to the microphone can't be given in a profile; it can only be denied.";
+              description = "A system microphone. A profile can't grant access to the microphone; it can only deny it.";
             };
             Photos = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -469,7 +476,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -507,7 +514,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -545,7 +552,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -583,7 +590,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -621,7 +628,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -641,7 +648,7 @@ let
                 };
               }));
               default = null;
-              description = "Allows the application to capture (read) the contents of the system display. Access to the contents can't be given in a profile; it can only be denied.";
+              description = "Allows the application to capture (read) the contents of the system display. A profile can't grant access to the contents; it can only deny it.";
             };
             SpeechRecognition = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -659,7 +666,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -679,7 +686,7 @@ let
                 };
               }));
               default = null;
-              description = "Allows the application to use the system Speech Recognition facility and to send speech data to Apple.";
+              description = "Allows the application to use the system Speech Recognition facility and to send speech data to Apple.\nDeprecated: use the 'Privacy' key in the declarative management 'com.apple.configuration.app.settings' configuration.";
             };
             SystemPolicyDesktopFolder = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {
@@ -697,7 +704,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -735,7 +742,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -773,7 +780,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -811,7 +818,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -849,7 +856,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -887,7 +894,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -925,7 +932,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -963,7 +970,7 @@ let
                   CodeRequirement = lib.mkOption {
                     type = types.nullOr (types.str);
                     default = null;
-                    description = "Obtained via the command 'codesign -display -r -'.";
+                    description = "Obtain this value by running 'codesign -display -r -'.";
                   };
                   StaticCode = lib.mkOption {
                     type = types.nullOr (types.bool);
@@ -983,7 +990,7 @@ let
                 };
               }));
               default = null;
-              description = "Allows the application to update or delete other apps. Available in macOS 13 and later.";
+              description = "Allows the application to update or delete other apps.";
             };
             RemoteDesktop = lib.mkOption {
               type = types.nullOr (types.listOf (types.submodule {

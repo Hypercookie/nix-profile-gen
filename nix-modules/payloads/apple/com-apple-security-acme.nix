@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "iOS" "macOS" "tvOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -82,7 +89,7 @@ let
       HardwareBound = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'false', the private key isn't bound to the device.\nIf 'true', the private key is bound to the device. The Secure Enclave generates the key pair, and the private key is cryptographically entangled with a system key. This prevents the system from exporting the private key.\nIf 'true', 'KeyType' must be 'ECSECPrimeRandom' and 'KeySize' must be 256 or 384.\nSetting this key to 'true' is supported as of macOS 14 on Apple Silicon and Intel devices that have a T2 chip. Older macOS versions or other Mac devices require this key but it must have a value of 'false'.";
+        description = "If 'false', the private key isn't bound to the device.\nIf 'true', the private key is bound to the device. The Secure Enclave generates the key pair, and the private key is cryptographically entangled with a system key. This prevents the system from exporting the private key.\nIf 'true', 'KeyType' must be 'ECSECPrimeRandom' and 'KeySize' must be 256 or 384.\nmacOS 14 on Apple silicon and Intel devices that have a T2 chip support setting this key to 'true'. Older macOS versions or other Mac devices require this key but it must have a value of 'false'.";
       };
 
       Subject = lib.mkOption {
@@ -135,13 +142,13 @@ let
       Attest = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the device provides attestations that describe the device and the generated key to the ACME server. The server can use the attestations as strong evidence that the key is bound to the device, and that the device has properties listed in the attestation. The server can use that as part of a trust score to decide whether to issue the requested certificate.\nWhen 'Attest' is 'true', 'HardwareBound' also needs to be 'true'.\nSetting this key to 'true' is supported as of macOS 14. Older macOS versions require this key but it must have a value of 'false'. See below for hardware requirements.";
+        description = "If 'true', the device provides attestations that describe the device and the generated key to the ACME server. The server can use the attestations as strong evidence that the key is bound to the device, and that the device has properties listed in the attestation. The server can use that as part of a trust score to decide whether to issue the requested certificate.\nWhen 'Attest' is 'true', 'HardwareBound' also needs to be 'true'.\nmacOS 14 supports setting this key to 'true'. Older macOS versions require this key but it must have a value of 'false'. See below for hardware requirements.";
       };
 
       KeyIsExtractable = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
-        description = "If 'true', the private key of the identity obtained through Automated Certificate Management Environment (ACME) needs to be tagged as \"non-extractable\" in the keychain.";
+        description = "If 'false', the device tags the private key of the identity obtained through Automated Certificate Management Environment (ACME) as \"non-extractable\" in the keychain.";
       };
 
       AllowAllAppsAccess = lib.mkOption {

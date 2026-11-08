@@ -42,6 +42,13 @@ let
         description = "Profile scopes this payload may be installed into (pfm_targets).";
       };
 
+      _platforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.str;
+        default = [ "macOS" ];
+        description = "Supported Apple platforms (pfm_platforms).";
+      };
+
       _scope = lib.mkOption {
         type = lib.types.nullOr (lib.types.enum [ "User" "System" ]);
         default = null;
@@ -66,7 +73,7 @@ let
             harddisk_external = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
               default = null;
-              description = "A string or an array of media action strings. Internally installed SD cards and USB flash drives are included in the hard disk-external category.\nThis key is the default for media types that don't fall into other categories.";
+              description = "A string or an array of media action strings. The hard disk-external category includes internally installed SD cards and USB flash drives.\nThis key is the default for media types that don't fall into other categories.";
             };
             harddisk_internal = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
@@ -135,7 +142,7 @@ let
             harddisk_external = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
               default = null;
-              description = "A string or an array of media action strings. Internally installed SD cards and USB flash drives are included in the hard disk-external category.\nThis key is the default for media types that don't fall into other categories.";
+              description = "A string or an array of media action strings. The hard disk-external category includes internally installed SD cards and USB flash drives.\nThis key is the default for media types that don't fall into other categories.";
             };
             harddisk_internal = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
@@ -204,7 +211,7 @@ let
             harddisk_external = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
               default = null;
-              description = "A string or an array of media action strings. Internally installed SD cards and USB flash drives are included in the hard disk-external category.\nThis key is the default for media types that don't fall into other categories.";
+              description = "A string or an array of media action strings. The hard disk-external category includes internally installed SD cards and USB flash drives.\nThis key is the default for media types that don't fall into other categories.";
             };
             harddisk_internal = lib.mkOption {
               type = types.nullOr (types.listOf (types.enum [ "authenticate" "read-only" "deny" "eject" "alert" ]));
