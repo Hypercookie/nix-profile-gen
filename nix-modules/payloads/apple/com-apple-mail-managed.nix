@@ -25,7 +25,7 @@ let
         internal = true;
         type = lib.types.bool;
         default = false;
-        description = "Whether macOS allows only one instance of this payload per profile.";
+        description = "Whether only one instance of this payload is allowed per profile.";
       };
 
       _displayName = lib.mkOption {
@@ -47,6 +47,36 @@ let
         type = lib.types.listOf lib.types.str;
         default = [ "iOS" "macOS" ];
         description = "Supported Apple platforms (pfm_platforms).";
+      };
+
+      _keyPlatforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.attrs;
+        default = [
+          { path = [ "IdentificationUUID" ]; platforms = [ "macOS" ]; }
+          { path = [ "PreventMove" ]; platforms = [ "iOS" ]; }
+          { path = [ "PreventAppSheet" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEnabled" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMESigningEnabled" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMESigningCertificateUUID" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEncryptionEnabled" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEncryptionCertificateUUID" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEnablePerMessageSwitch" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMESigningUserOverrideable" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMESigningCertificateUUIDUserOverrideable" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEncryptByDefault" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEncryptByDefaultUserOverrideable" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEncryptionCertificateUUIDUserOverrideable" ]; platforms = [ "iOS" ]; }
+          { path = [ "SMIMEEnableEncryptionPerMessageSwitch" ]; platforms = [ "iOS" ]; }
+          { path = [ "VPNUUID" ]; platforms = [ "iOS" ]; }
+        ];
+        description = "Keys restricted to a subset of the manifest's platforms (key-level pfm_platforms).";
+      };
+
+      _allowUnsupportedPlatform = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Emit this instance even if its manifest says the target platform does not support it or some of its keys. Produces a warning instead of an error.";
       };
 
       _scope = lib.mkOption {
@@ -287,7 +317,7 @@ let
   };
 in
 {
-  options.programs.macprofile.payloads."apple-com-apple-mail-managed" = lib.mkOption {
+  options.payloads."apple-com-apple-mail-managed" = lib.mkOption {
     type = types.attrsOf (types.submodule payloadModule);
     default = { };
     description = "Mail (com.apple.mail.managed) payload instances, keyed by instance name. Use \"default\" if you only need one.";

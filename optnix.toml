@@ -1,7 +1,7 @@
 default_scope = "nix-darwin"
 
 [scopes.nix-darwin]
-description = "Apple payload option definitions (standalone)"
+description = "programs.appleProfile options (standalone)"
 
 options-list-cmd = '''
 nix eval --impure  --json   --expr '
@@ -9,40 +9,32 @@ nix eval --impure  --json   --expr '
       pkgs = import <nixpkgs> {};
       lib = pkgs.lib;
 
-      # Stub out Home Manager options the profile module writes into config.
-      # Only the `options` section is evaluated here, but the config block
-      # references these names so they must exist to avoid "option not found".
-      hmStub = {
-        options = {
-          assertions   = lib.mkOption { type = lib.types.listOf lib.types.unspecified; default = []; internal = true; };
-          warnings     = lib.mkOption { type = lib.types.listOf lib.types.str;         default = []; internal = true; };
-          home.file      = lib.mkOption { type = lib.types.attrsOf lib.types.unspecified; default = {}; internal = true; };
-          home.activation = lib.mkOption { type = lib.types.attrsOf lib.types.unspecified; default = {}; internal = true; };
-        };
-      };
+      # The profile module has no Home Manager dependency, so it is
+      # evaluated on its own. `prefix` makes every option show up under the
+      # path users write, with a literal <name> for the profile.
+      prefix = [ "programs" "appleProfile" "profiles" "<name>" ];
 
       eval = lib.evalModules {
-        specialArgs = { inherit pkgs; };
-        modules = [
-          hmStub
-          ./nix-modules/generateMacOSProfile.nix
-        ];
+        inherit prefix;
+        specialArgs = { inherit pkgs; hmConfig = { }; };
+        modules = [ ./nix-modules/profile ];
       };
 
       visible = o: (o.visible or true) && !(o.internal or false);
 
-      # Top-level programs.macprofile.* options (enable, profileName, scope …)
-      # plus the payload manifest options as a single entry each.
+      # Profile options (platform, profileName, scope, bridges ...) plus the
+      # payload manifest options as a single entry each.
       baseList = builtins.filter visible (lib.optionAttrSetToDocList eval.options);
 
-      # visible when typing programs.macprofile.payloads.<manifest>.<name>.<key>.
-      payloadOpts = eval.options.programs.macprofile.payloads;
+      # Expanded so that keys are visible when typing
+      # programs.appleProfile.profiles.<name>.payloads.<manifest>.<instance>.<key>.
+      payloadOpts = eval.options.payloads;
 
       expandPayload = manifestName:
         let
           # attrsOf.getSubOptions appends <name> internally, so the prefix must
           # end at the manifest name itself.
-          loc = ["programs" "macprofile" "payloads" manifestName];
+          loc = prefix ++ [ "payloads" manifestName ];
           sub = payloadOpts.${manifestName}.type.getSubOptions loc;
         in
         builtins.filter visible (lib.optionAttrSetToDocList sub);

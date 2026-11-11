@@ -2,7 +2,7 @@
 
 ## What this is
 
-`programs.macprofile` generates `.mobileconfig` Configuration Profiles, but
+`programs.appleProfile` generates `.mobileconfig` Configuration Profiles, but
 macOS will not install them by itself: someone has to double-click the file and
 approve it in System Settings. This directory adds an optional, local
 [NanoMDM](https://github.com/micromdm/nanomdm) server so that the profiles
@@ -16,7 +16,8 @@ requires.
 home-manager switch
        |
        v
-programs.macprofile writes profile-system.mobileconfig / profile-user.mobileconfig
+programs.appleProfile writes <name>-system.mobileconfig / <name>-user.mobileconfig
+       for every profile with autoInstall = true
        |
        |  home.file onChange  (fires only when the content changed)
        v
@@ -234,13 +235,13 @@ The two `--force` flags deliberately do different things:
   out loud before doing it. That invalidates the current enrollment; you would
   have to remove the old profile in System Settings and install the new one.
 
-`push` defaults to the Home Manager generated profiles, derived from
-`--profile-base` (default
+Without `--profile`, the wrapped `nixmagic-mdm` on your `PATH` pushes every
+profile with `autoInstall = true`: Home Manager hands it a JSON manifest of
+those files through the global `--profile-manifest` flag. The unwrapped CLI
+has no manifest and falls back to `--profile-base` (default
 `Library/Application Support/HomeManager/profile.mobileconfig`, relative to
-`$HOME`) by inserting
-`-system` / `-user` before the extension, exactly as
-`programs.macprofile.outputPath` does. If you overrode `outputPath`, pass the
-same base path here. When no profile is found at all, `push` prints
+`$HOME`), inserting `-system` / `-user` before the extension the way
+`outputPath` does. When no profile is found at all, `push` prints
 `error: no profile found to push; nothing was sent` and exits non-zero, rather
 than reporting a success that moved nothing.
 
@@ -277,15 +278,17 @@ than reporting a success that moved nothing.
 {
   imports = [ inputs.nix-profile-gen.homeModules.default ];
 
-  programs.macprofile = {
-    enable = true;
-    profileName = "Nix Enforced Config";
+  programs.appleProfile = {
     organizationIdentifier = "com.example";
-    scope = "System";
 
-    payloads."apple-com-apple-dock".default = {
-      enable = true;
-      autohide = true;
+    # autoInstall defaults to true on macOS, so this profile is pushed.
+    profiles.mac = {
+      profileName = "Nix Enforced Config";
+      scope = "System";
+      payloads."apple-com-apple-dock".default = {
+        enable = true;
+        autohide = true;
+      };
     };
 
     mdm = {
@@ -304,8 +307,9 @@ than reporting a success that moved nothing.
 }
 ```
 
-`programs.macprofile.mdm.enable` requires `programs.macprofile.enable`, enforced
-by an assertion at evaluation time. `apiKeyFile` is _not_ required: it always
+`programs.appleProfile.mdm.enable` requires at least one profile with
+`autoInstall = true`, enforced by an assertion at evaluation time. Profiles
+with `autoInstall = false` (every non-macOS one) are never pushed. `apiKeyFile` is _not_ required: it always
 has a value, so there is nothing to assert about it.
 
 ### Option reference
@@ -364,7 +368,7 @@ Set `pushOnChange = false` to keep the server but drive the push manually.
 
 ## Scopes and channels
 
-`programs.macprofile` splits payloads into a System profile and a User profile
+Each macOS profile is split into a System profile and a User profile
 based on each manifest's `pfm_targets`. MDM delivers profiles over two different
 channels, and the scope decides which one applies:
 
@@ -379,8 +383,8 @@ module emits a warning and the push hook for that scope is omitted entirely,
 rather than emitting a command that would fail on every activation:
 
 ```
-programs.macprofile generates a User-scope profile, but
-programs.macprofile.mdm.userEnrollmentId is null, so that profile
+programs.appleProfile auto-installs a User-scope profile, but
+programs.appleProfile.mdm.userEnrollmentId is null, so that profile
 will not be pushed ...
 ```
 
@@ -442,7 +446,7 @@ Accordingly:
   wrapper, the activation script and the `onChange` push hook all pass paths
   through `lib.escapeShellArg`. Without that, a home directory containing a
   space would split one argument into two and put NanoMDM into a
-  `KeepAlive` restart loop, and a `programs.macprofile.outputPath` containing
+  `KeepAlive` restart loop, and a `programs.appleProfile.profiles.<name>.outputPath` containing
   `$(...)` or backticks would execute at activation time. `$HOME` is left to
   the shell and only the relative remainder is escaped, so the two concatenate
   into a single word.
@@ -518,16 +522,16 @@ tail -f ~/.local/state/nixmagic-mdm/log/nanomdm.err.log
 tail -f ~/.local/state/nixmagic-mdm/log/caddy.err.log
 ```
 
-| Symptom                                                   | Where to look                                                                                                                    |
-| --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
-| `GET /version -> unreachable`                             | The agents are not running, or Caddy has no certificate yet. Check `log/caddy.err.log`.                                          |
-| `nanomdm: API key file ... is missing or unreadable`      | `apiKeyFile` points somewhere that does not exist. Run `csr` to generate one, or fix the path.                                   |
-| `error: API key file ... does not exist; run 'csr' first` | Same cause, seen from the CLI side.                                                                                              |
-| `error: no APNs topic at ...` from `init`                 | `pushcert` has not run successfully. Do `csr` → sign → `pushcert` → `init`.                                                      |
-| `error: no profile found to push; nothing was sent`       | No generated profile at the expected path. Pass `--profile`, or `--profile-base` matching your `programs.macprofile.outputPath`. |
-| `error: no device-channel enrollment ID found`            | The Mac is not enrolled, or `db/` is empty. Install the enrollment profile, or pass `--enrollment-id`.                           |
-| `error: N device-channel enrollment IDs found`            | Autodiscovery is ambiguous and refuses to guess. Pass `--enrollment-id`, or write the chosen ID to `<state-dir>/enrollment-id`.  |
-| macOS refuses to install the enrollment profile           | Usually the PKCS#12 encryption. `init` prints a note if your `openssl` rejected `-legacy`.                                       |
+| Symptom                                                   | Where to look                                                                                                                   |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `GET /version -> unreachable`                             | The agents are not running, or Caddy has no certificate yet. Check `log/caddy.err.log`.                                         |
+| `nanomdm: API key file ... is missing or unreadable`      | `apiKeyFile` points somewhere that does not exist. Run `csr` to generate one, or fix the path.                                  |
+| `error: API key file ... does not exist; run 'csr' first` | Same cause, seen from the CLI side.                                                                                             |
+| `error: no APNs topic at ...` from `init`                 | `pushcert` has not run successfully. Do `csr` → sign → `pushcert` → `init`.                                                     |
+| `error: no profile found to push; nothing was sent`       | No generated profile at the expected path. Pass `--profile`, or `--profile-base` matching your `outputPath`.                    |
+| `error: no device-channel enrollment ID found`            | The Mac is not enrolled, or `db/` is empty. Install the enrollment profile, or pass `--enrollment-id`.                          |
+| `error: N device-channel enrollment IDs found`            | Autodiscovery is ambiguous and refuses to guess. Pass `--enrollment-id`, or write the chosen ID to `<state-dir>/enrollment-id`. |
+| macOS refuses to install the enrollment profile           | Usually the PKCS#12 encryption. `init` prints a note if your `openssl` rejected `-legacy`.                                      |
 
 **Push reports success but nothing installs.** The enqueue returning
 `push_result` only means NanoMDM accepted the command and APNs accepted the
@@ -543,7 +547,7 @@ push; it says nothing about the device acting on it. Check, in order:
    and reinstall the profile.
 3. The **channel**. A User-scope profile pushed to the device channel will not
    install. See "Scopes and channels".
-4. Set `programs.macprofile.mdm.debug = true` and switch. NanoMDM then logs the
+4. Set `programs.appleProfile.mdm.debug = true` and switch. NanoMDM then logs the
    full protocol exchange to `log/nanomdm.log`, which shows whether the device
    checked in at all.
 
@@ -556,12 +560,12 @@ push; it says nothing about the device acting on it. Check, in order:
 | `apps.<system>.nixmagic-mdm`     | The same CLI, for `nix run .#nixmagic-mdm -- <command>`.          |
 | `homeModules.mdm`                | This Home Manager module. Also included in `homeModules.default`. |
 
-`homeModules.mdm` imports `generateMacOSProfile.nix` itself, so it can be
+`homeModules.mdm` imports `nix-modules/home-manager.nix` itself, so it can be
 imported on its own — you do not have to combine it with
 `homeModules.profiles`. Importing both is harmless: the module system keys
 modules by file path and evaluates each path exactly once, so the repeated
 import is deduplicated rather than merged twice. That is also why listing both
 in `homeModules.default` costs nothing.
 
-`homeModules.mdm` is inert until `programs.macprofile.mdm.enable = true`, so
+`homeModules.mdm` is inert until `programs.appleProfile.mdm.enable = true`, so
 importing `homeModules.default` costs nothing if you do not want an MDM server.

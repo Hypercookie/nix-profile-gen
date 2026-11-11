@@ -24,3 +24,6 @@ venv/
 *.swp
 *.swo
 *~
+
+# Built profiles, e.g. `nix build` results of lib.mkProfile
+*.mobileconfig

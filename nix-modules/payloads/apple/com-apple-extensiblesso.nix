@@ -25,7 +25,7 @@ let
         internal = true;
         type = lib.types.bool;
         default = false;
-        description = "Whether macOS allows only one instance of this payload per profile.";
+        description = "Whether only one instance of this payload is allowed per profile.";
       };
 
       _displayName = lib.mkOption {
@@ -47,6 +47,82 @@ let
         type = lib.types.listOf lib.types.str;
         default = [ "iOS" "macOS" ];
         description = "Supported Apple platforms (pfm_platforms).";
+      };
+
+      _keyPlatforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.attrs;
+        default = [
+          { path = [ "TeamIdentifier" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "allowPasswordChange" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "usePlatformSSOTGT" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "allowPlatformSSOAuthFallback" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "delayUserSetup" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "includeKerberosAppsInBundleIdACL" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "monitorCredentialsCache" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwChangeURL" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwNotificationDays" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwExpireOverride" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqComplexity" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqHistory" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqLength" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqMinAge" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqText" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "pwReqRTFData" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "replicationTime" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "syncLocalPassword" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "identityIssuerAutoSelectFilter" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "allowSmartCard" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "allowPassword" ]; platforms = [ "macOS" ]; }
+          { path = [ "ExtensionData" "startInSmartCardMode" ]; platforms = [ "macOS" ]; }
+          { path = [ "AuthenticationMethod" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AuthenticationMethod" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "UseSharedDeviceKeys" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AccountDisplayName" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "LoginFrequency" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "EnableCreateUserAtLogin" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "EnableAuthorization" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "TokenToUserMapping" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "TokenToUserMapping" "AccountName" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "TokenToUserMapping" "FullName" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "NewUserAuthorizationMode" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "UserAuthorizationMode" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AdministratorGroups" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AdditionalGroups" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AuthorizationGroups" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AuthorizationGroups" "__value__" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "FileVaultPolicy" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "LoginPolicy" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "UnlockPolicy" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "OfflineGracePeriod" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AuthenticationGracePeriod" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "NonPlatformSSOAccounts" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AllowDeviceIdentifiersInAttestation" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "EnableCreateFirstUserDuringSetup" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "NewUserAuthenticationMethods" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AccessKeyReaderGroupIdentifier" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AccessKeyTerminalIdentityUUID" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AccessKeyReaderIssuerCertificateUUID" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AllowAccessKeyExpressMode" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "SynchronizeProfilePicture" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "TemporarySessionQuickLogin" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "EnableRegistrationDuringSetup" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "WebLoginURLAllowList" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AllowWebLoginPasswordSync" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AlwaysUseLoginUI" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AdditionalHTTPHeaders" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AdditionalHTTPHeaders" "__key__" ]; platforms = [ "macOS" ]; }
+          { path = [ "PlatformSSO" "AdditionalHTTPHeaders" "__value__" ]; platforms = [ "macOS" ]; }
+          { path = [ "RegistrationToken" ]; platforms = [ "macOS" ]; }
+        ];
+        description = "Keys restricted to a subset of the manifest's platforms (key-level pfm_platforms).";
+      };
+
+      _allowUnsupportedPlatform = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Emit this instance even if its manifest says the target platform does not support it or some of its keys. Produces a warning instead of an error.";
       };
 
       _scope = lib.mkOption {
@@ -584,7 +660,7 @@ let
   };
 in
 {
-  options.programs.macprofile.payloads."apple-com-apple-extensiblesso" = lib.mkOption {
+  options.payloads."apple-com-apple-extensiblesso" = lib.mkOption {
     type = types.attrsOf (types.submodule payloadModule);
     default = { };
     description = "Extensible Single Sign-On (com.apple.extensiblesso) payload instances, keyed by instance name. Use \"default\" if you only need one.";

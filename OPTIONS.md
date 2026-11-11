@@ -1,14 +1,14 @@
-# Listing macprofile Options
+# Listing programs.appleProfile Options
 
 Payload options live at:
 
 ```
-programs.macprofile.payloads.<manifest>.<instance>.<key>
+programs.appleProfile.profiles.<name>.payloads.<manifest>.<instance>.<key>
 ```
 
 `<manifest>` identifies the ProfileManifests plist, `<instance>` is a name you
 choose (use `default` for a single instance), and `<key>` is an Apple
-preference key.
+preference key. `<name>` is the profile.
 
 ## Using optnix
 
@@ -16,9 +16,11 @@ preference key.
 optnix
 ```
 
-`optnix.toml` in the repository root is preconfigured to evaluate
-`nix-modules/payloads/all-payloads.nix` and list every visible, non-internal
-option.
+`optnix.toml` in the repository root is preconfigured to evaluate the profile
+module (`nix-modules/profile`) and list every visible, non-internal option
+under `programs.appleProfile.profiles.<name>`. The Home Manager-only
+options (`enable`, `autoInstall`, the top-level `organization*` and `mdm`)
+are not part of that module and are not listed.
 
 ## Using Nix Commands
 
@@ -33,15 +35,15 @@ nix eval --impure --json --expr '
       modules = [ ./nix-modules/payloads/all-payloads.nix ];
     };
   in
-    builtins.attrNames eval.options.programs.macprofile.payloads
+    builtins.attrNames eval.options.payloads
 '
 ```
 
 ### Query a specific payload
 
 ```bash
-home-manager-options | grep "programs.macprofile.payloads"
-home-manager-options 'programs.macprofile.payloads."apple-com-apple-airplay"'
+home-manager-options | grep "programs.appleProfile.profiles"
+home-manager-options 'programs.appleProfile.profiles.<name>.payloads."apple-com-apple-airplay"'
 ```
 
 ## Finding Payload Names
@@ -63,8 +65,7 @@ to discover an awkwardly named key.
 ## Example Configuration
 
 ```nix
-programs.macprofile = {
-  enable = true;
+programs.appleProfile.profiles.mac = {
   payloads = {
     "apple-com-apple-airplay".default = {
       enable = true;
@@ -106,13 +107,19 @@ or `# Unique: no`).
 Every instance carries a few internal options, hidden from `optnix` but usable
 if you need them:
 
-| Option         | Purpose                                                    |
-| -------------- | ---------------------------------------------------------- |
-| `_domain`      | `PayloadType` for the manifest                             |
-| `_unique`      | Whether macOS allows only one instance                     |
-| `_displayName` | Per-instance `PayloadDisplayName` (defaults to the domain) |
-| `_keyNames`    | Payload keys, used to detect the pre-instance flat syntax  |
-| `_targets`     | From `pfm_targets`; decides User vs System profile         |
+| Option          | Purpose                                                    |
+| --------------- | ---------------------------------------------------------- |
+| `_domain`       | `PayloadType` for the manifest                             |
+| `_unique`       | Whether only one instance is allowed per profile           |
+| `_displayName`  | Per-instance `PayloadDisplayName` (defaults to the domain) |
+| `_keyNames`     | Payload keys, used to detect the pre-instance flat syntax  |
+| `_targets`      | From `pfm_targets`; decides User vs System profile         |
+| `_platforms`    | From `pfm_platforms`; checked against `platform`           |
+| `_keyPlatforms` | Keys restricted to fewer platforms than their manifest     |
+
+`_allowUnsupportedPlatform` is _not_ internal either: set it to emit an
+instance whose payload or keys the manifest marks as unavailable on the
+profile's `platform`. It downgrades that error to a warning.
 
 `_scope` is _not_ internal: set it to `"User"` or `"System"` to force an
 instance into a particular profile when the manifest's `pfm_targets` is wrong

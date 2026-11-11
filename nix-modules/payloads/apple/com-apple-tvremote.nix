@@ -25,7 +25,7 @@ let
         internal = true;
         type = lib.types.bool;
         default = true;
-        description = "Whether macOS allows only one instance of this payload per profile.";
+        description = "Whether only one instance of this payload is allowed per profile.";
       };
 
       _displayName = lib.mkOption {
@@ -47,6 +47,25 @@ let
         type = lib.types.listOf lib.types.str;
         default = [ "iOS" "tvOS" ];
         description = "Supported Apple platforms (pfm_platforms).";
+      };
+
+      _keyPlatforms = lib.mkOption {
+        internal = true;
+        type = lib.types.listOf lib.types.attrs;
+        default = [
+          { path = [ "AllowedRemotes" ]; platforms = [ "tvOS" ]; }
+          { path = [ "AllowedRemotes" "RemoteDeviceID" ]; platforms = [ "tvOS" ]; }
+          { path = [ "AllowedTVs" ]; platforms = [ "iOS" ]; }
+          { path = [ "AllowedTVs" "TVDeviceID" ]; platforms = [ "iOS" ]; }
+          { path = [ "AllowedTVs" "TVDeviceName" ]; platforms = [ "iOS" ]; }
+        ];
+        description = "Keys restricted to a subset of the manifest's platforms (key-level pfm_platforms).";
+      };
+
+      _allowUnsupportedPlatform = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Emit this instance even if its manifest says the target platform does not support it or some of its keys. Produces a warning instead of an error.";
       };
 
       _scope = lib.mkOption {
@@ -99,7 +118,7 @@ let
   };
 in
 {
-  options.programs.macprofile.payloads."apple-com-apple-tvremote" = lib.mkOption {
+  options.payloads."apple-com-apple-tvremote" = lib.mkOption {
     type = types.attrsOf (types.submodule payloadModule);
     default = { };
     description = "TV Remote (com.apple.tvremote) payload instances, keyed by instance name. Use \"default\" if you only need one.";

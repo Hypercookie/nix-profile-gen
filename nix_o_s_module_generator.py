@@ -234,6 +234,48 @@ def collect_key_names(config_subkeys: list) -> list[str]:
     return names
 
 
+def collect_key_platforms(
+    subkeys: list, manifest_platforms: list, prefix: tuple = ()
+) -> list[tuple[tuple, list]]:
+    """Return (attribute path, platforms) for keys narrower than their manifest.
+
+    Walks the same tree `generate_option` emits, with the same skip/dedupe
+    rules per level, so every path names an option that actually exists. Only
+    keys whose own `pfm_platforms` differs from the manifest's are recorded;
+    the profile module checks the rest at payload level.
+    """
+    seen: set[str] = set()
+    found: list[tuple[tuple, list]] = []
+    for subkey in subkeys:
+        raw = subkey.get("pfm_name", "")
+        if not raw or raw.startswith("Payload"):
+            continue
+        nix_name = sanitize_nix_identifier(raw)
+        if nix_name in seen:
+            continue
+        seen.add(nix_name)
+        path = prefix + (nix_name.strip('"'),)
+
+        platforms = subkey.get("pfm_platforms")
+        if isinstance(platforms, list) and platforms and manifest_platforms:
+            platforms = list(dict.fromkeys(platforms))
+            if set(platforms) != set(manifest_platforms):
+                found.append((path, platforms))
+
+        pfm_type = subkey.get("pfm_type", "string")
+        children = subkey.get("pfm_subkeys")
+        if pfm_type == "dictionary" and children:
+            found += collect_key_platforms(children, manifest_platforms, path)
+        elif (
+            pfm_type == "array"
+            and children
+            and children[0].get("pfm_type") == "dictionary"
+            and children[0].get("pfm_subkeys")
+        ):
+            found += collect_key_platforms(children[0]["pfm_subkeys"], manifest_platforms, path)
+    return found
+
+
 def generate_nix_module(plist_path: Path, category: str = "") -> str:
     """Generate a complete NixOS module from a plist manifest without collisions.
 
@@ -267,6 +309,7 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     # Filter out Payload* keys as they are standard profile keys
     config_subkeys = [sk for sk in subkeys if not sk.get("pfm_name", "").startswith("Payload")]
     key_names = collect_key_names(config_subkeys)
+    key_platforms = collect_key_platforms(config_subkeys, platforms)
 
     # Use manifest file name for uniqueness, include category to avoid conflicts across directories
     manifest_base_name = plist_path.stem.replace(".", "-")
@@ -312,7 +355,7 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     lines.append("        type = lib.types.bool;")
     lines.append(f"        default = {'true' if unique else 'false'};")
     lines.append(
-        '        description = "Whether macOS allows only one instance of this payload per profile.";'
+        '        description = "Whether only one instance of this payload is allowed per profile.";'
     )
     lines.append("      };")
     lines.append("")
@@ -345,6 +388,35 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     lines.append("        type = lib.types.listOf lib.types.str;")
     lines.append(f"        default = {nix_value(platforms)};")
     lines.append('        description = "Supported Apple platforms (pfm_platforms).";')
+    lines.append("      };")
+    lines.append("")
+
+    # Keys that are available on fewer platforms than the manifest as a whole.
+    lines.append("      _keyPlatforms = lib.mkOption {")
+    lines.append("        internal = true;")
+    lines.append("        type = lib.types.listOf lib.types.attrs;")
+    if key_platforms:
+        lines.append("        default = [")
+        for path, key_plats in key_platforms:
+            lines.append(
+                f"          {{ path = {nix_value(list(path))}; platforms = {nix_value(key_plats)}; }}"
+            )
+        lines.append("        ];")
+    else:
+        lines.append("        default = [ ];")
+    lines.append(
+        '        description = "Keys restricted to a subset of the manifest\'s platforms (key-level pfm_platforms).";'
+    )
+    lines.append("      };")
+    lines.append("")
+
+    # Escape hatch for wrong or missing pfm_platforms metadata.
+    lines.append("      _allowUnsupportedPlatform = lib.mkOption {")
+    lines.append("        type = lib.types.bool;")
+    lines.append("        default = false;")
+    lines.append(
+        '        description = "Emit this instance even if its manifest says the target platform does not support it or some of its keys. Produces a warning instead of an error.";'
+    )
     lines.append("      };")
     lines.append("")
 
@@ -384,7 +456,9 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     lines.append("in")
     lines.append("{")
     # Use manifest_name as the key to ensure uniqueness (multiple manifests can share the same domain)
-    lines.append(f'  options.programs.macprofile.payloads."{manifest_name}" = lib.mkOption {{')
+    # Declared relative to the profile module, so every profile (the main one
+    # and each entry of `profiles`) gets its own copy of the payload options.
+    lines.append(f'  options.payloads."{manifest_name}" = lib.mkOption {{')
     lines.append("    type = types.attrsOf (types.submodule payloadModule);")
     lines.append("    default = { };")
     lines.append(

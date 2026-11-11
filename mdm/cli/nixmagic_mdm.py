@@ -413,8 +413,8 @@ def get_uuid(store: Dict[str, str], key: str) -> str:
     return store[key]
 
 
-# Mirrors the default of programs.macprofile.outputPath, which is relative to
-# $HOME.
+# Fallback for a manual push without the Home Manager wrapper, which passes
+# --profile-manifest instead. Relative to $HOME.
 DEFAULT_PROFILE_BASE = "Library/Application Support/HomeManager/profile.mobileconfig"
 
 PROFILE_EXTENSION = ".mobileconfig"
@@ -423,8 +423,8 @@ PROFILE_EXTENSION = ".mobileconfig"
 def profile_paths_for_base(base: str) -> Dict[str, Path]:
     """Per-scope profile paths derived from an ``outputPath`` base name.
 
-    ``programs.macprofile.outputPath`` is a *base* name, relative to ``$HOME``:
-    ``outputPathFor`` in generateMacOSProfile.nix inserts ``-user`` /
+    ``programs.appleProfile.profiles.<name>.outputPath`` is a *base* name, relative to ``$HOME``:
+    ``outputPathFor`` in nix-modules/profile/default.nix inserts ``-user`` /
     ``-system`` before a ``.mobileconfig`` extension, and otherwise appends the
     scope to the whole name.  The rule is reproduced exactly, because guessing
     differently here means pushing nothing at all.
@@ -1188,6 +1188,26 @@ def cmd_push(args: argparse.Namespace) -> int:
                 print("error: profile {} does not exist".format(path), file=sys.stderr)
                 return 1
             jobs.append((path, None))
+    elif getattr(args, "profile_manifest", None):
+        # Written by the Home Manager module: every profile with
+        # autoInstall = true, paths relative to $HOME.
+        with open(args.profile_manifest, encoding="utf-8") as f:
+            entries = json.load(f)
+        for entry in entries:
+            scope_name = entry["scope"]
+            if args.scope != "both" and args.scope != scope_name:
+                continue
+            path = Path(entry["path"]).expanduser()
+            if not path.is_absolute():
+                path = Path.home() / path
+            if path.exists():
+                jobs.append((path, scope_name))
+            else:
+                print(
+                    "WARNING: {} profile {} does not exist yet; run "
+                    "home-manager switch first.".format(scope_name, path),
+                    file=sys.stderr,
+                )
     else:
         defaults = profile_paths_for_base(args.profile_base)
         for scope_name in ("system", "user"):
@@ -1203,7 +1223,7 @@ def cmd_push(args: argparse.Namespace) -> int:
                 print(
                     "WARNING: no {} profile at {}.\n"
                     "WARNING: Nothing will be pushed for that scope. If "
-                    "programs.macprofile.outputPath\n"
+                    "programs.appleProfile.profiles.<name>.outputPath\n"
                     "WARNING: was overridden, pass --profile-base with the "
                     "same base path (currently\n"
                     "WARNING: {}).".format(scope_name, path, args.profile_base),
@@ -1363,6 +1383,13 @@ def build_parser() -> argparse.ArgumentParser:
         default=None,
         help="file holding the NanoMDM API key (default: <state-dir>/api.key)",
     )
+    parser.add_argument(
+        "--profile-manifest",
+        default=None,
+        metavar="PATH",
+        help="JSON list of {scope, path} naming the profiles a plain 'push' sends; "
+        "set by the Home Manager wrapper. Overrides --profile-base.",
+    )
 
     sub = parser.add_subparsers(dest="command", metavar="<command>")
 
@@ -1441,7 +1468,7 @@ def build_parser() -> argparse.ArgumentParser:
         default=DEFAULT_PROFILE_BASE,
         metavar="PATH",
         help="base path of the generated profiles, i.e. the value of "
-        "programs.macprofile.outputPath; relative paths are taken from $HOME "
+        "programs.appleProfile.profiles.<name>.outputPath; relative paths are taken from $HOME "
         "and the scope is appended to the file name (default: %(default)s)",
     )
     p_push.add_argument(
