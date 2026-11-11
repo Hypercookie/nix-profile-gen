@@ -1,17 +1,18 @@
 # Maps Home Manager `accounts.contact.accounts.<name>` onto
 # `com.apple.carddav.account` payload instances.
-{ config, lib, ... }:
+# Profile-level module (see ../profile/default.nix); `hmConfig` is the
+# evaluated Home Manager config, or `{ }` outside Home Manager.
+{ config, lib, hmConfig, ... }:
 
 let
-  cfg = config.programs.macprofile;
-  bcfg = cfg.bridges.contact;
+  bcfg = config.bridges.contact;
 
   parseUrl = import ../lib/parseUrl.nix lib;
 
   # Home Manager declares this as `accounts.contact` (singular), even though
   # its module file is named contacts.nix.
-  hasContacts = config ? accounts && config.accounts ? contact;
-  accounts = if hasContacts then config.accounts.contact.accounts else { };
+  hasContacts = hmConfig ? accounts && hmConfig.accounts ? contact;
+  accounts = if hasContacts then hmConfig.accounts.contact.accounts else { };
 
   manifest = "apple-com-apple-carddav-account";
 
@@ -38,7 +39,11 @@ let
       CardDAVAccountDescription = lib.mkDefault acct.name;
       CardDAVHostName = lib.mkDefault url.host;
       CardDAVPort = lib.mkDefault url.port;
-      CardDAVPrincipalURL = lib.mkDefault url.path;
+      # Upstream marks CardDAVPrincipalURL iOS-only and excludes it on macOS,
+      # which discovers the address book from the host instead. Null is
+      # pruned, and the key-level platform check would reject it otherwise.
+      CardDAVPrincipalURL =
+        lib.mkDefault (if config.platform == "iOS" then url.path else null);
       CardDAVUseSSL = lib.mkDefault url.useSSL;
       CardDAVUsername = lib.mkDefault acct.remote.userName;
     };
@@ -65,15 +70,15 @@ let
 
 in
 {
-  options.programs.macprofile.bridges.contact = {
+  options.bridges.contact = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = ''
         Map {option}`accounts.contact.accounts` with a `carddav` remote onto
         `com.apple.carddav.account` payload instances.
 
-        Passwords are never written to the profile; macOS prompts on install.
+        Passwords are never written to the profile; the device prompts on install.
       '';
     };
 
@@ -84,10 +89,10 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && bcfg.enable && hasContacts) {
+  config = lib.mkIf (bcfg.enable && hasContacts) {
     warnings = unparseableWarnings ++ wrongTypeWarnings;
 
-    programs.macprofile.payloads.${manifest} =
+    payloads.${manifest} =
       lib.mapAttrs toInstance eligible;
   };
 }

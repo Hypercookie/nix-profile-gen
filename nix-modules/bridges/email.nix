@@ -1,16 +1,17 @@
 # Maps Home Manager `accounts.email.accounts.<name>` onto
 # `com.apple.mail.managed` payload instances.
-{ config, lib, ... }:
+# Profile-level module (see ../profile/default.nix); `hmConfig` is the
+# evaluated Home Manager config, or `{ }` outside Home Manager.
+{ config, lib, hmConfig, ... }:
 
 let
-  cfg = config.programs.macprofile;
-  bcfg = cfg.bridges.email;
+  bcfg = config.bridges.email;
 
   # Safe when this module is evaluated outside Home Manager, where the
   # accounts.* option tree does not exist.
-  hasEmail = config ? accounts && config.accounts ? email;
+  hasEmail = hmConfig ? accounts && hmConfig.accounts ? email;
 
-  accounts = if hasEmail then config.accounts.email.accounts else { };
+  accounts = if hasEmail then hmConfig.accounts.email.accounts else { };
 
   manifest = "apple-com-apple-mail-managed";
 
@@ -107,10 +108,10 @@ let
 
 in
 {
-  options.programs.macprofile.bridges.email = {
+  options.bridges.email = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = ''
         Map {option}`accounts.email.accounts` onto `com.apple.mail.managed`
         payload instances, one per IMAP account, named after the account.
@@ -118,7 +119,7 @@ in
         Passwords are never written to the profile: the generated
         `.mobileconfig` lives in the world-readable Nix store, and Home Manager
         only exposes {option}`passwordCommand`, which cannot be evaluated at
-        build time. macOS prompts for the password when the profile is
+        build time. The device prompts for the password when the profile is
         installed.
       '';
     };
@@ -131,10 +132,10 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && bcfg.enable && hasEmail) {
+  config = lib.mkIf (bcfg.enable && hasEmail) {
     warnings = unsupportedAuth ++ startTlsWarnings ++ skippedWarnings;
 
-    programs.macprofile.payloads.${manifest} =
+    payloads.${manifest} =
       lib.mapAttrs toInstance eligible;
   };
 }

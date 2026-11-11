@@ -2,9 +2,9 @@
 
 ## Project Overview
 
-**nixmagic** (published as `nix-profile-gen`) generates macOS `.mobileconfig` Configuration Profiles from declarative Nix/Home Manager configurations. It bridges Apple's [ProfileManifests](https://github.com/ProfileManifests/ProfileManifests) (a community-maintained registry of macOS/iOS preference manifests) with the Nix module system.
+**nixmagic** (published as `nix-profile-gen`) generates Apple `.mobileconfig` Configuration Profiles for macOS, iOS and tvOS from declarative Nix/Home Manager configurations. It bridges Apple's [ProfileManifests](https://github.com/ProfileManifests/ProfileManifests) (a community-maintained registry of macOS/iOS preference manifests) with the Nix module system.
 
-**Key insight**: The ~260 `.nix` files in `nix-modules/payloads/` are **auto-generated** — do not edit them by hand. The authoritative source is `nix_o_s_module_generator.py` + the `ProfileManifests/` git submodule.
+**Key insight**: The ~290 `.nix` files in `nix-modules/payloads/` are **auto-generated** — do not edit them by hand. The authoritative source is `nix_o_s_module_generator.py` + the `ProfileManifests/` git submodule.
 
 ---
 
@@ -12,15 +12,22 @@
 
 ```
 nixmagic/
-├── flake.nix                        # Nix flake; exports homeModules.profiles
+├── flake.nix                        # Nix flake; homeModules, lib.mkProfile, packages, checks
 ├── flake.lock                       # Pinned dependency versions
 ├── nix_o_s_module_generator.py      # Python script that generates all payload .nix files
 ├── README.md                        # User-facing quick-start docs
 ├── OPTIONS.md                       # How to discover available payload options
 ├── optnix.toml                      # optnix CLI config for interactive option browsing
 ├── optnix-config.toml.example       # Example optnix config for home-manager integration
+├── ruff.toml / statix.toml / treefmt.nix  # Lint and format config
+├── .github/workflows/               # ci.yml, update-manifests.yml
 ├── tests/
 │   └── default.nix                  # Test suite, run with `nix flake check`
+├── mdm/                             # Optional local NanoMDM server (hand-written)
+│   ├── README.md                    # Setup, security model, option reference
+│   ├── cli/nixmagic_mdm.py          # Setup/push CLI (Python stdlib only)
+│   ├── nix-modules/mdm.nix          # Home Manager module: programs.appleProfile.mdm
+│   └── packages/                    # nanomdm.nix (Go, v0.9.0), nixmagic-mdm.nix (CLI wrapper)
 ├── ProfileManifests/                # Git submodule — upstream Apple .plist manifest files
 │   └── Manifests/
 │       ├── ManifestsApple/          # Core Apple payloads (Dock, Finder, WiFi, ...)
@@ -28,19 +35,21 @@ nixmagic/
 │       ├── ManagedPreferencesApplications/ # Third-party apps (Chrome, 1Password, ...)
 │       └── ManagedPreferencesDeveloper/    # Developer/testing manifests
 └── nix-modules/
-    ├── generateMacOSProfile.nix     # Core Home Manager module (hand-written)
+    ├── home-manager.nix             # HM module: programs.appleProfile.profiles.<name>
+    ├── profile/
+    │   └── default.nix              # One profile, HM-agnostic: payloads, checks, plist build
     ├── lib/
     │   └── parseUrl.nix             # Minimal http(s) URL splitter for CalDAV/CardDAV
-    ├── bridges/                     # Home Manager accounts.* -> payload mappings
-    │   ├── default.nix
+    ├── bridges/                     # accounts.* -> payload mappings (profile-level)
+    │   ├── profile.nix              # Imports the three bridges into the profile module
     │   ├── email.nix                # accounts.email    -> com.apple.mail.managed
     │   ├── calendar.nix             # accounts.calendar -> com.apple.caldav.account
     │   └── contact.nix              # accounts.contact  -> com.apple.carddav.account
     └── payloads/
         ├── all-payloads.nix         # Auto-generated imports list
-        ├── apple/                   # ~100 auto-generated payload modules
+        ├── apple/                   # ~118 auto-generated payload modules
         ├── managed-apple/           # ~30 auto-generated modules
-        ├── managed-applications/    # ~120 auto-generated modules (3rd-party apps)
+        ├── managed-applications/    # ~128 auto-generated modules (3rd-party apps)
         └── managed-developer/       # ~11 auto-generated modules
 ```
 
@@ -57,26 +66,43 @@ nix-modules/payloads/  (auto-generated .nix modules)
         |
         |  imported by
         v
-nix-modules/generateMacOSProfile.nix  (core Home Manager module)
+nix-modules/profile/default.nix  (one profile; + bridges/profile.nix)
         |
-        |  used in end-user Home Manager config
+        |  evaluated three ways
         v
-programs.macprofile { enable = true; payloads."apple-com-apple-dock".default = { ... }; }
+  programs.appleProfile.profiles.<name>  one per profile (home-manager.nix)
+  lib.mkProfile                          plain lib.evalModules, no Home Manager
         |
-        |  at `home-manager switch`, split by pfm_targets
+        |  split by pfm_targets (macOS only), checked against platform
         v
-~/Library/.../profile-user.mobileconfig   (+ profile-system.mobileconfig)
+autoInstall = true  (macOS default): ~/Library/.../<name>-<scope>.mobileconfig,
+        |                            installed on change
+        |  MDM on: nixmagic-mdm push -> Caddy (TLS :9443) -> NanoMDM -> APNs
+        |  MDM off: /usr/bin/open -> System Settings
+autoInstall = false (default elsewhere): written to outputPath if set, else
+                                         only `package`
 ```
+
+`programs.macprofile` is a `mkRemovedOptionModule` with a migration message.
 
 ### Key Components
 
 1. **`nix_o_s_module_generator.py`** — Developer tool (Python stdlib only). Reads each `.plist` manifest, converts pfm types to Nix types, and emits a complete `.nix` module file. Also generates `all-payloads.nix`.
 
-2. **`nix-modules/generateMacOSProfile.nix`** — The hand-written Home Manager module. Defines top-level `programs.macprofile` options (profileName, scope, outputPath, etc.), collects enabled payloads, strips null values, and uses an inline Python script in a `pkgs.runCommand` derivation to write the final `.mobileconfig` binary plist.
+2. **`nix-modules/profile/default.nix`** — Hand-written, Home Manager-agnostic profile module. Declares the per-profile options (platform, profileName, scope, outputPath, ...), imports all payloads and bridges, runs the platform/scope/unique/legacy checks into its own internal `assertions`/`warnings`, and builds `packages`/`package` with an inline Python script in `pkgs.runCommand`. Needs special args `pkgs` and `hmConfig`.
+
+   **`nix-modules/home-manager.nix`** — Declares `programs.appleProfile` (top-level `organization`, `organizationIdentifier`, `profiles`) where `profiles` is `attrsOf (submoduleWith { modules = [ ./profile hmProfileModule ]; })`. `hmProfileModule` adds `enable` and `autoInstall` and the per-name defaults. The file forwards every profile's assertions and warnings, writes `home.file`, owns the install `onChange` hooks, and exposes `_installedFiles` for the MDM module.
 
 3. **`ProfileManifests/`** — Git submodule. Source of truth for all Apple preference keys. Update via `git submodule update --remote ProfileManifests`, then regenerate.
 
-4. **`nix-modules/bridges/`** — Hand-written. Maps Home Manager's `accounts.*` option tree onto payload instances. Importing the module is the opt-in; all mapped values use `lib.mkDefault` so users override through the normal typed payload path.
+4. **`mdm/`** — Hand-written, optional. A local NanoMDM server plus Caddy as
+   launchd agents, and the `nixmagic-mdm` CLI (`csr`, `pushcert`, `init`,
+   `push`, `status`). Pushes generated profiles automatically on change so
+   they install without a double-click. Inert until
+   `programs.appleProfile.mdm.enable = true`; pushes only `autoInstall` profiles. `mdm/README.md` is the detailed
+   reference; read it before touching anything here.
+
+5. **`nix-modules/bridges/`** — Hand-written. Profile-level modules mapping `hmConfig.accounts.*` onto payload instances. Off by default on every profile; enabled per profile. All mapped values use `lib.mkDefault` so users override through the normal typed payload path.
 
 ---
 
@@ -109,6 +135,22 @@ Review those pull requests even when green. The generator deletes modules for
 manifests that vanished upstream, and a renamed or retyped option evaluates
 fine while silently changing the option surface users configure against.
 
+### Build a standalone profile (no Home Manager activation)
+
+```nix
+nix-profile-gen.lib.mkProfile {
+  pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+  platform = "iOS";                 # required
+  name = "iphone";                  # derivation name only
+  homeConfig = hmConfig;            # optional, for bridges
+  modules = [{ payloads."apple-com-apple-dnsSettings-managed".default = { ... }; }];
+}
+```
+
+Plain `lib.evalModules` over `lib.profileModule`; throws on failed
+assertions, traces warnings. Module options are profile-relative (no
+`programs.appleProfile.profiles.<name>` prefix).
+
 ### Browse available options interactively
 
 ```bash
@@ -126,9 +168,12 @@ nix flake check
 `tests/default.nix` builds real Home Manager configurations, generates the
 `.mobileconfig`, and asserts against the parsed plist. It covers payload
 evaluation across all manifests, multi-instance identifier/UUID uniqueness,
-the bridges, and the two eval-time assertions.
+scope routing, the bridges, multiple profiles and autoInstall (platform checks at payload and
+key level, per-profile bridges, shared `imports`, output-path collisions),
+`lib.mkProfile`, the MDM module (wrapper, Caddyfile, push hook, API-key
+handling, shell-injection escaping), and the eval-time assertions.
 
-Two traps worth remembering when extending it:
+Traps worth remembering when extending it:
 
 - **Do not `builtins.deepSeq` a derivation.** Derivations are self-referential
   (`drvPath`/`outPath`), so deepSeq recurses until the evaluator segfaults.
@@ -142,6 +187,9 @@ Two traps worth remembering when extending it:
   attribute names instead, which runs moduleChecks without assuming a scope.
 - **Never name a `runCommand` attribute `system`.** Nix already sets `system`
   in every build environment and it silently shadows yours.
+- **`evalFailureTest` cannot see the message.** Before trusting a new one,
+  evaluate the same config outside the test and read the `Failed assertions`
+  text, so it does not pass on an unrelated error (a typo'd option, say).
 
 ---
 
@@ -163,14 +211,16 @@ The generator (`nix_o_s_module_generator.py`) maps Apple pfm manifest types to N
 Each manifest as a whole becomes:
 
 ```nix
-options.programs.macprofile.payloads."<manifest>" = lib.mkOption {
+options.payloads."<manifest>" = lib.mkOption {
   type = types.attrsOf (types.submodule payloadModule);
   default = { };
 };
 ```
 
 so a profile can hold several instances of the same payload type. The key
-options are emitted once into a `let`-bound `payloadModule` and reused.
+options are emitted once into a `let`-bound `payloadModule` and reused. The
+path is relative to the profile module, which is what lets every profile
+carry its own copy.
 
 ---
 
@@ -189,36 +239,43 @@ Payload names follow the pattern `<category>-<manifest-stem>` with dots replaced
 
 ## Payload Instance Convention
 
-Payloads are addressed as `programs.macprofile.payloads.<manifest>.<instance>.<key>`.
+Payloads are addressed as `<profile>.payloads.<manifest>.<instance>.<key>`,
+where `<profile>` is `programs.appleProfile.profiles.<name>`.
 
 - The instance name `default` is special-cased: its `PayloadIdentifier` gets no
   suffix, keeping identifiers and UUIDs stable for single-instance configs.
 - Any other instance name is appended, giving `<org>.<domain>.<instance>`.
 
-Every instance carries four internal options emitted by the generator:
+Every instance carries these options emitted by the generator:
 
-| Option         | Purpose                                                               |
-| -------------- | --------------------------------------------------------------------- |
-| `_domain`      | `PayloadType` for the manifest                                        |
-| `_unique`      | From `pfm_unique`; drives the "only one instance" assertion           |
-| `_displayName` | Per-instance `PayloadDisplayName`                                     |
-| `_keyNames`    | Payload key names, used to detect the pre-instance flat syntax        |
-| `_targets`     | From `pfm_targets`; routes the instance to the User or System profile |
-| `_scope`       | User-facing override for `_targets` (not internal)                    |
+| Option                      | Purpose                                                               |
+| --------------------------- | --------------------------------------------------------------------- |
+| `_domain`                   | `PayloadType` for the manifest                                        |
+| `_unique`                   | From `pfm_unique`; drives the "only one instance" assertion           |
+| `_displayName`              | Per-instance `PayloadDisplayName`                                     |
+| `_keyNames`                 | Payload key names, used to detect the pre-instance flat syntax        |
+| `_targets`                  | From `pfm_targets`; routes the instance to the User or System profile |
+| `_platforms`                | From `pfm_platforms`; checked against `platform` by an assertion      |
+| `_keyPlatforms`             | `[{ path; platforms; }]` for keys narrower than their manifest        |
+| `_allowUnsupportedPlatform` | User-facing; downgrades platform errors to warnings                   |
+| `_scope`                    | User-facing override for `_targets` (not internal)                    |
 
-`internalKeys` in `generateMacOSProfile.nix` must be kept in sync with these,
-otherwise plumbing leaks into the generated plist.
+`internalKeys` in `nix-modules/profile/default.nix` (these plus `enable`) must
+be kept in sync, otherwise plumbing leaks into the generated plist.
 
 ## Profile Scope Routing
 
-`pfm_targets` decides which profile a payload belongs in: 95 manifests are
-system-only, 12 are user-only, 159 accept either, and 16 declare nothing
-(treated as "either").
+`pfm_targets` decides which profile a payload belongs in. Of 287 generated
+modules, 98 are system-only, 12 are user-only, and 177 accept either; the
+generator maps missing metadata (16 manifests) to `[ "system" "user" ]`.
+These counts drift with every upstream sync.
 
-- `scopeOf` in `generateMacOSProfile.nix` resolves `_scope` first, then falls
-  back to `_targets`; payloads accepting either follow the top-level `scope`.
-- Up to two `.mobileconfig` files are produced. `outputPath` is a **base**
-  name; `outputPathFor` appends `-user` / `-system` before the extension.
+- `scopeOf` in `nix-modules/profile/default.nix` resolves `_scope` first, then
+  falls back to `_targets`; payloads accepting either follow `scope`.
+- Only macOS splits. Up to two `.mobileconfig` files are produced there;
+  `outputPath` is a **base** name and `outputPathFor` appends `-user` /
+  `-system`. Other platforms produce one System profile at `outputPath`
+  unchanged, without `PayloadScope`.
 - Only scopes with payloads are written. `outputPaths` is a read-only option
   exposing the resolved paths, keyed by scope, and is what the tests use.
 - The profile whose scope equals the `scope` preference keeps the bare
@@ -227,26 +284,64 @@ system-only, 12 are user-only, 159 accept either, and 16 declare nothing
 - Forcing `_scope` against `_targets` warns rather than errors, because
   upstream metadata is sometimes absent or wrong.
 
+## Platform
+
+`platform` is one of `macOS` (default), `iOS`, `tvOS`. No manifest lists
+watchOS or visionOS, so they are not offered.
+
+- Each enabled instance is asserted against `_platforms` (empty list passes),
+  and every non-null key in `_keyPlatforms` against its own list. The
+  generator's `collect_key_platforms()` walks the same tree as
+  `generate_option()`; keep the two in sync. Lists are descended into, so a
+  key inside an array of dictionaries is found in any element.
+- Non-macOS forces a single System profile: `scope` defaults to `System`, an
+  assertion rejects `User`, and `_scope = "User"` on any instance fails eval.
+- Only `autoInstall` profiles are opened or pushed, and those must be macOS.
+- Bridges must only set keys valid for `config.platform`, e.g.
+  `CardDAVPrincipalURL` is iOS-only and is nulled on macOS.
+
+## Profiles and installation
+
+- Profile defaults from `hmProfileModule`: `profileName = <name>`,
+  `organization` from the top level, `organizationIdentifier =
+<top level>.<name>`, `_name = <name>` (derivation and file name).
+- `autoInstall` defaults to `platform == "macOS"` and asserts macOS. When on,
+  `outputPath` defaults to `Library/Application Support/HomeManager/<name>.mobileconfig`
+  and the file gets an `onChange` hook: MDM push when
+  `programs.appleProfile.mdm.enable`, otherwise `/usr/bin/open`. MDM
+  replaces the open hook, it does not add to it.
+- When off, `outputPath` defaults to `null` (no `home.file`); `package` is
+  the escape hatch.
+- Assertions across profiles: duplicate written paths, and duplicate
+  `organizationIdentifier` among auto-installed profiles (they would replace
+  each other on the Mac).
+- The wrapped `nixmagic-mdm` gets `--profile-manifest <store json>` listing
+  `_installedFiles`, so a manual `push` sends exactly the auto-installed
+  profiles. The CLI must keep accepting that flag.
+
 ## Important Constraints
 
 - **Do not hand-edit files in `nix-modules/payloads/`** — they are overwritten by `nix_o_s_module_generator.py`.
 - **Do not edit `nix-modules/payloads/all-payloads.nix`** — also auto-generated.
 - The generator uses only Python stdlib — do not add third-party dependencies.
-- `generateMacOSProfile.nix` must remain compatible with Home Manager's module system (`lib.mkOption`, `lib.types`, `config`, `pkgs`).
-- The inline Python script inside `generateMacOSProfile.nix` must handle the JSON → binary plist conversion at Nix build time (it receives data via `pkgs.writeText` JSON, not via Python imports).
+- `nix-modules/profile/` must not depend on Home Manager (no `lib.hm`, no `home.*`); `lib.mkProfile` and optnix evaluate it with plain `lib.evalModules`.
+- The inline Python script inside `nix-modules/profile/default.nix` must handle the JSON → binary plist conversion at Nix build time (it receives data via `pkgs.writeText` JSON, not via Python imports).
 - Nix identifiers with dots/dashes in Apple key names are sanitized by `sanitize_nix_identifier()` in the generator — follow the same convention if adding new keys manually.
 - `collect_key_names()` mirrors the skip/dedupe logic of `generate_option()`. If you change which subkeys are emitted, change both.
 - The generator **deletes** `.nix` files in an output directory that no manifest produced. Stale outputs from renamed upstream manifests would otherwise keep being imported by `all-payloads.nix` in an outdated format.
-- Bridges must guard with `config ? accounts && config.accounts ? <ns>` so they stay evaluable outside Home Manager.
+- Bridges must guard with `hmConfig ? accounts && hmConfig.accounts ? <ns>` so they stay evaluable outside Home Manager (`hmConfig = { }`).
 - Home Manager's option is `accounts.contact` (**singular**), even though its module file is `contacts.nix`.
 - Never emit password keys from a bridge: the profile is built in a derivation and lands in the world-readable Nix store.
+- MDM: no secret (API key, CA key, push key, PKCS#12 passphrase) may enter the Nix store, `argv`, or a launchd plist. `apiKeyFile` is a path for that reason. Every path interpolated into shell goes through `lib.escapeShellArg`. See the Security section of `mdm/README.md`.
+- `mdm/nix-modules/mdm.nix` imports `nix-modules/home-manager.nix` itself, so `homeModules.mdm` works standalone.
 
 ---
 
 ## Technologies
 
 - **Nix / Nix Flakes** — package and module system
-- **Home Manager** — consumed as `homeModules.profiles`
+- **Home Manager** — consumed as `homeModules.*`
+- **NanoMDM** (Go, built from source) + **Caddy** — optional local MDM server
 - **Python 3** (stdlib: `plistlib`, `re`, `pathlib`, `json`) — generator and plist serialization
 - **nixpkgs (nixos-unstable)** — base package set
 - **flake-utils** — cross-system flake helpers
@@ -256,18 +351,24 @@ system-only, 12 are user-only, 159 accept either, and 16 declare nothing
 
 ## Flake Outputs
 
-| Output                       | Contents                                            |
-| ---------------------------- | --------------------------------------------------- |
-| `homeModules.profiles`       | Core module + all payload options                   |
-| `homeModules.bridges`        | Home Manager account bridges                        |
-| `homeModules.default`        | Both                                                |
-| `checks.<system>.*`          | Test suite, plus `treefmt`, `lint` and `pre-commit` |
-| `formatter.<system>`         | treefmt wrapper backing `nix fmt`                   |
-| `devShells.<system>.default` | Python 3, the generator, and all lint/format tools  |
+| Output                           | Contents                                            |
+| -------------------------------- | --------------------------------------------------- |
+| `homeModules.profiles`           | `programs.appleProfile.profiles.<name>`, bridges    |
+| `homeModules.mdm`                | Local MDM server module (imports `profiles` itself) |
+| `homeModules.default`            | Both                                                |
+| `lib.mkProfile`                  | Standalone `.mobileconfig` builder, no Home Manager |
+| `lib.profileModule`              | The profile module itself                           |
+| `packages.<system>.nanomdm`      | NanoMDM 0.9.0                                       |
+| `packages.<system>.nixmagic-mdm` | MDM setup/push CLI                                  |
+| `apps.<system>.nixmagic-mdm`     | Same CLI, for `nix run .#nixmagic-mdm -- <cmd>`     |
+| `checks.<system>.*`              | Test suite, plus `treefmt`, `lint` and `pre-commit` |
+| `formatter.<system>`             | treefmt wrapper backing `nix fmt`                   |
+| `devShells.<system>.default`     | Python 3, optnix, and all lint/format tools         |
 
 `homeModules` is deliberately declared **outside** `flake-utils.lib.eachDefaultSystem`;
 Home Manager modules are system-independent, and nesting them made them
-reachable only as `homeModules.<system>.profiles`.
+reachable only as `homeModules.<system>.profiles`. `lib` lives outside for the
+same reason; `mkProfile` takes `pkgs` from the caller.
 
 ---
 
@@ -291,13 +392,13 @@ reachable only as `homeModules.<system>.profiles`.
 
 ### Configuration
 
-| File                                     | Purpose                                     |
-| ---------------------------------------- | ------------------------------------------- |
-| `treefmt.nix`                            | Formatters and the shared exclude list      |
-| `ruff.toml`                              | `ruff check` rules for the two Python files |
-| `statix.toml`                            | statix ignores and disabled lints           |
-| `.github/workflows/ci.yml`               | `check`, `format`, `lint`, `generator` jobs |
-| `.github/workflows/update-manifests.yml` | Daily ProfileManifests sync, opens a PR     |
+| File                                     | Purpose                                                                          |
+| ---------------------------------------- | -------------------------------------------------------------------------------- |
+| `treefmt.nix`                            | Formatters and the shared exclude list                                           |
+| `ruff.toml`                              | `ruff check` rules for the generator and `mdm/cli/nixmagic_mdm.py`               |
+| `statix.toml`                            | statix ignores and disabled lints                                                |
+| `.github/workflows/ci.yml`               | `check` (ubuntu + macos), `eval-all-systems`, `format`, `lint`, `generator` jobs |
+| `.github/workflows/update-manifests.yml` | Daily ProfileManifests sync, opens a PR                                          |
 
 Formatters: **nixpkgs-fmt** (Nix), **ruff-format** (Python), **prettier**
 (Markdown/YAML/JSON), **shfmt** (`.sh`/`.bash` only). nixpkgs-fmt was chosen

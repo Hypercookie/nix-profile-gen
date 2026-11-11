@@ -1,15 +1,16 @@
 # Maps Home Manager `accounts.calendar.accounts.<name>` onto
 # `com.apple.caldav.account` payload instances.
-{ config, lib, ... }:
+# Profile-level module (see ../profile/default.nix); `hmConfig` is the
+# evaluated Home Manager config, or `{ }` outside Home Manager.
+{ config, lib, hmConfig, ... }:
 
 let
-  cfg = config.programs.macprofile;
-  bcfg = cfg.bridges.calendar;
+  bcfg = config.bridges.calendar;
 
   parseUrl = import ../lib/parseUrl.nix lib;
 
-  hasCalendar = config ? accounts && config.accounts ? calendar;
-  accounts = if hasCalendar then config.accounts.calendar.accounts else { };
+  hasCalendar = hmConfig ? accounts && hmConfig.accounts ? calendar;
+  accounts = if hasCalendar then hmConfig.accounts.calendar.accounts else { };
 
   manifest = "apple-com-apple-caldav-account";
 
@@ -63,15 +64,15 @@ let
 
 in
 {
-  options.programs.macprofile.bridges.calendar = {
+  options.bridges.calendar = {
     enable = lib.mkOption {
       type = lib.types.bool;
-      default = true;
+      default = false;
       description = ''
         Map {option}`accounts.calendar.accounts` with a `caldav` remote onto
         `com.apple.caldav.account` payload instances.
 
-        Passwords are never written to the profile; macOS prompts on install.
+        Passwords are never written to the profile; the device prompts on install.
       '';
     };
 
@@ -82,10 +83,10 @@ in
     };
   };
 
-  config = lib.mkIf (cfg.enable && bcfg.enable && hasCalendar) {
+  config = lib.mkIf (bcfg.enable && hasCalendar) {
     warnings = unparseableWarnings ++ wrongTypeWarnings;
 
-    programs.macprofile.payloads.${manifest} =
+    payloads.${manifest} =
       lib.mapAttrs toInstance eligible;
   };
 }

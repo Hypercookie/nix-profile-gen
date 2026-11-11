@@ -1,5 +1,5 @@
 # Test suite, run with `nix flake check`.
-{ pkgs, lib, system, home-manager, modules }:
+{ pkgs, lib, system, home-manager, modules, mkProfile }:
 
 let
   mkHm = extraModules: home-manager.lib.homeManagerConfiguration {
@@ -19,7 +19,7 @@ let
   mkProfileScope = scope: extraModules:
     let
       hm = mkHm extraModules;
-      paths = hm.config.programs.macprofile.outputPaths;
+      paths = hm.config.programs.appleProfile.profiles.default.outputPaths;
     in
     if !(paths ? ${scope}) then
       throw "no ${scope} profile was generated (scopes: ${
@@ -31,22 +31,57 @@ let
   # Shared by the scope-split checks: one user-only payload, one system-only
   # payload, and one dual-target payload that follows the `scope` preference.
   scopeSplitConfig = {
-    programs.macprofile = {
-      enable = true;
-      organizationIdentifier = "com.example.test";
-      scope = "System";
-      payloads."apple-com-apple-mail-managed".work = {
+    programs.appleProfile = {
+      profiles.default.enable = true;
+      profiles.default.organizationIdentifier = "com.example.test";
+      profiles.default.scope = "System";
+      profiles.default.payloads."apple-com-apple-mail-managed".work = {
         enable = true;
         EmailAddress = "jane@work.example";
       };
-      payloads."apple-com-apple-loginwindow".default = {
+      profiles.default.payloads."apple-com-apple-loginwindow".default = {
         enable = true;
         SHOWFULLNAME = false;
       };
-      payloads."apple-com-apple-dock".default = {
+      profiles.default.payloads."apple-com-apple-dock".default = {
         enable = true;
         tilesize = 48;
       };
+    };
+  };
+
+  dnsPayload = {
+    payloads."apple-com-apple-dnsSettings-managed".default = {
+      enable = true;
+      DNSSettings = {
+        DNSProtocol = "HTTPS";
+        ServerURL = "https://dns.example/dns-query";
+      };
+    };
+  };
+
+  testAccounts = {
+    accounts.email.accounts = {
+      work = {
+        primary = true;
+        address = "jane@work.example";
+        realName = "Jane Doe";
+        userName = "jane";
+        imap.host = "imap.work.example";
+        smtp.host = "smtp.work.example";
+      };
+      personal = {
+        address = "jane@personal.example";
+        realName = "Jane";
+        userName = "jane2";
+        imap.host = "imap.personal.example";
+        smtp.host = "smtp.personal.example";
+      };
+    };
+    accounts.contact.accounts.personal.remote = {
+      type = "carddav";
+      url = "https://dav.example.org/addressbooks/jane/";
+      userName = "jane";
     };
   };
 
@@ -57,10 +92,14 @@ let
     plistTestScope "User" name extraModules body;
 
   plistTestScope = scope: name: extraModules: body:
+    plistCheck name (mkProfileScope scope extraModules) body;
+
+  # Same, for any profile derivation (extra profiles, lib.mkProfile).
+  plistCheck = name: profile: body:
     pkgs.runCommand "check-${name}"
       {
         nativeBuildInputs = [ pkgs.python3 ];
-        profile = mkProfileScope scope extraModules;
+        inherit profile;
       } ''
       python3 - "$profile" <<'PYEOF'
       import plistlib, sys
@@ -116,7 +155,7 @@ in
       eval = lib.evalModules {
         modules = [ ./../nix-modules/payloads/all-payloads.nix ];
       };
-      count = builtins.length (builtins.attrNames eval.options.programs.macprofile.payloads);
+      count = builtins.length (builtins.attrNames eval.options.payloads);
     in
     pkgs.runCommand "check-eval-all-payloads" { } ''
       test ${toString count} -gt 250
@@ -128,13 +167,13 @@ in
   # identifiers and UUIDs, alongside an unrelated unique payload.
   profile-multi-instance = plistTest "profile-multi-instance"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        bridges.email.enable = false;
-        bridges.calendar.enable = false;
-        bridges.contact.enable = false;
-        payloads."apple-com-apple-mail-managed" = {
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.bridges.email.enable = false;
+        profiles.default.bridges.calendar.enable = false;
+        profiles.default.bridges.contact.enable = false;
+        profiles.default.payloads."apple-com-apple-mail-managed" = {
           work = {
             enable = true;
             EmailAddress = "a@example.org";
@@ -146,7 +185,7 @@ in
             IncomingMailServerHostName = "imap.example.net";
           };
         };
-        payloads."apple-com-apple-dock".default = {
+        profiles.default.payloads."apple-com-apple-dock".default = {
           enable = true;
           tilesize = 48;
         };
@@ -172,10 +211,10 @@ in
   # identifiers stay stable for single-instance configurations.
   profile-default-identifier = plistTest "profile-default-identifier"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-dock".default = {
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."apple-com-apple-dock".default = {
           enable = true;
           tilesize = 48;
         };
@@ -190,10 +229,10 @@ in
   # set used to abort evaluation with `{ ... } // null`.
   profile-empty-instance = plistTest "profile-empty-instance"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-dock".default.enable = true;
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."apple-com-apple-dock".default.enable = true;
       };
     }]
     ''
@@ -201,12 +240,12 @@ in
       assert payloads[0]["PayloadType"] == "com.apple.dock", payloads[0]
     '';
 
-  # accounts.email is mapped automatically, one payload per IMAP account.
+  # accounts.email is mapped, one payload per IMAP account.
   bridge-email = plistTest "bridge-email"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
+      programs.appleProfile = {
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.bridges.email.enable = true;
       };
       accounts.email.accounts = {
         work = {
@@ -266,15 +305,15 @@ in
           assert "OutgoingPassword" not in p, p
     '';
 
-  # accounts.email.accounts.<n>.macprofile-style overrides go through the
-  # normal typed payload path and win over the bridge's mkDefault values.
+  # Payload overrides go through the normal typed payload path and win over
+  # the bridge's mkDefault values.
   bridge-email-override = plistTest "bridge-email-override"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-mail-managed".work = {
-          PreventMove = true;
+      programs.appleProfile = {
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.bridges.email.enable = true;
+        profiles.default.payloads."apple-com-apple-mail-managed".work = {
+          OutgoingPasswordSameAsIncomingPassword = false;
           EmailAccountDescription = "Overridden";
         };
       };
@@ -290,7 +329,7 @@ in
     ''
       mail = [p for p in payloads if p["PayloadType"] == "com.apple.mail.managed"]
       assert len(mail) == 1, mail
-      assert mail[0]["PreventMove"] is True, mail[0]
+      assert mail[0]["OutgoingPasswordSameAsIncomingPassword"] is False, mail[0]
       assert mail[0]["EmailAccountDescription"] == "Overridden", mail[0]
       # Non-overridden bridge values survive.
       assert mail[0]["IncomingMailServerHostName"] == "imap.work.example", mail[0]
@@ -299,9 +338,10 @@ in
   # accounts.calendar / accounts.contact are split into host/port/path.
   bridge-calendar-contacts = plistTest "bridge-calendar-contacts"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
+      programs.appleProfile = {
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.bridges.calendar.enable = true;
+        profiles.default.bridges.contact.enable = true;
       };
       accounts.calendar.accounts.personal = {
         primary = true;
@@ -334,7 +374,9 @@ in
       assert card[0]["CardDAVHostName"] == "dav.example.org", card[0]
       # No port in the URL: the key is omitted so macOS uses its default.
       assert "CardDAVPort" not in card[0], card[0]
-      assert card[0]["CardDAVPrincipalURL"] == "/addressbooks/jane/", card[0]
+      # CardDAVPrincipalURL is iOS-only upstream; macOS discovers the address
+      # book itself. See bridge-iphone for the iOS side.
+      assert "CardDAVPrincipalURL" not in card[0], card[0]
     '';
 
   # User-only and system-only payloads must land in separate profiles.
@@ -361,7 +403,7 @@ in
   scope-split-identifiers =
     let
       hm = mkHm [ scopeSplitConfig ];
-      paths = hm.config.programs.macprofile.outputPaths;
+      paths = hm.config.programs.appleProfile.profiles.default.outputPaths;
     in
     pkgs.runCommand "check-scope-split-identifiers"
       {
@@ -394,16 +436,16 @@ in
   scope-single-file =
     let
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
         };
       }];
-      scopes = lib.attrNames hm.config.programs.macprofile.outputPaths;
+      scopes = lib.attrNames hm.config.programs.appleProfile.profiles.default.outputPaths;
     in
     pkgs.runCommand "check-scope-single-file" { } ''
       test "${lib.concatStringsSep "," scopes}" = "System"
@@ -414,10 +456,10 @@ in
   # _scope forces a payload into a scope its manifest does not advertise.
   scope-override = plistTestScope "System" "scope-override"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-mail-managed".work = {
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."apple-com-apple-mail-managed".work = {
           enable = true;
           _scope = "System";
           EmailAddress = "jane@work.example";
@@ -430,34 +472,37 @@ in
       assert types == ["com.apple.mail.managed"], types
     '';
 
-  # openOnChange wires an onChange hook onto every generated profile.
-  open-on-change =
+  # autoInstall without MDM opens the profile on change. Without it the
+  # profile is only built: no file unless outputPath is set, and no hook.
+  auto-install =
     let
-      mk = enabled:
-        let
-          hm = mkHm [{
-            programs.macprofile = {
+      mk = extra:
+        mkHm [{
+          programs.appleProfile.profiles.default = {
+            organizationIdentifier = "com.example.test";
+            payloads."apple-com-apple-loginwindow".default = {
               enable = true;
-              organizationIdentifier = "com.example.test";
-              openOnChange = enabled;
-              payloads."apple-com-apple-loginwindow".default = {
-                enable = true;
-                SHOWFULLNAME = false;
-              };
+              SHOWFULLNAME = false;
             };
-          }];
-          path = hm.config.programs.macprofile.outputPaths.System;
-        in
-        hm.config.home.file.${path}.onChange;
+          } // extra;
+        }];
+      on = mk { };
+      off = mk { autoInstall = false; };
+      offWithPath = mk { autoInstall = false; outputPath = "Profiles/mac.mobileconfig"; };
+      onHook = on.config.home.file.${on.config.programs.appleProfile.profiles.default.outputPaths.System}.onChange;
+      offFile = offWithPath.config.home.file."Profiles/mac-system.mobileconfig";
     in
-    pkgs.runCommand "check-open-on-change" { } ''
-      ${lib.optionalString (!(lib.hasInfix "/usr/bin/open" (mk true))) ''
-        echo "openOnChange = true did not install an open hook" >&2; exit 1
+    assert on.config.programs.appleProfile.profiles.default.outputPaths
+      == { System = "Library/Application Support/HomeManager/default-system.mobileconfig"; };
+    assert off.config.programs.appleProfile.profiles.default.outputPaths == { };
+    assert !(lib.any (lib.hasSuffix ".mobileconfig") (lib.attrNames off.config.home.file));
+    assert offFile.onChange == "";
+    assert off.config.programs.appleProfile._installedFiles == [ ];
+    pkgs.runCommand "check-auto-install" { } ''
+      ${lib.optionalString (!(lib.hasInfix "/usr/bin/open" onHook)) ''
+        echo "autoInstall did not install an open hook" >&2; exit 1
       ''}
-      ${lib.optionalString ((mk false) != "") ''
-        echo "openOnChange = false should leave onChange empty" >&2; exit 1
-      ''}
-      echo "onChange hook is gated on openOnChange"
+      echo "autoInstall decides whether a profile is written and opened"
       touch "$out"
     '';
 
@@ -485,10 +530,10 @@ in
       # and `KeepAlive = true` would turn that into a restart loop.
       stateDir = "/tmp/test user/state";
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -503,8 +548,8 @@ in
     in
     pkgs.runCommand "check-mdm-wrapper-and-caddyfile"
       {
-        wrapper = hm.config.programs.macprofile.mdm._wrapperScript;
-        caddyfile = hm.config.programs.macprofile.mdm._caddyfile;
+        wrapper = hm.config.programs.appleProfile.mdm._wrapperScript;
+        caddyfile = hm.config.programs.appleProfile.mdm._caddyfile;
       } ''
       grep -q -F -- '-storage filekv' "$wrapper"
       grep -q -F -- '-checkin' "$wrapper"
@@ -546,10 +591,10 @@ in
     let
       stateDir = "/tmp/mdm-state";
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -559,7 +604,7 @@ in
           };
         };
       }];
-      mdm = hm.config.programs.macprofile.mdm;
+      mdm = hm.config.programs.appleProfile.mdm;
     in
     pkgs.runCommand "check-mdm-caddy-root-path"
       { caddyfile = mdm._caddyfile; } ''
@@ -594,10 +639,10 @@ in
     let
       apiKeyFile = "/tmp/nixmagic-test-secrets/api-key";
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -620,7 +665,7 @@ in
       {
         rendered = renderedAgents;
         passAsFile = [ "rendered" ];
-        wrapper = hm.config.programs.macprofile.mdm._wrapperScript;
+        wrapper = hm.config.programs.appleProfile.mdm._wrapperScript;
       } ''
       ${lib.optionalString isDarwin (
         (lib.optionalString (!(agents ? nanomdm)) ''
@@ -656,10 +701,10 @@ in
       mk = push:
         let
           hm = mkHm [{
-            programs.macprofile = {
-              enable = true;
-              organizationIdentifier = "com.example.test";
-              payloads."apple-com-apple-loginwindow".default = {
+            programs.appleProfile = {
+              profiles.default.enable = true;
+              profiles.default.organizationIdentifier = "com.example.test";
+              profiles.default.payloads."apple-com-apple-loginwindow".default = {
                 enable = true;
                 SHOWFULLNAME = false;
               };
@@ -671,7 +716,7 @@ in
               };
             };
           }];
-          path = hm.config.programs.macprofile.outputPaths.System;
+          path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
         in
         hm.config.home.file.${path}.onChange;
       hook = mk true;
@@ -696,10 +741,10 @@ in
   mdm-push-user-scope-skipped =
     let
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-mail-managed".work = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-mail-managed".work = {
             enable = true;
             EmailAddress = "jane@work.example";
           };
@@ -710,7 +755,7 @@ in
           };
         };
       }];
-      path = hm.config.programs.macprofile.outputPaths.User;
+      path = hm.config.programs.appleProfile.profiles.default.outputPaths.User;
       hook = hm.config.home.file.${path}.onChange;
     in
     pkgs.runCommand "check-mdm-push-user-scope-skipped" { } ''
@@ -722,16 +767,15 @@ in
       touch "$out"
     '';
 
-  # Regression test for the onChangeFor merge: openOnChange and the MDM push
-  # are independent and must both survive.
-  mdm-open-and-push-coexist =
+  # With MDM on, an auto-installed profile is pushed instead of opened: a
+  # pushed profile needs no approval dialog.
+  mdm-replaces-open =
     let
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          openOnChange = true;
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -742,16 +786,17 @@ in
           };
         };
       }];
-      path = hm.config.programs.macprofile.outputPaths.System;
+      path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
       hook = hm.config.home.file.${path}.onChange;
     in
-    pkgs.runCommand "check-mdm-open-and-push-coexist" { } ''
-      ${lib.concatMapStringsSep "\n"
-        (needle: lib.optionalString (!(lib.hasInfix needle hook)) ''
-          echo "merged onChange hook is missing ${needle}" >&2; exit 1
-        '')
-        [ "/usr/bin/open" "nixmagic-mdm" ]}
-      echo "openOnChange and the MDM push coexist"
+    pkgs.runCommand "check-mdm-replaces-open" { } ''
+      ${lib.optionalString (!(lib.hasInfix "nixmagic-mdm" hook)) ''
+        echo "MDM-enabled profile has no push hook" >&2; exit 1
+      ''}
+      ${lib.optionalString (lib.hasInfix "/usr/bin/open" hook) ''
+        echo "MDM-enabled profile still opens System Settings" >&2; exit 1
+      ''}
+      echo "MDM push replaces the open hook"
       touch "$out"
     '';
 
@@ -761,16 +806,16 @@ in
   mdm-disabled-by-default =
     let
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
         };
       }];
-      path = hm.config.programs.macprofile.outputPaths.System;
+      path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
       hook = hm.config.home.file.${path}.onChange;
       agents = hm.config.launchd.agents or { };
     in
@@ -788,10 +833,10 @@ in
   # Enabling two instances of a pfm_unique payload must fail evaluation.
   unique-assertion = evalFailureTest "unique-assertion" "two instances of a pfm_unique payload"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-dock" = {
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."apple-com-apple-dock" = {
           one = { enable = true; tilesize = 32; };
           two = { enable = true; tilesize = 64; };
         };
@@ -802,10 +847,10 @@ in
   # assertion rather than producing a bogus payload.
   legacy-syntax-assertion = evalFailureTest "legacy-syntax-assertion" "legacy flat payload syntax"
     [{
-      programs.macprofile = {
-        enable = true;
-        organizationIdentifier = "com.example.test";
-        payloads."apple-com-apple-dnsSettings-managed".DNSSettings = {
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."apple-com-apple-dnsSettings-managed".DNSSettings = {
           enable = true;
         };
       };
@@ -821,10 +866,10 @@ in
     let
       stateDir = "/tmp/mdm-state";
       mk = extraMdm: mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -835,11 +880,11 @@ in
           } // extraMdm;
         };
       }];
-      defaulted = (mk { }).config.programs.macprofile.mdm.apiKeyFile;
+      defaulted = (mk { }).config.programs.appleProfile.mdm.apiKeyFile;
       overridden = "/tmp/elsewhere/api-key";
       hookWithOverride =
         let hm = mk { apiKeyFile = overridden; };
-        in hm.config.home.file.${hm.config.programs.macprofile.outputPaths.System}.onChange;
+        in hm.config.home.file.${hm.config.programs.appleProfile.profiles.default.outputPaths.System}.onChange;
     in
     pkgs.runCommand "check-mdm-api-key-file-default" { } ''
       test ${lib.escapeShellArg defaulted} = ${lib.escapeShellArg "${stateDir}/api.key"}
@@ -858,12 +903,11 @@ in
   profile-path-shell-injection =
     let
       hm = mkHm [{
-        programs.macprofile = {
-          enable = true;
-          organizationIdentifier = "com.example.test";
-          openOnChange = true;
-          outputPath = ''Library/x$(touch /tmp/pwned)`id`.mobileconfig'';
-          payloads."apple-com-apple-loginwindow".default = {
+        programs.appleProfile = {
+          profiles.default.enable = true;
+          profiles.default.organizationIdentifier = "com.example.test";
+          profiles.default.outputPath = ''Library/x$(touch /tmp/pwned)`id`.mobileconfig'';
+          profiles.default.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
           };
@@ -873,7 +917,7 @@ in
           };
         };
       }];
-      path = hm.config.programs.macprofile.outputPaths.System;
+      path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
       hook = hm.config.home.file.${path}.onChange;
       activation = hm.config.home.activation.installMacProfile.data;
       # `escapeShellArg` single-quotes the whole relative path, so the
@@ -895,17 +939,292 @@ in
       touch "$out"
     '';
 
-  # The MDM server only exists to install generated profiles, so enabling it
-  # without profile generation is rejected.
-  mdm-assertion-macprofile-disabled =
-    evalFailureTest "mdm-assertion-macprofile-disabled" "mdm.enable without macprofile.enable"
+  # The MDM server only exists to install auto-installed profiles, so
+  # enabling it with none is rejected.
+  mdm-assertion-nothing-installed =
+    evalFailureTest "mdm-assertion-nothing-installed" "mdm.enable without an autoInstall profile"
       [{
-        programs.macprofile = {
-          enable = false;
+        programs.appleProfile = {
+          profiles.iphone = dnsPayload // { platform = "iOS"; };
           mdm = {
             enable = true;
             apiKeyFile = "/tmp/fake.key";
           };
         };
       }];
+
+  # --- Several profiles and platforms --------------------------------------
+
+  # An iOS profile next to an auto-installed Mac profile: one System plist
+  # with no PayloadScope, its own identifier, written exactly at outputPath,
+  # and never opened or pushed even with MDM on. Only the Mac profile reaches
+  # the manifest a manual `nixmagic-mdm push` reads.
+  ios-profile =
+    let
+      hm = mkHm [{
+        programs.appleProfile = {
+          organizationIdentifier = "com.example.test";
+          mdm = {
+            enable = true;
+            apiKeyFile = "/tmp/fake.key";
+            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
+          };
+          profiles.mac.payloads."apple-com-apple-loginwindow".default = {
+            enable = true;
+            SHOWFULLNAME = false;
+          };
+          profiles.iphone = dnsPayload // {
+            platform = "iOS";
+            outputPath = "Profiles/iphone.mobileconfig";
+          };
+        };
+      }];
+      ap = hm.config.programs.appleProfile;
+      file = hm.config.home.file."Profiles/iphone.mobileconfig";
+    in
+    assert !ap.profiles.iphone.autoInstall;
+    assert ap.profiles.mac.autoInstall;
+    assert ap.profiles.iphone.outputPaths == { System = "Profiles/iphone.mobileconfig"; };
+    assert file.source == ap.profiles.iphone.package;
+    assert file.onChange == "";
+    assert ap._installedFiles == [{
+      scope = "System";
+      path = "Library/Application Support/HomeManager/mac-system.mobileconfig";
+    }];
+    plistCheck "ios-profile" file.source ''
+      assert "PayloadScope" not in profile, profile
+      assert profile["PayloadIdentifier"] == "com.example.test.iphone", profile
+      assert profile["PayloadDisplayName"] == "iphone", profile
+      types = [p["PayloadType"] for p in payloads]
+      assert types == ["com.apple.dnsSettings.managed"], types
+      assert payloads[0]["PayloadIdentifier"] == "com.example.test.iphone.com.apple.dnsSettings.managed"
+    '';
+
+  # A payload whose manifest does not list the platform is rejected.
+  # Positive control: ios-profile builds the same profile without it.
+  platform-payload-assertion = evalFailureTest "platform-payload-assertion"
+    "macOS-only payload on iOS"
+    [{
+      programs.appleProfile.profiles.iphone = dnsPayload // {
+        platform = "iOS";
+        payloads."apple-com-apple-dock".default.enable = true;
+      };
+    }];
+
+  # A key restricted to other platforms is rejected even though its payload
+  # is supported: PreventMove is iOS-only in com.apple.mail.managed.
+  platform-key-assertion = evalFailureTest "platform-key-assertion"
+    "iOS-only key on macOS"
+    [{
+      programs.appleProfile.profiles.default.payloads."apple-com-apple-mail-managed".work = {
+        enable = true;
+        EmailAddress = "jane@work.example";
+        PreventMove = true;
+      };
+    }];
+
+  # Positive control for platform-key-assertion: the identical configuration
+  # passes with the escape hatch, so the key is what that test rejects.
+  platform-allow-unsupported = plistTest "platform-allow-unsupported"
+    [{
+      programs.appleProfile.profiles.default.payloads."apple-com-apple-mail-managed".work = {
+        enable = true;
+        EmailAddress = "jane@work.example";
+        PreventMove = true;
+        _allowUnsupportedPlatform = true;
+      };
+    }]
+    ''
+      assert payloads[0]["PreventMove"] is True, payloads[0]
+      assert "_allowUnsupportedPlatform" not in payloads[0], payloads[0]
+    '';
+
+  # The same accounts feed the Mac and the iPhone, filtered per profile, and
+  # a profile that does not opt in gets nothing.
+  bridge-several-profiles =
+    let
+      hm = mkHm [
+        testAccounts
+        {
+          programs.appleProfile = {
+            organizationIdentifier = "com.example.test";
+            profiles.mac.bridges = {
+              email.enable = true;
+              contact.enable = true;
+            };
+            profiles.iphone = {
+              platform = "iOS";
+              bridges.email = { enable = true; exclude = [ "work" ]; };
+              bridges.contact.enable = true;
+            };
+            profiles.ipad = dnsPayload // { platform = "iOS"; };
+          };
+        }
+      ];
+      ap = hm.config.programs.appleProfile.profiles;
+    in
+    pkgs.runCommand "check-bridge-several-profiles"
+      {
+        nativeBuildInputs = [ pkgs.python3 ];
+        mac = ap.mac.packages.User;
+        iphone = ap.iphone.package;
+        ipad = ap.ipad.package;
+      } ''
+      python3 - "$mac" "$iphone" "$ipad" <<'PYEOF'
+      import plistlib, sys
+
+      def load(p):
+          with open(p, "rb") as f:
+              return plistlib.load(f)["PayloadContent"]
+
+      def of(payloads, t):
+          return [p for p in payloads if p["PayloadType"] == t]
+
+      mac, iphone, ipad = (load(p) for p in sys.argv[1:])
+
+      assert len(of(mac, "com.apple.mail.managed")) == 2, mac
+      mail = of(iphone, "com.apple.mail.managed")
+      assert [p["EmailAddress"] for p in mail] == ["jane@personal.example"], mail
+      assert mail[0]["PayloadIdentifier"].startswith("com.example.test.iphone."), mail[0]
+
+      # iOS gets the principal URL that macOS must not carry.
+      card = of(iphone, "com.apple.carddav.account")
+      assert card[0]["CardDAVPrincipalURL"] == "/addressbooks/jane/", card
+      assert "CardDAVPrincipalURL" not in of(mac, "com.apple.carddav.account")[0]
+
+      assert [p["PayloadType"] for p in ipad] == ["com.apple.dnsSettings.managed"], ipad
+      print("ok")
+      PYEOF
+      touch "$out"
+    '';
+
+  # A plain profile module can be shared between profiles through `imports`.
+  shared-imports =
+    let
+      hm = mkHm [{
+        programs.appleProfile.profiles = {
+          mac.imports = [ dnsPayload ];
+          iphone = {
+            platform = "iOS";
+            imports = [ dnsPayload ];
+          };
+        };
+      }];
+      ap = hm.config.programs.appleProfile.profiles;
+    in
+    pkgs.runCommand "check-shared-imports"
+      {
+        nativeBuildInputs = [ pkgs.python3 ];
+        mac = ap.mac.package;
+        iphone = ap.iphone.package;
+      } ''
+      python3 - "$mac" "$iphone" <<'PYEOF'
+      import plistlib, sys
+      for path in sys.argv[1:]:
+          with open(path, "rb") as f:
+              payloads = plistlib.load(f)["PayloadContent"]
+          assert [p["PayloadType"] for p in payloads] == ["com.apple.dnsSettings.managed"], payloads
+          assert payloads[0]["DNSSettings"]["ServerURL"] == "https://dns.example/dns-query"
+      print("ok")
+      PYEOF
+      touch "$out"
+    '';
+
+  # Two profiles writing the same file are rejected.
+  duplicate-output-path = evalFailureTest "duplicate-output-path"
+    "two profiles with one outputPath"
+    [{
+      programs.appleProfile.profiles = {
+        a = dnsPayload // { platform = "iOS"; outputPath = "same.mobileconfig"; };
+        b = dnsPayload // { platform = "iOS"; outputPath = "same.mobileconfig"; };
+      };
+    }];
+
+  # Two auto-installed profiles with one identifier would replace each other.
+  duplicate-identifier = evalFailureTest "duplicate-identifier"
+    "two installed profiles with one organizationIdentifier"
+    [{
+      programs.appleProfile.profiles = {
+        a = dnsPayload // { organizationIdentifier = "com.example.same"; };
+        b = dnsPayload // { organizationIdentifier = "com.example.same"; };
+      };
+    }];
+
+  # Only macOS profiles can be installed on this Mac.
+  auto-install-platform-assertion = evalFailureTest "auto-install-platform-assertion"
+    "autoInstall on an iOS profile"
+    [{
+      programs.appleProfile.profiles.iphone = dnsPayload // {
+        platform = "iOS";
+        autoInstall = true;
+      };
+    }];
+
+  # Only macOS has a User scope.
+  single-scope-assertion = evalFailureTest "single-scope-assertion"
+    "User-scope payload on iOS"
+    [{
+      programs.appleProfile.profiles.iphone = dnsPayload // {
+        platform = "iOS";
+        payloads."apple-com-apple-mail-managed".work = {
+          enable = true;
+          EmailAddress = "jane@work.example";
+          _scope = "User";
+        };
+      };
+    }];
+
+  # lib.mkProfile needs no Home Manager evaluation, sanitizes its derivation
+  # name, can still bridge accounts from a Home Manager config, and gives
+  # tvOS a single profile too.
+  mk-profile-standalone =
+    let
+      plain = mkProfile {
+        inherit pkgs;
+        platform = "iOS";
+        name = "Jane's iPhone";
+        modules = [ dnsPayload { profileName = "Jane's iPhone"; } ];
+      };
+      bridged = mkProfile {
+        inherit pkgs;
+        platform = "iOS";
+        homeConfig = (mkHm [ testAccounts ]).config;
+        modules = [{ bridges.email.enable = true; }];
+      };
+      tv = mkProfile {
+        inherit pkgs;
+        platform = "tvOS";
+        modules = [{
+          payloads."apple-com-apple-wifi-managed".default = {
+            enable = true;
+            SSID_STR = "home";
+          };
+        }];
+      };
+    in
+    pkgs.runCommand "check-mk-profile-standalone"
+      {
+        nativeBuildInputs = [ pkgs.python3 ];
+        inherit plain bridged tv;
+      } ''
+      python3 - "$plain" "$bridged" "$tv" <<'PYEOF'
+      import plistlib, sys
+
+      def load(p):
+          with open(p, "rb") as f:
+              return plistlib.load(f)
+
+      plain, bridged, tv = (load(p) for p in sys.argv[1:])
+      assert plain["PayloadDisplayName"] == "Jane's iPhone", plain
+      assert plain["PayloadContent"][0]["PayloadType"] == "com.apple.dnsSettings.managed"
+
+      addrs = sorted(p["EmailAddress"] for p in bridged["PayloadContent"])
+      assert addrs == ["jane@personal.example", "jane@work.example"], addrs
+
+      assert "PayloadScope" not in tv, tv
+      assert tv["PayloadContent"][0]["SSID_STR"] == "home", tv
+      print("ok")
+      PYEOF
+      touch "$out"
+    '';
 }

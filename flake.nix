@@ -20,73 +20,86 @@
       # Home Manager modules are system-independent, so they must live outside
       # eachDefaultSystem.
       homeModules = {
-        profiles = ./nix-modules/generateMacOSProfile.nix;
-        bridges = ./nix-modules/bridges;
+        # programs.appleProfile.profiles.<name>, bridges included (opt-in per
+        # profile via bridges.<email|calendar|contact>.enable).
+        profiles = ./nix-modules/home-manager.nix;
 
-        # Local MDM server. Inert until programs.macprofile.mdm.enable is set.
+        # Local MDM server. Inert until programs.appleProfile.mdm.enable is set.
         mdm = ./mdm/nix-modules/mdm.nix;
 
         default = {
           imports = [
-            ./nix-modules/generateMacOSProfile.nix
-            ./nix-modules/bridges
+            ./nix-modules/home-manager.nix
             ./mdm/nix-modules/mdm.nix
           ];
         };
       };
 
-      # Build a standalone .mobileconfig without requiring a Home Manager
-      # activation. The caller supplies pkgs for the target architecture.
+      # The profile module on its own, with no Home Manager dependency. It
+      # needs `pkgs` and `hmConfig` as special arguments; see mkProfile.
+      profileModule = ./nix-modules/profile;
+
+      # Build one .mobileconfig with plain lib.evalModules: no Home Manager
+      # activation, no fake user.
+      #
+      #   nix-profile-gen.lib.mkProfile {
+      #     pkgs = nixpkgs.legacyPackages.aarch64-darwin;
+      #     platform = "iOS";
+      #     # Optional: an evaluated Home Manager config whose accounts.* the
+      #     # bridges may read, e.g. config.home-manager.users.jane.
+      #     homeConfig = ...;
+      #     modules = [{
+      #       bridges.email.enable = true;
+      #       payloads."apple-com-apple-dnsSettings-managed".default = { ... };
+      #     }];
+      #   }
+      #
+      # Throws on failed assertions, traces warnings, and returns the
+      # derivation. On macOS, a profile whose payloads land in both scopes
+      # throws; use the `packages` attribute of the evaluated module instead.
       mkProfile =
         { pkgs
-        , modules
-        , platform ? "iOS"
+        , platform
+        , modules ? [ ]
+        , homeConfig ? { }
         , name ? "profile"
-        , scope ? "System"
-        , username ? "nixmagic"
-        , homeDirectory ? "/var/empty"
-        , stateVersion ? "24.11"
-        ,
         }:
-
         let
-          hm = home-manager.lib.homeManagerConfiguration {
-            inherit pkgs;
+          inherit (pkgs) lib;
 
+          eval = lib.evalModules {
             modules = [
-              self.homeModules.profiles
-
-              ({ lib, ... }: {
-                home.username = lib.mkDefault username;
-                home.homeDirectory = lib.mkDefault homeDirectory;
-                home.stateVersion = lib.mkDefault stateVersion;
-
-                programs.macprofile = {
-                  enable = true;
-                  inherit platform scope;
-                  profileName = lib.mkDefault name;
-                  outputPath = "profile.mobileconfig";
-                };
-              })
+              profileModule
+              {
+                inherit platform;
+                _label = "lib.mkProfile";
+                _name = name;
+              }
             ] ++ modules;
+            specialArgs = {
+              inherit pkgs;
+              hmConfig = homeConfig;
+            };
           };
 
-          profilePath =
-            hm.config.programs.macprofile.outputPaths.${scope};
+          failed = map (a: a.message)
+            (lib.filter (a: !a.assertion) eval.config.assertions);
 
-          profileSource =
-            hm.config.home.file.${profilePath}.source;
-
+          traced = lib.foldr
+            (w: x: builtins.trace "warning: ${w}" x)
+            eval.config.package
+            eval.config.warnings;
         in
-        pkgs.runCommand "${name}.mobileconfig" { } ''
-          cp ${profileSource} "$out"
-        '';
+        if failed != [ ] then
+          throw "\nFailed assertions:\n${lib.concatMapStringsSep "\n" (m: "- ${m}") failed}"
+        else
+          traced;
     in
     {
       inherit homeModules;
 
       lib = {
-        inherit mkProfile;
+        inherit mkProfile profileModule;
       };
     }
     // flake-utils.lib.eachDefaultSystem (system:
@@ -188,6 +201,7 @@
             inherit pkgs system home-manager;
             inherit (nixpkgs) lib;
             modules = homeModules;
+            inherit mkProfile;
           } // {
           treefmt = treefmtEval.config.build.check self;
           inherit lint;
