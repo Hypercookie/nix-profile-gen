@@ -102,10 +102,16 @@ What happens to each profile is decided by `autoInstall`:
 | `autoInstall`               | Result                                                                                                                                                                                                                    |
 | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | `true` (default on macOS)   | Written to `Library/Application Support/HomeManager/<name>-<scope>.mobileconfig` (override with `outputPath`) and installed on this Mac when it changes: pushed over MDM if enabled, otherwise opened in System Settings. |
-| `false` (default elsewhere) | Built only. Written to `outputPath` if you set one, otherwise use `package`.                                                                                                                                              |
+| `false` (default elsewhere) | Built only. Copied to `outputPath` as a regular file if you set one, otherwise use `package`.                                                                                                                             |
 
 `autoInstall = true` is only allowed for macOS profiles. A macOS profile you
 do not want installed is simply `autoInstall = false` plus an `outputPath`.
+
+Those copies are real files, not symlinks into the Nix store, because AirDrop
+refuses to send a store symlink ("AirDrop failed"). They are only replaced
+while they still match what was last written, and deleted when their profile
+goes away under the same rule; a file you edited is left alone. The record
+lives in `~/.local/state/nix-profile-gen/copies`.
 Anything else can be placed by hand:
 
 ```nix

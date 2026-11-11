@@ -313,9 +313,14 @@ let
         else:
             return obj
 
-    # Generate proper UUIDs from the hash strings (take first 32 chars and format as UUID)
+    # Turn the sha256 of the identifier into a stable UUID. The version and
+    # variant bits are set as for an RFC 4122 name-based UUID (version 5), so
+    # strict parsers accept it; the raw hash alone is not a valid UUID.
     def format_uuid(hash_str):
-        h = hash_str[:32]
+        h = list(hash_str[:32])
+        h[12] = "5"
+        h[16] = "89ab"[int(h[16], 16) & 0x3]
+        h = "".join(h)
         return f"{h[:8]}-{h[8:12]}-{h[12:16]}-{h[16:20]}-{h[20:32]}".upper()
 
     def fix_uuids(obj):

@@ -198,6 +198,13 @@ in
       assert len(mail) == 2, mail
 
       assert len({p["PayloadUUID"] for p in mail}) == 2, "UUIDs collide"
+
+      # Every UUID must be a valid RFC 4122 name-based UUID. AirDrop and the
+      # installer on iOS are stricter than macOS about this.
+      import uuid
+      for p in [profile] + payloads:
+          u = uuid.UUID(p["PayloadUUID"])
+          assert u.version == 5 and u.variant == uuid.RFC_4122, p["PayloadUUID"]
       assert len({p["PayloadIdentifier"] for p in mail}) == 2, "identifiers collide"
 
       addrs = {p["EmailAddress"] for p in mail}
@@ -490,13 +497,15 @@ in
       off = mk { autoInstall = false; };
       offWithPath = mk { autoInstall = false; outputPath = "Profiles/mac.mobileconfig"; };
       onHook = on.config.home.file.${on.config.programs.appleProfile.profiles.default.outputPaths.System}.onChange;
-      offFile = offWithPath.config.home.file."Profiles/mac-system.mobileconfig";
+      copyScript = offWithPath.config.home.activation.copyAppleProfiles.data;
     in
     assert on.config.programs.appleProfile.profiles.default.outputPaths
       == { System = "Library/Application Support/HomeManager/default-system.mobileconfig"; };
     assert off.config.programs.appleProfile.profiles.default.outputPaths == { };
     assert !(lib.any (lib.hasSuffix ".mobileconfig") (lib.attrNames off.config.home.file));
-    assert offFile.onChange == "";
+    # Not auto-installed: copied as a regular file, never linked or opened.
+    assert !(offWithPath.config.home.file ? "Profiles/mac-system.mobileconfig");
+    assert lib.hasInfix ''"$HOME"/Profiles/mac-system.mobileconfig'' copyScript;
     assert off.config.programs.appleProfile._installedFiles == [ ];
     pkgs.runCommand "check-auto-install" { } ''
       ${lib.optionalString (!(lib.hasInfix "/usr/bin/open" onHook)) ''
@@ -911,12 +920,19 @@ in
             enable = true;
             SHOWFULLNAME = false;
           };
+          # Copied rather than linked, which is a third place the path is
+          # interpolated.
+          profiles.phone = dnsPayload // {
+            platform = "iOS";
+            outputPath = ''Library/x$(touch /tmp/pwned)`id`.mobileconfig'';
+          };
           mdm = {
             enable = true;
             enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
           };
         };
       }];
+      copy = hm.config.home.activation.copyAppleProfiles.data;
       path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
       hook = hm.config.home.file.${path}.onChange;
       activation = hm.config.home.activation.installMacProfile.data;
@@ -932,6 +948,10 @@ in
       ''}
       ${lib.optionalString (unsafe activation) ''
         echo "installMacProfile interpolates outputPath unquoted" >&2; exit 1
+      ''}
+      ${lib.optionalString (lib.hasInfix ''"$HOME/'' copy
+        || !(lib.hasInfix "'Library/x$(touch /tmp/pwned)`id`.mobileconfig'" copy)) ''
+        echo "copyAppleProfiles interpolates outputPath unquoted" >&2; exit 1
       ''}
       # Nothing may have run at evaluation time either.
       test ! -e /tmp/pwned
@@ -980,18 +1000,21 @@ in
         };
       }];
       ap = hm.config.programs.appleProfile;
-      file = hm.config.home.file."Profiles/iphone.mobileconfig";
+      copyScript = hm.config.home.activation.copyAppleProfiles.data;
     in
     assert !ap.profiles.iphone.autoInstall;
     assert ap.profiles.mac.autoInstall;
     assert ap.profiles.iphone.outputPaths == { System = "Profiles/iphone.mobileconfig"; };
-    assert file.source == ap.profiles.iphone.package;
-    assert file.onChange == "";
+    assert !(hm.config.home.file ? "Profiles/iphone.mobileconfig");
+    assert lib.hasInfix
+      (builtins.unsafeDiscardStringContext
+        ''copyProfile ${ap.profiles.iphone.package} "$HOME"/Profiles/iphone.mobileconfig'')
+      (builtins.unsafeDiscardStringContext copyScript);
     assert ap._installedFiles == [{
       scope = "System";
       path = "Library/Application Support/HomeManager/mac-system.mobileconfig";
     }];
-    plistCheck "ios-profile" file.source ''
+    plistCheck "ios-profile" ap.profiles.iphone.package ''
       assert "PayloadScope" not in profile, profile
       assert profile["PayloadIdentifier"] == "com.example.test.iphone", profile
       assert profile["PayloadDisplayName"] == "iphone", profile
@@ -1173,6 +1196,65 @@ in
         };
       };
     }];
+
+  # Non-autoInstall profiles are written as regular files (AirDrop refuses a
+  # symlink into the Nix store). Runs the real activation snippet against a
+  # scratch HOME and walks through its safety rules.
+  copy-regular-file =
+    let
+      script = profiles:
+        (mkHm [{ programs.appleProfile.profiles = profiles; }]).config.home.activation.copyAppleProfiles.data;
+      withPhone = pkgs.writeText "with-phone.sh" (script {
+        iphone = dnsPayload // { platform = "iOS"; outputPath = "Profiles/phone x.mobileconfig"; };
+      });
+      changedPhone = pkgs.writeText "changed-phone.sh" (script {
+        iphone = dnsPayload // {
+          platform = "iOS";
+          outputPath = "Profiles/phone x.mobileconfig";
+          profileName = "Changed";
+        };
+      });
+      withoutPhone = pkgs.writeText "without-phone.sh" (script {
+        mac.payloads."apple-com-apple-loginwindow".default.enable = true;
+      });
+    in
+    pkgs.runCommand "check-copy-regular-file" { nativeBuildInputs = [ pkgs.bash ]; } ''
+      export HOME="$PWD/home" XDG_STATE_HOME=""
+      mkdir -p "$HOME/Profiles"
+      f="$HOME/Profiles/phone x.mobileconfig"
+      activate() { bash -euo pipefail -c 'run() { "$@"; }; source "$1"' _ "$1"; }
+
+      # An old generation's store symlink is replaced by a regular file.
+      ln -s /nix/store/does-not-matter "$f"
+      activate ${withPhone}
+      test -f "$f" && test ! -L "$f"
+      test "$(stat -c %a "$f")" = 644
+      grep -q PayloadContent "$f"
+
+      # Unchanged and changed profiles both update a file it wrote itself.
+      activate ${withPhone}
+      activate ${changedPhone}
+      grep -q Changed "$f"
+
+      # A file edited by hand is never overwritten ...
+      echo edited > "$f"
+      activate ${withPhone}
+      test "$(cat "$f")" = edited
+
+      # ... nor deleted when its profile goes away.
+      activate ${withoutPhone}
+      test "$(cat "$f")" = edited
+
+      # An untouched copy whose profile goes away is removed.
+      rm "$f"
+      activate ${withPhone}
+      test -f "$f"
+      activate ${withoutPhone}
+      test ! -e "$f"
+
+      echo "profiles are copied as regular files, safely"
+      touch "$out"
+    '';
 
   # lib.mkProfile needs no Home Manager evaluation, sanitizes its derivation
   # name, can still bridge accounts from a Home Manager config, and gives

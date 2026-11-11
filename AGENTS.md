@@ -310,8 +310,14 @@ watchOS or visionOS, so they are not offered.
   and the file gets an `onChange` hook: MDM push when
   `programs.appleProfile.mdm.enable`, otherwise `/usr/bin/open`. MDM
   replaces the open hook, it does not add to it.
-- When off, `outputPath` defaults to `null` (no `home.file`); `package` is
-  the escape hatch.
+- When off, `outputPath` defaults to `null`; `package` is the escape hatch.
+  A set `outputPath` is **copied** by the `copyAppleProfiles` activation
+  (after `linkGeneration`), never linked through `home.file`: AirDrop
+  refuses symlinks into the root-owned store. Copies are tracked as
+  `<sha256> <path>` in `$XDG_STATE_HOME/nix-profile-gen/copies` and only
+  overwritten or deleted while they still match that hash.
+- `PayloadUUID`s are sha256 of the identifier with RFC 4122 version 5 and
+  variant bits set, so they are valid UUIDs (raw hashes are not).
 - Assertions across profiles: duplicate written paths, and duplicate
   `organizationIdentifier` among auto-installed profiles (they would replace
   each other on the Mac).

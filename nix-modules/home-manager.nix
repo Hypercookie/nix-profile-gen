@@ -12,11 +12,11 @@
 #                        this Mac when it changes: pushed over MDM if
 #                        programs.appleProfile.mdm is on, otherwise handed to
 #                        System Settings with /usr/bin/open.
-#   autoInstall = false  built only. Written via home.file when `outputPath`
-#                        is set; `package` is always available.
+#   autoInstall = false  built only. Copied to `outputPath` as a regular file
+#                        when that is set; `package` is always available.
 #
-# This file adds only what is specific to Home Manager: home.file, the install
-# hooks, the activation message and assertion forwarding.
+# This file adds only what is specific to Home Manager: home.file, the copies,
+# the install hooks, the activation message and assertion forwarding.
 { config, lib, pkgs, ... }:
 
 let
@@ -145,7 +145,9 @@ let
     else
       openHook path;
 
-  filesOf = p: lib.mapAttrs'
+  # Auto-installed profiles are linked through home.file, whose onChange is
+  # what triggers the install.
+  filesOf = p: lib.optionalAttrs p.autoInstall (lib.mapAttrs'
     (scope: path: lib.nameValuePair path ({
       source = p.packages.${scope};
     } // lib.optionalAttrs (p.autoInstall && installHook scope path != "") {
@@ -155,7 +157,79 @@ let
       # `home-manager switch` with unchanged payloads enqueues nothing.
       onChange = installHook scope path;
     }))
-    p.outputPaths;
+    p.outputPaths);
+
+  # Every other profile with an outputPath is copied as a regular file
+  # instead. A home.file entry would be a symlink into the root-owned Nix
+  # store, and AirDrop refuses to send that ("AirDrop failed"), which is the
+  # main way these profiles reach another device.
+  copies = lib.concatLists (lib.mapAttrsToList
+    (_: p: lib.optionals (!p.autoInstall)
+      (lib.mapAttrsToList
+        (scope: path: { inherit path; source = p.packages.${scope}; })
+        p.outputPaths))
+    profiles);
+
+  coreutils = "${pkgs.coreutils}/bin";
+
+  # Copies are recorded as `<sha256> <path>` lines. That record is what makes
+  # the copy safe to manage without owning the file the way home.file does:
+  #   * a file is only overwritten if it is missing, a leftover store symlink
+  #     from an older generation, or still exactly what was copied last time;
+  #   * a copy whose profile is gone is deleted only under the same condition.
+  # Anything the user changed or put there by hand is left alone, with a
+  # message.
+  copyScript = ''
+    state="''${XDG_STATE_HOME:-$HOME/.local/state}/nix-profile-gen/copies"
+    declare -A recorded=() wanted=()
+    if [[ -f "$state" ]]; then
+      while IFS= read -r line; do
+        recorded["''${line#* }"]="''${line%% *}"
+      done < "$state"
+    fi
+    newState=""
+
+    hashOf() { ${coreutils}/sha256sum "$1" | ${coreutils}/cut -d' ' -f1; }
+
+    copyProfile() {
+      local src="$1" dst="$2" want
+      want="$(hashOf "$src")"
+      wanted["$dst"]=1
+      if [[ -L "$dst" ]]; then
+        if [[ "$(${coreutils}/readlink "$dst")" != /nix/store/* ]]; then
+          echo "nix-profile-gen: not replacing symlink $dst" >&2
+          return 0
+        fi
+        run ${coreutils}/rm "$dst"
+      elif [[ -e "$dst" ]]; then
+        local have
+        have="$(hashOf "$dst")"
+        if [[ "$have" != "$want" && "$have" != "''${recorded["$dst"]:-}" ]]; then
+          echo "nix-profile-gen: not overwriting $dst, which was changed or not written by nix-profile-gen" >&2
+          return 0
+        fi
+      fi
+      run ${coreutils}/mkdir -p "$(${coreutils}/dirname "$dst")"
+      run ${coreutils}/install -m 0644 "$src" "$dst"
+      newState+="$want $dst"$'\n'
+    }
+
+    ${lib.concatMapStringsSep "\n" (c: "copyProfile ${c.source} ${profileArg c.path}") copies}
+
+    for dst in "''${!recorded[@]}"; do
+      if [[ -z "''${wanted["$dst"]:-}" && -f "$dst" && ! -L "$dst" \
+            && "$(hashOf "$dst")" == "''${recorded["$dst"]}" ]]; then
+        run ${coreutils}/rm "$dst"
+      fi
+    done
+
+    if [[ -n "$newState" || -f "$state" ]]; then
+      run ${coreutils}/mkdir -p "$(${coreutils}/dirname "$state")"
+      if [[ -z "''${DRY_RUN:-}" ]]; then
+        printf '%s' "$newState" > "$state"
+      fi
+    fi
+  '';
 
   # Two profiles writing to the same home.file path would otherwise surface as
   # an opaque `source` merge conflict in Home Manager.
@@ -287,6 +361,11 @@ in
     warnings = lib.concatLists (lib.mapAttrsToList (_: p: p.warnings) profiles);
 
     home.file = lib.mkMerge (lib.mapAttrsToList (_: filesOf) profiles);
+
+    # After linkGeneration, so a store symlink left by an older generation at
+    # the same path has already been cleaned up by Home Manager.
+    home.activation.copyAppleProfiles =
+      lib.hm.dag.entryAfter [ "linkGeneration" ] copyScript;
 
     home.activation.installMacProfile = lib.mkIf (installedFiles != [ ]) (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''
