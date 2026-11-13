@@ -155,6 +155,7 @@
     ./managed-applications/MunkiReport.nix
     ./managed-applications/SupportCompanion.nix
     ./managed-applications/com-1password-1password.nix
+    ./managed-applications/com-DigiDNA-iMazingProfileEditorMac.nix
     ./managed-applications/com-ThomsonResearchSoft-EndNote.nix
     ./managed-applications/com-agilebits-onepassword7.nix
     ./managed-applications/com-alectrona-patch-agent.nix
