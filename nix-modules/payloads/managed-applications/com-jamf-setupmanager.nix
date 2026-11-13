@@ -71,7 +71,7 @@ let
       _keyNames = lib.mkOption {
         internal = true;
         type = lib.types.listOf lib.types.str;
-        default = [ "PFC_SegmentedControl_0" "DEBUG" "title" "icon" "message" "banner" "background" "runAt" "accentColor" "tileColor" "finalCountdown" "finalAction" "totalDownloadBytes" "jssID" "computerID" "userID" "enrollmentUserID" "computerNameTemplate" "overrideSerialNumber" "hideActionLabels" "actionOutputLogging" "finishedMessage" "startingMessage" "networkQualityCheck" "hideDebugLabel" "simulateMDM" "help" "userEntry" "enrollmentActions" "finishedScript" "finishedTrigger" "webhooks" "networkCheck" "PLEASE_DO_NOT_TRACK" ];
+        default = [ "PFC_SegmentedControl_0" "DEBUG" "title" "icon" "message" "banner" "background" "runAt" "accentColor" "tileColor" "finalCountdown" "finalAction" "optionalFinalActions" "totalDownloadBytes" "jssID" "computerID" "userID" "enrollmentUserID" "computerNameTemplate" "overrideSerialNumber" "hideActionLabels" "actionOutputLogging" "finishedMessage" "startingMessage" "networkQualityCheck" "hideDebugLabel" "simulateMDM" "help" "userEntry" "enrollmentActions" "finishedScript" "finishedTrigger" "webhooks" "networkCheck" "PLEASE_DO_NOT_TRACK" ];
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
@@ -144,6 +144,12 @@ let
         type = types.nullOr (types.enum [ "continue" "restart" "shutdown" "none" ]);
         default = null;
         description = "Sets the action and label for the button shown when Setup Manger has completed.";
+      };
+
+      optionalFinalActions = lib.mkOption {
+        type = types.nullOr (types.bool);
+        default = null;
+        description = "When this key is set to true, holding the Option key when clicking the finalAction button will show alternative final actions.";
       };
 
       totalDownloadBytes = lib.mkOption {
