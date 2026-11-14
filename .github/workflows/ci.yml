@@ -48,8 +48,8 @@ jobs:
       - uses: DeterminateSystems/magic-nix-cache-action@main
 
       # Deliberately NOT --all-systems. `nix flake check` builds the checks it
-      # selects, and several of ours realise store paths (the Caddyfile and
-      # wrapper the MDM checks read with `cat`). Asking a Linux runner for the
+      # selects, and several of ours realise store paths (generated profiles
+      # and activation snippets the checks read). Asking a Linux runner for the
       # darwin checks therefore fails with "Cannot build ...: platform
       # mismatch" rather than skipping them. The matrix above already covers
       # both platforms, each building only what it can.

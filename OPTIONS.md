@@ -19,7 +19,8 @@ optnix
 `optnix.toml` in the repository root is preconfigured to evaluate the profile
 module (`nix-modules/profile`) and list every visible, non-internal option
 under `programs.appleProfile.profiles.<name>`. The Home Manager-only
-options (`enable`, `autoInstall`, the top-level `organization*` and `mdm`)
+options (`enable`, `autoInstall`, `upload`, the top-level `organization*` and
+`upload.*`)
 are not part of that module and are not listed.
 
 ## Using Nix Commands

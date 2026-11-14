@@ -22,8 +22,8 @@ ignore = [
 #     added. Three sites in tests/default.nix, all correct as written.
 #
 #   manual_inherit_from (W04)
-#     Flags `mdm = hm.config.programs.macprofile.mdm;` and wants
-#     `inherit (hm.config.programs.macprofile) mdm;`. Equivalent, and the
+#     Flags `x = hm.config.programs.appleProfile.x;` and wants
+#     `inherit (hm.config.programs.appleProfile) x;`. Equivalent, and the
 #     explicit form reads better next to the surrounding let bindings that
 #     cannot be written as inherits. Two sites in tests/default.nix.
 #

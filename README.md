@@ -3,7 +3,7 @@
 > Home Manager modules from Apple ProfileManifests for managing macOS, iOS and tvOS configuration profiles declaratively.
 
 The current issue with nix-darwin is that settings written by the `defaults` system are happily overwritten by applications. Enforcing these settings via the mdm tools apple allready offers fixes that.
-This module generates configuration profiles, installs the macOS ones on your Mac (optionally silently, via a local MDM server), and writes the rest wherever you want them. Installed profiles enforce the settings defined in it at a system level. Furthermore this module provides all possible settings (they are found via community effort) as nix options, making the process declarative and typesafe.
+This module generates configuration profiles, installs the macOS ones on your Mac, can upload any of them to a device management server such as Fleet (which installs them silently on enrolled devices), and writes the rest wherever you want them. Installed profiles enforce the settings defined in it at a system level. Furthermore this module provides all possible settings (they are found via community effort) as nix options, making the process declarative and typesafe.
 
 ## Features
 
@@ -26,11 +26,14 @@ nix-profile-gen.url = "github:Hypercookie/nix-profile-gen";
 
 in your flake inputs, then import one of:
 
-| Module                 | Contents                                                        |
-| ---------------------- | --------------------------------------------------------------- |
-| `homeModules.profiles` | `programs.appleProfile`: profiles, payloads, account bridges    |
-| `homeModules.mdm`      | Optional local MDM server, see [`mdm/README.md`](mdm/README.md) |
-| `homeModules.default`  | Both                                                            |
+| Module                 | Contents                                                              |
+| ---------------------- | --------------------------------------------------------------------- |
+| `homeModules.profiles` | `programs.appleProfile`: profiles, payloads, account bridges, uploads |
+| `homeModules.default`  | The same                                                              |
+
+The local MDM server (`homeModules.mdm`, `programs.appleProfile.mdm`) was
+removed. Setting `programs.appleProfile.mdm` fails evaluation with a pointer to
+[uploads](#uploading-to-a-device-management-server).
 
 The option used to be `programs.macprofile`, a single profile. Setting it now
 fails evaluation with a pointer to the new layout below.
@@ -97,12 +100,13 @@ Every profile is an entry of `programs.appleProfile.profiles`, keyed by name:
 }
 ```
 
-What happens to each profile is decided by `autoInstall`:
+What happens to each profile is decided by `autoInstall` and `upload`:
 
-| `autoInstall`               | Result                                                                                                                                                                                                                    |
-| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| `true` (default on macOS)   | Written to `Library/Application Support/HomeManager/<name>-<scope>.mobileconfig` (override with `outputPath`) and installed on this Mac when it changes: pushed over MDM if enabled, otherwise opened in System Settings. |
-| `false` (default elsewhere) | Built only. Copied to `outputPath` as a regular file if you set one, otherwise use `package`.                                                                                                                             |
+| Setting                                 | Result                                                                                                                                                         |
+| --------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `autoInstall = true` (default on macOS) | Written to `Library/Application Support/HomeManager/<name>-<scope>.mobileconfig` (override with `outputPath`) and opened in System Settings when it changes.   |
+| `upload = true`                         | Sent to the configured device management server when it changes; see [uploads](#uploading-to-a-device-management-server). Turns the `autoInstall` default off. |
+| neither (default elsewhere)             | Built only. Copied to `outputPath` as a regular file if you set one, otherwise use `package`.                                                                  |
 
 `autoInstall = true` is only allowed for macOS profiles. A macOS profile you
 do not want installed is simply `autoInstall = false` plus an `outputPath`.
@@ -310,24 +314,47 @@ nix-profile-gen.lib.mkProfile {
 }
 ```
 
-## Automatic installation via a local MDM server
+## Uploading to a device management server
 
-Without MDM, `autoInstall` still needs a click in System Settings. For fully hands-off
-installation, this repo also ships an optional local NanoMDM server that pushes
-each auto-installed profile to the same Mac, so `home-manager switch` installs it
-without any interaction:
+A profile installed by hand still needs a click in System Settings, and an
+iPhone needs the file AirDropped. If your devices are enrolled in a device
+management server that installs every uploaded profile, `upload = true` sends
+the profile there on every `home-manager switch` that changed it:
 
 ```nix
-programs.appleProfile.mdm = {
-  enable = true;
-  apiKeyFile = "/Users/jane/.local/state/nixmagic-mdm/api.key";
+programs.appleProfile = {
+  upload.fleet = {
+    url = "https://fleet.example.com";
+    # Read at activation time; never put the token in the configuration.
+    tokenFile = "/usr/local/var/opnix/user/fleet-token";
+  };
+
+  profiles.mac.upload = true;     # no System Settings dialog any more
+  profiles.iphone = {
+    platform = "iOS";
+    upload = true;
+    bridges.email.enable = true;
+  };
 };
 ```
 
-It is opt-in and completely inert until `enable` is set, so importing
-`homeModules.default` costs nothing if you do not want it. Setup needs an APNs
-push certificate and a one-time enrollment. See [`mdm/README.md`](mdm/README.md)
-for the full walkthrough, the option reference and the security notes.
+- **Fleet** (`upload.fleet`): uses the Fleet REST API with an API token. An
+  API-only user with the maintainer role is enough. Fleet has no in-place
+  update, so a changed profile is deleted and uploaded again under the same
+  PayloadIdentifier (devices remove and reinstall it). Fleet Free installs every
+  profile on every enrolled Apple device; targeting by label or team needs Fleet
+  Premium. `nix run .#nix-profile-gen-fleet -- <url> <token file> upload <file>`
+  does the same by hand.
+- **Anything else** (`upload.command`): an executable called as
+  `<command> upload <file.mobileconfig>` and `<command> remove <PayloadIdentifier>`.
+
+On macOS a profile can be two files (`-user`, `-system`); each is uploaded as
+its own profile. Uploads are recorded as `<sha256> <PayloadIdentifier>` in
+`~/.local/state/nix-profile-gen/uploads`: unchanged profiles are not sent again,
+and a profile you stop uploading is removed from the server. A failed upload is
+reported but never fails the activation; it is retried on the next switch.
+`upload` and `autoInstall` on the same profile fail evaluation, because the
+profile would be installed twice.
 
 ## Development
 
