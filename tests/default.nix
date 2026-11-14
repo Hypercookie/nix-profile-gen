@@ -479,8 +479,8 @@ in
       assert types == ["com.apple.mail.managed"], types
     '';
 
-  # autoInstall without MDM opens the profile on change. Without it the
-  # profile is only built: no file unless outputPath is set, and no hook.
+  # autoInstall opens the profile on change. Without it the profile is only
+  # built: no file unless outputPath is set, and no hook.
   auto-install =
     let
       mk = extra:
@@ -506,336 +506,11 @@ in
     # Not auto-installed: copied as a regular file, never linked or opened.
     assert !(offWithPath.config.home.file ? "Profiles/mac-system.mobileconfig");
     assert lib.hasInfix ''"$HOME"/Profiles/mac-system.mobileconfig'' copyScript;
-    assert off.config.programs.appleProfile._installedFiles == [ ];
     pkgs.runCommand "check-auto-install" { } ''
       ${lib.optionalString (!(lib.hasInfix "/usr/bin/open" onHook)) ''
         echo "autoInstall did not install an open hook" >&2; exit 1
       ''}
       echo "autoInstall decides whether a profile is written and opened"
-      touch "$out"
-    '';
-
-  # The NanoMDM package still builds. Only the finite `outPath` string is
-  # forced (never deepSeq a derivation), and the binary is deliberately not
-  # executed: the check has to work on both darwin and linux.
-  mdm-package-builds =
-    let
-      nanomdm = pkgs.callPackage ./../mdm/packages/nanomdm.nix { };
-    in
-    pkgs.runCommand "check-mdm-package-builds" { } ''
-      test -x "${nanomdm}/bin/nanomdm"
-      echo "nanomdm builds"
-      touch "$out"
-    '';
-
-  # The generated NanoMDM wrapper and Caddyfile are store paths, so their
-  # contents can be asserted on directly. They are also platform-independent,
-  # unlike `launchd.agents`, which only exists on darwin.
-  mdm-wrapper-and-caddyfile =
-    let
-      # A state directory containing a space: every path the wrapper passes to
-      # NanoMDM has to survive it. Unquoted, `-ca /tmp/test user/...` would
-      # reach NanoMDM as two argv elements, it would fatal on the stray one,
-      # and `KeepAlive = true` would turn that into a restart loop.
-      stateDir = "/tmp/test user/state";
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-          mdm = {
-            enable = true;
-            inherit stateDir;
-            apiKeyFile = "/tmp/fake.key";
-            listen = "127.0.0.1:9000";
-          };
-        };
-      }];
-    in
-    pkgs.runCommand "check-mdm-wrapper-and-caddyfile"
-      {
-        wrapper = hm.config.programs.appleProfile.mdm._wrapperScript;
-        caddyfile = hm.config.programs.appleProfile.mdm._caddyfile;
-      } ''
-      grep -q -F -- '-storage filekv' "$wrapper"
-      grep -q -F -- '-checkin' "$wrapper"
-
-      # Every interpolated path must survive a space. The needles below are
-      # written out literally rather than via `escapeShellArg` (which would
-      # make the check tautological): a `stateDir` containing a space has to
-      # reach NanoMDM as a single argv element. See the API key leak check
-      # below for the argv/plist side of the key handling.
-      ${lib.concatMapStringsSep "\n"
-        (needle: "grep -q -F -- ${lib.escapeShellArg needle} \"$wrapper\"")
-        [
-          "-listen 127.0.0.1:9000"
-          "-ca '${stateDir}/ca/ca.pem'"
-          "-storage-dsn '${stateDir}/db'"
-          "mkdir -p '${stateDir}/db' '${stateDir}/log'"
-        ]}
-
-      grep -q -F -- 'reverse_proxy' "$caddyfile"
-      # No sudo prompt on start; the root is shipped in the enrollment profile.
-      grep -q -F -- 'skip_install_trust' "$caddyfile"
-      grep -q -F -- 'local_certs' "$caddyfile"
-      # No local control socket that could reconfigure the server.
-      grep -q -F -- 'admin off' "$caddyfile"
-      # Caddy keeps its internal PKI inside storage, so this root is what puts
-      # the CA certificate at `caRootPath`. It is also the only mechanism
-      # doing so: no XDG_DATA_HOME is set anywhere.
-      grep -q -F -- 'root "${stateDir}/caddy"' "$caddyfile"
-
-      echo "wrapper and Caddyfile contents are as expected"
-      touch "$out"
-    '';
-
-  # The Caddyfile's storage root is the single source of truth for where the
-  # internal CA lands, and `caRootPath` — what the CLI passes as `--cacert` —
-  # has to agree with it. Caddy stores PKI assets at
-  # `<storage root>/pki/authorities/<ca id>/root.crt`.
-  mdm-caddy-root-path =
-    let
-      stateDir = "/tmp/mdm-state";
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-          mdm = {
-            enable = true;
-            inherit stateDir;
-          };
-        };
-      }];
-      mdm = hm.config.programs.appleProfile.mdm;
-    in
-    pkgs.runCommand "check-mdm-caddy-root-path"
-      { caddyfile = mdm._caddyfile; } ''
-      storageRoot=${lib.escapeShellArg "${stateDir}/caddy"}
-      grep -q -F -- "root \"$storageRoot\"" "$caddyfile"
-
-      test ${lib.escapeShellArg mdm.caRootPath} = \
-        "$storageRoot/pki/authorities/local/root.crt"
-
-      # XDG_DATA_HOME only selects Caddy's *default* storage location, which
-      # the explicit `storage file` block replaces. Setting both would put the
-      # data dir at <storageRoot>/caddy and contradict caRootPath.
-      if grep -q -F -- 'XDG_DATA_HOME' "$caddyfile"; then
-        echo "the Caddyfile still mentions XDG_DATA_HOME" >&2
-        exit 1
-      fi
-
-      echo "caRootPath matches the Caddyfile storage root"
-      touch "$out"
-    '';
-
-  # The API key must never reach ~/Library/LaunchAgents. Home Manager renders
-  # `launchd.agents.<name>.config` into a plist there with world-readable
-  # permissions, so a `NANOMDM_API` entry in `EnvironmentVariables` would hand
-  # the key to every local user — the same reason it is not passed in argv,
-  # which `ps` exposes. The wrapper reads the key file at start time instead.
-  #
-  # On Linux `launchd.agents` stays empty (mdm.nix only defines it under
-  # `isDarwin`), so the plist assertions are gated on the platform and the
-  # wrapper half of the check carries the weight there.
-  mdm-api-key-not-in-launchd-plist =
-    let
-      apiKeyFile = "/tmp/nixmagic-test-secrets/api-key";
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-          mdm = {
-            enable = true;
-            inherit apiKeyFile;
-          };
-        };
-      }];
-      agents = hm.config.launchd.agents or { };
-      isDarwin = pkgs.stdenv.hostPlatform.isDarwin;
-      # Exactly what Home Manager writes into ~/Library/LaunchAgents: same
-      # generator, same options.
-      renderedAgents = lib.concatStringsSep "\n"
-        (lib.mapAttrsToList
-          (_: agent: lib.generators.toPlist { escape = true; } agent.config)
-          agents);
-    in
-    pkgs.runCommand "check-mdm-api-key-not-in-launchd-plist"
-      {
-        rendered = renderedAgents;
-        passAsFile = [ "rendered" ];
-        wrapper = hm.config.programs.appleProfile.mdm._wrapperScript;
-      } ''
-      ${lib.optionalString isDarwin (
-        (lib.optionalString (!(agents ? nanomdm)) ''
-          echo "no nanomdm agent on darwin: this check would be vacuous" >&2
-          exit 1
-        '')
-        + (lib.optionalString (agents.nanomdm.config.EnvironmentVariables != null) ''
-          echo "the nanomdm agent sets EnvironmentVariables, which land in a world-readable plist" >&2
-          exit 1
-        '')
-      )}
-
-      for needle in NANOMDM_API ${lib.escapeShellArg apiKeyFile}; do
-        if grep -q -F -- "$needle" "$renderedPath"; then
-          echo "the launchd agent plist leaks $needle" >&2
-          exit 1
-        fi
-      done
-
-      # ... and the key really is obtained from the file at start time.
-      grep -q -F -- 'NANOMDM_API="$(cat "$apiKeyFile")"' "$wrapper"
-      grep -q -F -- ${lib.escapeShellArg apiKeyFile} "$wrapper"
-
-      echo "no key material in the launchd agent configuration"
-      touch "$out"
-    '';
-
-  # An enabled MDM pushes the System profile on change, and pushOnChange = false
-  # removes the hook again.
-  mdm-push-on-change =
-    let
-      enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
-      mk = push:
-        let
-          hm = mkHm [{
-            programs.appleProfile = {
-              profiles.default.enable = true;
-              profiles.default.organizationIdentifier = "com.example.test";
-              profiles.default.payloads."apple-com-apple-loginwindow".default = {
-                enable = true;
-                SHOWFULLNAME = false;
-              };
-              mdm = {
-                enable = true;
-                apiKeyFile = "/tmp/fake.key";
-                inherit enrollmentId;
-                pushOnChange = push;
-              };
-            };
-          }];
-          path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
-        in
-        hm.config.home.file.${path}.onChange;
-      hook = mk true;
-    in
-    pkgs.runCommand "check-mdm-push-on-change" { } ''
-      ${lib.concatMapStringsSep "\n"
-        (needle: lib.optionalString (!(lib.hasInfix needle hook)) ''
-          echo "push hook is missing ${needle}" >&2; exit 1
-        '')
-        [ "nixmagic-mdm" "push" "--scope system" enrollmentId ]}
-      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" (mk false)) ''
-        echo "pushOnChange = false should not install a push hook" >&2; exit 1
-      ''}
-      echo "the push hook is gated on pushOnChange"
-      touch "$out"
-    '';
-
-  # User-scope profiles can only be installed over a user-channel enrollment.
-  # With userEnrollmentId = null there is nothing to push to, so the hook must
-  # be omitted entirely rather than emitting a command that would fail on every
-  # activation.
-  mdm-push-user-scope-skipped =
-    let
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-mail-managed".work = {
-            enable = true;
-            EmailAddress = "jane@work.example";
-          };
-          mdm = {
-            enable = true;
-            apiKeyFile = "/tmp/fake.key";
-            userEnrollmentId = null;
-          };
-        };
-      }];
-      path = hm.config.programs.appleProfile.profiles.default.outputPaths.User;
-      hook = hm.config.home.file.${path}.onChange;
-    in
-    pkgs.runCommand "check-mdm-push-user-scope-skipped" { } ''
-      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" hook) ''
-        echo "User profile got a push hook without a user-channel enrollment" >&2
-        exit 1
-      ''}
-      echo "the User profile is not pushed without userEnrollmentId"
-      touch "$out"
-    '';
-
-  # With MDM on, an auto-installed profile is pushed instead of opened: a
-  # pushed profile needs no approval dialog.
-  mdm-replaces-open =
-    let
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-          mdm = {
-            enable = true;
-            apiKeyFile = "/tmp/fake.key";
-            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
-          };
-        };
-      }];
-      path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
-      hook = hm.config.home.file.${path}.onChange;
-    in
-    pkgs.runCommand "check-mdm-replaces-open" { } ''
-      ${lib.optionalString (!(lib.hasInfix "nixmagic-mdm" hook)) ''
-        echo "MDM-enabled profile has no push hook" >&2; exit 1
-      ''}
-      ${lib.optionalString (lib.hasInfix "/usr/bin/open" hook) ''
-        echo "MDM-enabled profile still opens System Settings" >&2; exit 1
-      ''}
-      echo "MDM push replaces the open hook"
-      touch "$out"
-    '';
-
-  # The module must be genuinely inert when it is not configured, which is what
-  # justifies shipping it in homeModules.default. `launchd.agents` is only
-  # defined on darwin, so the selection falls back to an empty set on linux.
-  mdm-disabled-by-default =
-    let
-      hm = mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-        };
-      }];
-      path = hm.config.programs.appleProfile.profiles.default.outputPaths.System;
-      hook = hm.config.home.file.${path}.onChange;
-      agents = hm.config.launchd.agents or { };
-    in
-    pkgs.runCommand "check-mdm-disabled-by-default" { } ''
-      ${lib.optionalString (lib.hasInfix "nixmagic-mdm" hook) ''
-        echo "an unconfigured MDM module installed a push hook" >&2; exit 1
-      ''}
-      ${lib.optionalString (agents ? nanomdm) ''
-        echo "an unconfigured MDM module defined a nanomdm agent" >&2; exit 1
-      ''}
-      echo "the MDM module is inert when unused"
       touch "$out"
     '';
 
@@ -865,47 +540,6 @@ in
       };
     }];
 
-  # Replaces the old "mdm.enable without apiKeyFile is rejected" check: the
-  # option now always has a value, so that assertion could no longer fire and
-  # was removed. What matters instead is that the default agrees with the path
-  # the CLI generates and reads the key at (`<state-dir>/api.key`), and that a
-  # non-default value is actually handed to the CLI rather than silently
-  # diverging from it.
-  mdm-api-key-file-default =
-    let
-      stateDir = "/tmp/mdm-state";
-      mk = extraMdm: mkHm [{
-        programs.appleProfile = {
-          profiles.default.enable = true;
-          profiles.default.organizationIdentifier = "com.example.test";
-          profiles.default.payloads."apple-com-apple-loginwindow".default = {
-            enable = true;
-            SHOWFULLNAME = false;
-          };
-          mdm = {
-            enable = true;
-            inherit stateDir;
-            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
-          } // extraMdm;
-        };
-      }];
-      defaulted = (mk { }).config.programs.appleProfile.mdm.apiKeyFile;
-      overridden = "/tmp/elsewhere/api-key";
-      hookWithOverride =
-        let hm = mk { apiKeyFile = overridden; };
-        in hm.config.home.file.${hm.config.programs.appleProfile.profiles.default.outputPaths.System}.onChange;
-    in
-    pkgs.runCommand "check-mdm-api-key-file-default" { } ''
-      test ${lib.escapeShellArg defaulted} = ${lib.escapeShellArg "${stateDir}/api.key"}
-      ${lib.optionalString
-        (!(lib.hasInfix "--api-key-file ${overridden}" hookWithOverride)) ''
-        echo "the push hook does not pass the configured --api-key-file" >&2
-        exit 1
-      ''}
-      echo "apiKeyFile defaults to the CLI's key path and is passed through"
-      touch "$out"
-    '';
-
   # `outputPath` is user-supplied and is interpolated into shell snippets. It
   # must be escaped, not dropped into a double-quoted string, or a path
   # containing a command substitution would execute at activation time.
@@ -925,10 +559,6 @@ in
           profiles.phone = dnsPayload // {
             platform = "iOS";
             outputPath = ''Library/x$(touch /tmp/pwned)`id`.mobileconfig'';
-          };
-          mdm = {
-            enable = true;
-            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
           };
         };
       }];
@@ -959,36 +589,16 @@ in
       touch "$out"
     '';
 
-  # The MDM server only exists to install auto-installed profiles, so
-  # enabling it with none is rejected.
-  mdm-assertion-nothing-installed =
-    evalFailureTest "mdm-assertion-nothing-installed" "mdm.enable without an autoInstall profile"
-      [{
-        programs.appleProfile = {
-          profiles.iphone = dnsPayload // { platform = "iOS"; };
-          mdm = {
-            enable = true;
-            apiKeyFile = "/tmp/fake.key";
-          };
-        };
-      }];
-
   # --- Several profiles and platforms --------------------------------------
 
   # An iOS profile next to an auto-installed Mac profile: one System plist
   # with no PayloadScope, its own identifier, written exactly at outputPath,
-  # and never opened or pushed even with MDM on. Only the Mac profile reaches
-  # the manifest a manual `nixmagic-mdm push` reads.
+  # and never opened.
   ios-profile =
     let
       hm = mkHm [{
         programs.appleProfile = {
           organizationIdentifier = "com.example.test";
-          mdm = {
-            enable = true;
-            apiKeyFile = "/tmp/fake.key";
-            enrollmentId = "AAAABBBB-1111-2222-3333-444455556666";
-          };
           profiles.mac.payloads."apple-com-apple-loginwindow".default = {
             enable = true;
             SHOWFULLNAME = false;
@@ -1010,10 +620,9 @@ in
       (builtins.unsafeDiscardStringContext
         ''copyProfile ${ap.profiles.iphone.package} "$HOME"/Profiles/iphone.mobileconfig'')
       (builtins.unsafeDiscardStringContext copyScript);
-    assert ap._installedFiles == [{
-      scope = "System";
-      path = "Library/Application Support/HomeManager/mac-system.mobileconfig";
-    }];
+    assert ap.profiles.mac.outputPaths == {
+      System = "Library/Application Support/HomeManager/mac-system.mobileconfig";
+    };
     plistCheck "ios-profile" ap.profiles.iphone.package ''
       assert "PayloadScope" not in profile, profile
       assert profile["PayloadIdentifier"] == "com.example.test.iphone", profile
@@ -1307,6 +916,215 @@ in
       assert tv["PayloadContent"][0]["SSID_STR"] == "home", tv
       print("ok")
       PYEOF
+      touch "$out"
+    '';
+
+  # --- Uploads --------------------------------------------------------------
+
+  # upload = true turns autoInstall off by default, writes no home.file, and
+  # adds an activation step that calls the Fleet uploader with the escaped URL
+  # and token path. Without an uploader there is no step at all.
+  upload-defaults =
+    let
+      hm = mkHm [{
+        programs.appleProfile = {
+          upload.fleet = {
+            url = "https://fleet.example";
+            tokenFile = "/tmp/token dir/$(id)";
+          };
+          profiles.mac = {
+            upload = true;
+            payloads."apple-com-apple-loginwindow".default.enable = true;
+          };
+        };
+      }];
+      plain = mkHm [{
+        programs.appleProfile.profiles.mac.payloads."apple-com-apple-loginwindow".default.enable = true;
+      }];
+      ap = hm.config.programs.appleProfile;
+      script = hm.config.home.activation.uploadAppleProfiles.data;
+    in
+    assert !ap.profiles.mac.autoInstall;
+    assert ap.profiles.mac.outputPaths == { };
+    assert !(lib.any (lib.hasSuffix ".mobileconfig") (lib.attrNames hm.config.home.file));
+    assert lib.hasInfix
+      (builtins.unsafeDiscardStringContext "uploadProfile ${ap.profiles.mac.packages.System}")
+      (builtins.unsafeDiscardStringContext script);
+    assert !(plain.config.home.activation ? uploadAppleProfiles);
+    pkgs.runCommand "check-upload-defaults" { script = pkgs.writeText "upload.sh" script; } ''
+      fleetCommand="$(grep -o '/nix/store/[^ ]*-nix-profile-gen-upload-fleet' "$script" | head -n1)"
+      test -n "$fleetCommand"
+      # The token path reaches the uploader single-quoted, as one word.
+      grep -q -F "'/tmp/token dir/\$(id)'" "$fleetCommand"
+      grep -q -F " https://fleet.example " "$fleetCommand"
+      echo "uploaded profiles are not opened and go to the configured server"
+      touch "$out"
+    '';
+
+  upload-without-server = evalFailureTest "upload-without-server"
+    "upload = true without upload.fleet or upload.command"
+    [{
+      programs.appleProfile.profiles.mac = {
+        upload = true;
+        payloads."apple-com-apple-loginwindow".default.enable = true;
+      };
+    }];
+
+  upload-and-auto-install = evalFailureTest "upload-and-auto-install"
+    "upload and autoInstall on the same profile"
+    [{
+      programs.appleProfile = {
+        upload.command = "/bin/true";
+        profiles.mac = {
+          upload = true;
+          autoInstall = true;
+          payloads."apple-com-apple-loginwindow".default.enable = true;
+        };
+      };
+    }];
+
+  upload-fleet-without-token = evalFailureTest "upload-fleet-without-token"
+    "upload.fleet.url without tokenFile"
+    [{
+      programs.appleProfile = {
+        upload.fleet.url = "https://fleet.example";
+        profiles.mac = {
+          upload = true;
+          payloads."apple-com-apple-loginwindow".default.enable = true;
+        };
+      };
+    }];
+
+  # Runs the real activation snippet with a fake upload command that logs its
+  # calls: uploads happen only on change, a profile that goes away is removed,
+  # a failure is retried on the next run, and DRY_RUN sends nothing.
+  upload-activation =
+    let
+      log = "$TMPDIR/calls";
+      fake = pkgs.writeShellScript "fake-upload" ''
+        echo "$1 $(basename "$2")" >> "${log}"
+        [[ ! -e "$TMPDIR/fail" ]]
+      '';
+      script = profiles: pkgs.writeText "upload.sh"
+        (mkHm [{
+          programs.appleProfile = {
+            upload.command = "${fake}";
+            inherit profiles;
+          };
+        }]).config.home.activation.uploadAppleProfiles.data;
+      phone = name: dnsPayload // { platform = "iOS"; upload = true; profileName = name; };
+      v1 = script { iphone = phone "One"; };
+      v2 = script { iphone = phone "Two"; };
+      none = script { mac.payloads."apple-com-apple-loginwindow".default.enable = true; };
+    in
+    pkgs.runCommand "check-upload-activation" { nativeBuildInputs = [ pkgs.bash ]; } ''
+      export HOME="$PWD/home" XDG_STATE_HOME=""
+      mkdir -p "$HOME"
+      activate() { bash -euo pipefail -c 'source "$1"' _ "$1"; }
+      calls() { if [[ -f ${log} ]]; then wc -l < ${log}; else echo 0; fi; }
+
+      activate ${v1}
+      test "$(calls)" = 1
+      grep -q "^upload .*iphone" ${log}
+
+      # Unchanged: nothing is sent again.
+      activate ${v1}
+      test "$(calls)" = 1
+
+      # Changed, but the server fails: reported, not fatal, retried next time.
+      touch "$TMPDIR/fail"
+      activate ${v2}
+      test "$(calls)" = 2
+      rm "$TMPDIR/fail"
+      activate ${v2}
+      test "$(calls)" = 3
+      activate ${v2}
+      test "$(calls)" = 3
+
+      # Dry run sends nothing.
+      DRY_RUN=1 activate ${v1}
+      test "$(calls)" = 3
+
+      # The profile goes away: it is removed from the server, once.
+      activate ${none}
+      test "$(calls)" = 4
+      tail -n1 ${log} | grep -q "^remove com.example.test.iphone\|^remove .*iphone"
+      activate ${none}
+      test "$(calls)" = 4
+
+      echo "uploads follow the declared profiles and survive failures"
+      touch "$out"
+    '';
+
+  # The Fleet uploader against a fake Fleet API: it sends the token as a
+  # bearer header, deletes an existing profile with the same identifier before
+  # uploading, and removes by identifier.
+  upload-fleet-api =
+    let
+      uploader = pkgs.callPackage ../nix-modules/uploaders/fleet.nix { };
+      profile = (mkHm [{
+        programs.appleProfile.profiles.iphone = dnsPayload // { platform = "iOS"; };
+      }]).config.programs.appleProfile.profiles.iphone.package;
+      server = pkgs.writeText "fake-fleet.py" ''
+        import http.server, json, sys
+        log = open(sys.argv[2], "a")
+        class H(http.server.BaseHTTPRequestHandler):
+            def reply(self, body):
+                self.send_response(200)
+                self.end_headers()
+                self.wfile.write(json.dumps(body).encode())
+            def note(self):
+                log.write(f"{self.command} {self.path} {self.headers.get('Authorization')}\n")
+                log.flush()
+            def do_GET(self):
+                self.note()
+                self.reply({"profiles": [{"profile_uuid": "abc-123", "identifier": "org.nixos.home-manager.iphone"}]})
+            def do_DELETE(self):
+                self.note()
+                self.reply({})
+            def do_POST(self):
+                self.note()
+                body = self.rfile.read(int(self.headers["Content-Length"]))
+                assert b"PayloadContent" in body
+                self.reply({"profile_uuid": "def-456"})
+            def log_message(self, *a):
+                pass
+        import time
+        s = http.server.HTTPServer(("127.0.0.1", 0), H)
+        s.timeout = 1
+        open(sys.argv[1], "w").write(str(s.server_address[1]))
+        # Never outlive the check: a forgotten server would keep the build
+        # waiting forever.
+        deadline = time.time() + 60
+        while time.time() < deadline:
+            s.handle_request()
+      '';
+    in
+    pkgs.runCommand "check-upload-fleet-api"
+      { nativeBuildInputs = [ pkgs.python3 ]; __darwinAllowLocalNetworking = true; } ''
+      printf 'secret-token' > token
+      python3 ${server} port log &
+      serverPid=$!
+      trap 'kill "$serverPid" 2>/dev/null || true' EXIT
+      for _ in $(seq 50); do [[ -s port ]] && break; sleep 0.1; done
+      test -s port
+      url="http://127.0.0.1:$(cat port)"
+
+      ${uploader}/bin/nix-profile-gen-fleet "$url" token upload ${profile}
+      ${uploader}/bin/nix-profile-gen-fleet "$url" token remove org.nixos.home-manager.iphone
+      cat log
+
+      test "$(cut -d' ' -f1 log | tr '\n' ' ')" = "GET DELETE POST GET DELETE "
+      grep -q "^DELETE /api/latest/fleet/configuration_profiles/abc-123 " log
+      test "$(grep -c 'Bearer secret-token$' log)" = 5
+
+      # Missing token file: refuses before contacting the server.
+      if ${uploader}/bin/nix-profile-gen-fleet "$url" missing upload ${profile} 2>/dev/null; then
+        echo "uploaded without a token file" >&2; exit 1
+      fi
+      test "$(wc -l < log)" = 5
+
+      echo "the Fleet uploader replaces profiles by identifier"
       touch "$out"
     '';
 }

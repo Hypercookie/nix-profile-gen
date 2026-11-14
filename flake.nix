@@ -24,15 +24,7 @@
         # profile via bridges.<email|calendar|contact>.enable).
         profiles = ./nix-modules/home-manager.nix;
 
-        # Local MDM server. Inert until programs.appleProfile.mdm.enable is set.
-        mdm = ./mdm/nix-modules/mdm.nix;
-
-        default = {
-          imports = [
-            ./nix-modules/home-manager.nix
-            ./mdm/nix-modules/mdm.nix
-          ];
-        };
+        default = ./nix-modules/home-manager.nix;
       };
 
       # The profile module on its own, with no Home Manager dependency. It
@@ -210,15 +202,10 @@
 
         formatter = treefmtEval.config.build.wrapper;
 
-        packages = {
-          nanomdm = pkgs.callPackage ./mdm/packages/nanomdm.nix { };
-          nixmagic-mdm = pkgs.callPackage ./mdm/packages/nixmagic-mdm.nix { };
-        };
-
-        apps.nixmagic-mdm = {
-          type = "app";
-          program = "${pkgs.callPackage ./mdm/packages/nixmagic-mdm.nix { }}/bin/nixmagic-mdm";
-        };
+        # The Fleet uploader behind programs.appleProfile.upload.fleet, for
+        # uploading a profile by hand:
+        #   nix run .#nix-profile-gen-fleet -- <url> <token file> upload <file>
+        packages.nix-profile-gen-fleet = pkgs.callPackage ./nix-modules/uploaders/fleet.nix { };
 
         devShells.default = pkgs.mkShell {
           packages = [

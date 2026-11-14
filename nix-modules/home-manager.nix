@@ -8,15 +8,17 @@
 # checks and `imports` behave identically. What happens to the result is
 # decided per profile:
 #
-#   autoInstall = true   (default on macOS) written to HOME and installed on
-#                        this Mac when it changes: pushed over MDM if
-#                        programs.appleProfile.mdm is on, otherwise handed to
-#                        System Settings with /usr/bin/open.
-#   autoInstall = false  built only. Copied to `outputPath` as a regular file
+#   autoInstall = true   (default on macOS) written to HOME and handed to
+#                        System Settings with /usr/bin/open when it changes.
+#   upload = true        sent to `programs.appleProfile.upload` (e.g. a Fleet
+#                        server, which then installs it on enrolled devices)
+#                        whenever it changes. Replaces autoInstall.
+#   neither              built only. Copied to `outputPath` as a regular file
 #                        when that is set; `package` is always available.
 #
 # This file adds only what is specific to Home Manager: home.file, the copies,
-# the install hooks, the activation message and assertion forwarding.
+# the install hooks, the uploads, the activation message and assertion
+# forwarding.
 { config, lib, pkgs, ... }:
 
 let
@@ -43,16 +45,29 @@ let
 
       autoInstall = mkOption {
         type = types.bool;
-        default = config.platform == "macOS";
-        defaultText = lib.literalExpression ''platform == "macOS"'';
+        default = config.platform == "macOS" && !config.upload;
+        defaultText = lib.literalExpression ''platform == "macOS" && !upload'';
         description = ''
-          Install this profile on this Mac whenever it changes. With
-          `programs.appleProfile.mdm.enable` it is pushed over the local MDM
-          server and installs silently; otherwise it is opened with
-          `/usr/bin/open`, which hands it to System Settings for approval.
+          Install this profile on this Mac whenever it changes: it is opened
+          with `/usr/bin/open`, which hands it to System Settings for approval.
 
           Only valid for macOS profiles. The profile is written to `outputPath`,
           which defaults to `${defaultDir}/<name>.mobileconfig` here.
+        '';
+      };
+
+      upload = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Send this profile to `programs.appleProfile.upload` whenever it
+          changes, for a device management server that installs it on its
+          devices (see `programs.appleProfile.upload.fleet`). Works for every
+          platform. On macOS each scope (`-user`, `-system`) is sent as its own
+          profile.
+
+          An uploaded profile is not also opened here (`autoInstall` defaults
+          to false): the server installs it, on this Mac too if it is enrolled.
         '';
       };
     };
@@ -71,8 +86,7 @@ let
   profiles = lib.filterAttrs (_: p: p.enable) cfg.profiles;
   installed = lib.filterAttrs (_: p: p.autoInstall) profiles;
 
-  # Every installed profile file, with its scope. Shared by the activation
-  # message and the manifest the MDM CLI reads for a manual `push`.
+  # Every installed profile file, with its scope, for the activation message.
   installedFiles = lib.concatLists (lib.mapAttrsToList
     (_: p: lib.mapAttrsToList (scope: path: { inherit scope path; }) p.outputPaths)
     installed);
@@ -85,79 +99,24 @@ let
   # are concatenated into one word.
   profileArg = path: ''"$HOME"/${lib.escapeShellArg path}'';
 
-  # The MDM options are declared by a separate module (mdm/nix-modules/mdm.nix)
-  # which a user may not have imported, so every access has to be guarded.
-  mdmPushing = (cfg ? mdm) && cfg.mdm.enable && cfg.mdm.pushOnChange;
-
-  # Push a freshly written profile to the local MDM server so macOS installs
-  # it without the user clicking anything.
-  #
-  # Scope decides the channel: System profiles go to the device-channel
-  # enrollment, User profiles need a user-channel enrollment ID (`UUID:UUID`).
-  # When the latter is missing there is nothing to push to, so the hook is
-  # omitted entirely rather than emitting a command that would fail on every
-  # activation. mdm.nix warns about that case separately.
-  mdmPushHook = scope: path:
-    let
-      explicitId =
-        if scope == "User" then cfg.mdm.userEnrollmentId else cfg.mdm.enrollmentId;
-      idFile = if scope == "User" then null else cfg.mdm.enrollmentIdFile;
-    in
-    if scope == "User" && explicitId == null then
-      ""
-    else ''
-      if [[ "$OSTYPE" == "darwin"* ]]; then
-        ${lib.optionalString (idFile != null) ''
-          MDM_ENROLLMENT_ID="$(cat ${lib.escapeShellArg idFile} 2>/dev/null || true)"
-        ''}
-        # A failed push must not fail the activation: the profile is already on
-        # disk and can be installed by hand or pushed later with
-        # `nixmagic-mdm push`.
-        ${cfg.mdm.cliPackage}/bin/nixmagic-mdm \
-          --state-dir ${lib.escapeShellArg cfg.mdm.stateDir} \
-          --server-url ${lib.escapeShellArg cfg.mdm.serverUrl} \
-          --api-key-file ${lib.escapeShellArg cfg.mdm.apiKeyFile} \
-          push \
-          --scope ${lib.toLower scope} \
-          --profile ${profileArg path} \
-          ${lib.optionalString (explicitId != null)
-            "--enrollment-id ${lib.escapeShellArg explicitId}"} \
-          ${lib.optionalString (idFile != null)
-            ''''${MDM_ENROLLMENT_ID:+--enrollment-id "$MDM_ENROLLMENT_ID"}''} \
-          || echo "nixmagic-mdm push failed; the profile is still at "${profileArg path} >&2
-      fi
-    '';
-
   openHook = path: ''
     if [[ "$OSTYPE" == "darwin"* ]]; then
       /usr/bin/open ${profileArg path}
     fi
   '';
 
-  # How an installed profile gets onto this Mac. MDM replaces the open dialog
-  # rather than adding to it: a pushed profile needs no approval.
-  #
-  # With MDM on but pushOnChange off, nothing runs; the user drives
-  # `nixmagic-mdm push` by hand.
-  installHook = scope: path:
-    if (cfg ? mdm) && cfg.mdm.enable then
-      lib.optionalString mdmPushing (mdmPushHook scope path)
-    else
-      openHook path;
-
   # Auto-installed profiles are linked through home.file, whose onChange is
   # what triggers the install.
-  filesOf = p: lib.optionalAttrs p.autoInstall (lib.mapAttrs'
-    (scope: path: lib.nameValuePair path ({
-      source = p.packages.${scope};
-    } // lib.optionalAttrs (p.autoInstall && installHook scope path != "") {
-      # Home Manager runs this after the new file has been linked, and only
-      # when it differs from the previous generation. That "only on change"
-      # property is what makes the MDM push idempotent: re-running
-      # `home-manager switch` with unchanged payloads enqueues nothing.
-      onChange = installHook scope path;
-    }))
-    p.outputPaths);
+  filesOf = p: lib.optionalAttrs p.autoInstall
+    (lib.mapAttrs'
+      (scope: path: lib.nameValuePair path {
+        source = p.packages.${scope};
+        # Home Manager runs this after the new file has been linked, and only
+        # when it differs from the previous generation, so an unchanged profile
+        # is not opened again on every switch.
+        onChange = openHook path;
+      })
+      p.outputPaths);
 
   # Every other profile with an outputPath is copied as a regular file
   # instead. A home.file entry would be a symlink into the root-owned Nix
@@ -231,6 +190,90 @@ let
     fi
   '';
 
+  # --- Uploads ---------------------------------------------------------------
+
+  uploaded = lib.filterAttrs (_: p: p.upload) profiles;
+
+  fleetUploader = pkgs.callPackage ./uploaders/fleet.nix { };
+
+  # The configured upload command with the Fleet settings baked in. Both are
+  # paths or URLs, never the token itself, so this script may live in the store.
+  fleetCommand = pkgs.writeShellScript "nix-profile-gen-upload-fleet" ''
+    exec ${fleetUploader}/bin/nix-profile-gen-fleet \
+      ${lib.escapeShellArg (toString cfg.upload.fleet.url)} \
+      ${lib.escapeShellArg (toString cfg.upload.fleet.tokenFile)} "$@"
+  '';
+
+  uploadCommand =
+    if cfg.upload.command != null then cfg.upload.command
+    else if cfg.upload.fleet.url != null then "${fleetCommand}"
+    else null;
+
+  # Every file to upload. On macOS a profile can be two files (User, System);
+  # each is uploaded on its own, under its own PayloadIdentifier.
+  uploadFiles = lib.concatLists (lib.mapAttrsToList
+    (_: p: lib.attrValues p.packages)
+    uploaded);
+
+  python = "${pkgs.python3}/bin/python3";
+
+  # Uploads are recorded as `<sha256> <PayloadIdentifier>` lines. A profile is
+  # sent only when its content differs from the last successful upload, and a
+  # recorded identifier that is no longer wanted is removed from the server.
+  # A failed upload or removal never fails the activation (the server may be
+  # unreachable, the token file not there yet): the old record is kept, so the
+  # next switch tries again.
+  uploadScript = ''
+    state="''${XDG_STATE_HOME:-$HOME/.local/state}/nix-profile-gen/uploads"
+    declare -A uploadedHash=() wantedId=()
+    if [[ -f "$state" ]]; then
+      while IFS= read -r line; do
+        [[ -n "$line" ]] && uploadedHash["''${line#* }"]="''${line%% *}"
+      done < "$state"
+    fi
+    newUploadState=""
+
+    uploadProfile() {
+      local src="$1" id want
+      id="$(${python} -I -c 'import plistlib, sys; print(plistlib.load(open(sys.argv[1], "rb"))["PayloadIdentifier"])' "$src")"
+      want="$(${coreutils}/sha256sum "$src" | ${coreutils}/cut -d' ' -f1)"
+      wantedId["$id"]=1
+      local have="''${uploadedHash["$id"]:-}"
+      if [[ "$have" == "$want" ]]; then
+        newUploadState+="$want $id"$'\n'
+      elif [[ -n "''${DRY_RUN:-}" ]]; then
+        echo "nix-profile-gen: would upload $id"
+        [[ -n "$have" ]] && newUploadState+="$have $id"$'\n'
+      elif ${uploadCommand} upload "$src"; then
+        newUploadState+="$want $id"$'\n'
+      else
+        echo "nix-profile-gen: uploading $id failed; trying again on the next switch" >&2
+        [[ -n "$have" ]] && newUploadState+="$have $id"$'\n'
+      fi
+      return 0
+    }
+
+    ${lib.concatMapStringsSep "\n" (f: "uploadProfile ${f}") uploadFiles}
+
+    for id in "''${!uploadedHash[@]}"; do
+      [[ -n "''${wantedId["$id"]:-}" ]] && continue
+      if [[ -n "''${DRY_RUN:-}" ]]; then
+        echo "nix-profile-gen: would remove $id"
+        newUploadState+="''${uploadedHash["$id"]} $id"$'\n'
+      elif ${uploadCommand} remove "$id"; then
+        :
+      else
+        echo "nix-profile-gen: removing $id failed; trying again on the next switch" >&2
+        newUploadState+="''${uploadedHash["$id"]} $id"$'\n'
+      fi
+    done
+
+    if [[ -z "''${DRY_RUN:-}" && ( -n "$newUploadState" || -f "$state" ) ]]; then
+      ${coreutils}/mkdir -p "$(${coreutils}/dirname "$state")"
+      printf '%s' "$newUploadState" > "$state"
+    fi
+  '';
+
   # Two profiles writing to the same home.file path would otherwise surface as
   # an opaque `source` merge conflict in Home Manager.
   writtenPaths = lib.concatLists (lib.mapAttrsToList
@@ -254,7 +297,13 @@ in
       programs.appleProfile.profiles.<name>. Move the old settings, including
       payloads and bridges, into e.g. programs.appleProfile.profiles.mac;
       macOS profiles are installed automatically (autoInstall), which replaces
-      openOnChange. mdm moved to programs.appleProfile.mdm.
+      openOnChange.
+    '')
+    (lib.mkRemovedOptionModule [ "programs" "appleProfile" "mdm" ] ''
+      The local MDM server was removed. To have profiles installed without a
+      click, enroll the devices in a device management server and set
+      programs.appleProfile.profiles.<name>.upload = true together with
+      programs.appleProfile.upload (for example upload.fleet).
     '')
   ];
 
@@ -306,15 +355,50 @@ in
       '';
     };
 
-    _installedFiles = mkOption {
-      type = types.listOf types.attrs;
-      internal = true;
-      readOnly = true;
-      default = installedFiles;
-      description = ''
-        `{ scope; path; }` of every auto-installed profile file, relative to
-        HOME. Read by the MDM module.
-      '';
+    upload = {
+      command = mkOption {
+        type = types.nullOr types.str;
+        default = null;
+        example = lib.literalExpression ''"''${myUploader}/bin/upload-profile"'';
+        description = ''
+          Executable that sends profiles with `upload = true` to a device
+          management server. It is called on activation as
+
+              <command> upload <profile.mobileconfig>
+              <command> remove <PayloadIdentifier>
+
+          `upload` runs when a profile's content changed since its last
+          successful upload, `remove` when an uploaded profile is no longer
+          declared. A non-zero exit is reported and retried on the next switch;
+          it never fails the activation. Takes precedence over `fleet`.
+        '';
+      };
+
+      fleet = {
+        url = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "https://fleet.example.com";
+          description = ''
+            Fleet server to upload to. Fleet installs every uploaded profile on
+            all of its enrolled Apple devices (Fleet Free cannot target a
+            platform or label). Each upload replaces the profile with the same
+            PayloadIdentifier, which Fleet does by removing and reinstalling it.
+          '';
+        };
+
+        tokenFile = mkOption {
+          type = types.nullOr types.str;
+          default = null;
+          example = "/usr/local/var/opnix/user/fleet-token";
+          description = ''
+            File holding a Fleet API token, read at activation time. Never put
+            the token itself in the configuration: it would land in the
+            world-readable Nix store. An API-only user with the maintainer
+            role is enough.
+          '';
+        };
+      };
     };
   };
 
@@ -338,6 +422,31 @@ in
         }
       ])
       profiles)
+      ++ lib.concatLists (lib.mapAttrsToList
+      (_: p: [
+        {
+          assertion = !(p.upload && p.autoInstall);
+          message = ''
+            ${p._label} sets both upload and autoInstall. The server installs an
+            uploaded profile; opening it here as well would install it twice.
+          '';
+        }
+        {
+          assertion = !p.upload || uploadCommand != null;
+          message = ''
+            ${p._label}.upload is set, but there is nowhere to upload to. Set
+            programs.appleProfile.upload.fleet.url (and tokenFile) or
+            programs.appleProfile.upload.command.
+          '';
+        }
+      ])
+      profiles)
+      ++ lib.optional (cfg.upload.fleet.url != null && cfg.upload.command == null) {
+      assertion = cfg.upload.fleet.tokenFile != null;
+      message = ''
+        programs.appleProfile.upload.fleet.url is set without tokenFile.
+      '';
+    }
       ++ lib.mapAttrsToList
       (path: owners: {
         assertion = false;
@@ -366,6 +475,12 @@ in
     # the same path has already been cleaned up by Home Manager.
     home.activation.copyAppleProfiles =
       lib.hm.dag.entryAfter [ "linkGeneration" ] copyScript;
+
+    # After the copies, so a failed upload cannot keep profiles off the disk.
+    # Without an uploader nothing is configured to receive profiles, so there
+    # is nothing to send or remove.
+    home.activation.uploadAppleProfiles = lib.mkIf (uploadCommand != null)
+      (lib.hm.dag.entryAfter [ "copyAppleProfiles" ] uploadScript);
 
     home.activation.installMacProfile = lib.mkIf (installedFiles != [ ]) (
       lib.hm.dag.entryAfter [ "writeBoundary" ] ''

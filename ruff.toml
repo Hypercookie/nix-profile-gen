@@ -1,8 +1,7 @@
-# Lint configuration for the two hand-written Python files:
-#   * nix_o_s_module_generator.py  -- the payload module generator
-#   * mdm/cli/nixmagic_mdm.py      -- the local MDM setup/push CLI
+# Lint configuration for the hand-written Python file
+# nix_o_s_module_generator.py (the payload module generator).
 #
-# Both are stdlib-only. Formatting is done by ruff-format via treefmt
+# It is stdlib-only. Formatting is done by ruff-format via treefmt
 # (see treefmt.nix); this file governs `ruff check` only.
 
 # Must stay in sync with programs.ruff-format.lineLength in treefmt.nix.

@@ -23,11 +23,6 @@ nixmagic/
 ├── .github/workflows/               # ci.yml, update-manifests.yml
 ├── tests/
 │   └── default.nix                  # Test suite, run with `nix flake check`
-├── mdm/                             # Optional local NanoMDM server (hand-written)
-│   ├── README.md                    # Setup, security model, option reference
-│   ├── cli/nixmagic_mdm.py          # Setup/push CLI (Python stdlib only)
-│   ├── nix-modules/mdm.nix          # Home Manager module: programs.appleProfile.mdm
-│   └── packages/                    # nanomdm.nix (Go, v0.9.0), nixmagic-mdm.nix (CLI wrapper)
 ├── ProfileManifests/                # Git submodule — upstream Apple .plist manifest files
 │   └── Manifests/
 │       ├── ManifestsApple/          # Core Apple payloads (Dock, Finder, WiFi, ...)
@@ -77,8 +72,9 @@ nix-modules/profile/default.nix  (one profile; + bridges/profile.nix)
         v
 autoInstall = true  (macOS default): ~/Library/.../<name>-<scope>.mobileconfig,
         |                            installed on change
-        |  MDM on: nixmagic-mdm push -> Caddy (TLS :9443) -> NanoMDM -> APNs
-        |  MDM off: /usr/bin/open -> System Settings
+        |  /usr/bin/open -> System Settings
+upload = true: uploadAppleProfiles activation -> upload.command or the Fleet
+        |      uploader (nix-modules/uploaders/fleet.nix) -> server -> devices
 autoInstall = false (default elsewhere): written to outputPath if set, else
                                          only `package`
 ```
@@ -91,16 +87,15 @@ autoInstall = false (default elsewhere): written to outputPath if set, else
 
 2. **`nix-modules/profile/default.nix`** — Hand-written, Home Manager-agnostic profile module. Declares the per-profile options (platform, profileName, scope, outputPath, ...), imports all payloads and bridges, runs the platform/scope/unique/legacy checks into its own internal `assertions`/`warnings`, and builds `packages`/`package` with an inline Python script in `pkgs.runCommand`. Needs special args `pkgs` and `hmConfig`.
 
-   **`nix-modules/home-manager.nix`** — Declares `programs.appleProfile` (top-level `organization`, `organizationIdentifier`, `profiles`) where `profiles` is `attrsOf (submoduleWith { modules = [ ./profile hmProfileModule ]; })`. `hmProfileModule` adds `enable` and `autoInstall` and the per-name defaults. The file forwards every profile's assertions and warnings, writes `home.file`, owns the install `onChange` hooks, and exposes `_installedFiles` for the MDM module.
+   **`nix-modules/home-manager.nix`** — Declares `programs.appleProfile` (top-level `organization`, `organizationIdentifier`, `profiles`) where `profiles` is `attrsOf (submoduleWith { modules = [ ./profile hmProfileModule ]; })`. `hmProfileModule` adds `enable` and `autoInstall` and the per-name defaults. The file forwards every profile's assertions and warnings, writes `home.file`, owns the install `onChange` hooks, and runs the uploads (`uploadAppleProfiles`).
 
 3. **`ProfileManifests/`** — Git submodule. Source of truth for all Apple preference keys. Update via `git submodule update --remote ProfileManifests`, then regenerate.
 
-4. **`mdm/`** — Hand-written, optional. A local NanoMDM server plus Caddy as
-   launchd agents, and the `nixmagic-mdm` CLI (`csr`, `pushcert`, `init`,
-   `push`, `status`). Pushes generated profiles automatically on change so
-   they install without a double-click. Inert until
-   `programs.appleProfile.mdm.enable = true`; pushes only `autoInstall` profiles. `mdm/README.md` is the detailed
-   reference; read it before touching anything here.
+4. **`nix-modules/uploaders/`** — Hand-written. `fleet.nix` is the uploader
+   behind `programs.appleProfile.upload.fleet` (Fleet REST API, curl + Python
+   stdlib). Any uploader takes `upload <file>` and `remove <identifier>`. The
+   local NanoMDM server that used to live in `mdm/` was removed;
+   `programs.appleProfile.mdm` is a `mkRemovedOptionModule`.
 
 5. **`nix-modules/bridges/`** — Hand-written. Profile-level modules mapping `hmConfig.accounts.*` onto payload instances. Off by default on every profile; enabled per profile. All mapped values use `lib.mkDefault` so users override through the normal typed payload path.
 
@@ -170,8 +165,9 @@ nix flake check
 evaluation across all manifests, multi-instance identifier/UUID uniqueness,
 scope routing, the bridges, multiple profiles and autoInstall (platform checks at payload and
 key level, per-profile bridges, shared `imports`, output-path collisions),
-`lib.mkProfile`, the MDM module (wrapper, Caddyfile, push hook, API-key
-handling, shell-injection escaping), and the eval-time assertions.
+`lib.mkProfile`, uploads (activation against a fake command, the Fleet
+uploader against a fake Fleet API, upload assertions), shell-injection
+escaping, and the eval-time assertions.
 
 Traps worth remembering when extending it:
 
@@ -305,11 +301,16 @@ watchOS or visionOS, so they are not offered.
 - Profile defaults from `hmProfileModule`: `profileName = <name>`,
   `organization` from the top level, `organizationIdentifier =
 <top level>.<name>`, `_name = <name>` (derivation and file name).
-- `autoInstall` defaults to `platform == "macOS"` and asserts macOS. When on,
+- `autoInstall` defaults to `platform == "macOS" && !upload` and asserts macOS. When on,
   `outputPath` defaults to `Library/Application Support/HomeManager/<name>.mobileconfig`
-  and the file gets an `onChange` hook: MDM push when
-  `programs.appleProfile.mdm.enable`, otherwise `/usr/bin/open`. MDM
-  replaces the open hook, it does not add to it.
+  and the file gets an `onChange` hook running `/usr/bin/open`.
+- `upload = true` sends every scope's package (store path, no `outputPath`
+  needed) to the uploader in the `uploadAppleProfiles` activation, after
+  `copyAppleProfiles`. State: `<sha256> <PayloadIdentifier>` lines in
+  `$XDG_STATE_HOME/nix-profile-gen/uploads`; only changed profiles are sent,
+  recorded identifiers no longer declared are removed, failures keep the old
+  record (retry next switch) and never fail activation. `DRY_RUN` sends nothing.
+  `upload` + `autoInstall` is an assertion.
 - When off, `outputPath` defaults to `null`; `package` is the escape hatch.
   A set `outputPath` is **copied** by the `copyAppleProfiles` activation
   (after `linkGeneration`), never linked through `home.file`: AirDrop
@@ -321,9 +322,6 @@ watchOS or visionOS, so they are not offered.
 - Assertions across profiles: duplicate written paths, and duplicate
   `organizationIdentifier` among auto-installed profiles (they would replace
   each other on the Mac).
-- The wrapped `nixmagic-mdm` gets `--profile-manifest <store json>` listing
-  `_installedFiles`, so a manual `push` sends exactly the auto-installed
-  profiles. The CLI must keep accepting that flag.
 
 ## Important Constraints
 
@@ -338,8 +336,7 @@ watchOS or visionOS, so they are not offered.
 - Bridges must guard with `hmConfig ? accounts && hmConfig.accounts ? <ns>` so they stay evaluable outside Home Manager (`hmConfig = { }`).
 - Home Manager's option is `accounts.contact` (**singular**), even though its module file is `contacts.nix`.
 - Never emit password keys from a bridge: the profile is built in a derivation and lands in the world-readable Nix store.
-- MDM: no secret (API key, CA key, push key, PKCS#12 passphrase) may enter the Nix store, `argv`, or a launchd plist. `apiKeyFile` is a path for that reason. Every path interpolated into shell goes through `lib.escapeShellArg`. See the Security section of `mdm/README.md`.
-- `mdm/nix-modules/mdm.nix` imports `nix-modules/home-manager.nix` itself, so `homeModules.mdm` works standalone.
+- Uploads: the server token may never enter the Nix store or `argv`. `upload.fleet.tokenFile` is a path read at run time, and the Fleet uploader hands the header to curl via a process substitution written by the `printf` builtin. Every path or URL interpolated into shell goes through `lib.escapeShellArg`.
 
 ---
 
@@ -347,7 +344,7 @@ watchOS or visionOS, so they are not offered.
 
 - **Nix / Nix Flakes** — package and module system
 - **Home Manager** — consumed as `homeModules.*`
-- **NanoMDM** (Go, built from source) + **Caddy** — optional local MDM server
+- **curl** — the Fleet uploader
 - **Python 3** (stdlib: `plistlib`, `re`, `pathlib`, `json`) — generator and plist serialization
 - **nixpkgs (nixos-unstable)** — base package set
 - **flake-utils** — cross-system flake helpers
@@ -357,19 +354,16 @@ watchOS or visionOS, so they are not offered.
 
 ## Flake Outputs
 
-| Output                           | Contents                                            |
-| -------------------------------- | --------------------------------------------------- |
-| `homeModules.profiles`           | `programs.appleProfile.profiles.<name>`, bridges    |
-| `homeModules.mdm`                | Local MDM server module (imports `profiles` itself) |
-| `homeModules.default`            | Both                                                |
-| `lib.mkProfile`                  | Standalone `.mobileconfig` builder, no Home Manager |
-| `lib.profileModule`              | The profile module itself                           |
-| `packages.<system>.nanomdm`      | NanoMDM 0.9.0                                       |
-| `packages.<system>.nixmagic-mdm` | MDM setup/push CLI                                  |
-| `apps.<system>.nixmagic-mdm`     | Same CLI, for `nix run .#nixmagic-mdm -- <cmd>`     |
-| `checks.<system>.*`              | Test suite, plus `treefmt`, `lint` and `pre-commit` |
-| `formatter.<system>`             | treefmt wrapper backing `nix fmt`                   |
-| `devShells.<system>.default`     | Python 3, optnix, and all lint/format tools         |
+| Output                                    | Contents                                            |
+| ----------------------------------------- | --------------------------------------------------- |
+| `homeModules.profiles`                    | `programs.appleProfile.profiles.<name>`, bridges    |
+| `homeModules.default`                     | Same as `profiles`                                  |
+| `lib.mkProfile`                           | Standalone `.mobileconfig` builder, no Home Manager |
+| `lib.profileModule`                       | The profile module itself                           |
+| `packages.<system>.nix-profile-gen-fleet` | Fleet uploader, also usable by hand                 |
+| `checks.<system>.*`                       | Test suite, plus `treefmt`, `lint` and `pre-commit` |
+| `formatter.<system>`                      | treefmt wrapper backing `nix fmt`                   |
+| `devShells.<system>.default`              | Python 3, optnix, and all lint/format tools         |
 
 `homeModules` is deliberately declared **outside** `flake-utils.lib.eachDefaultSystem`;
 Home Manager modules are system-independent, and nesting them made them
@@ -401,7 +395,7 @@ same reason; `mkProfile` takes `pkgs` from the caller.
 | File                                     | Purpose                                                                          |
 | ---------------------------------------- | -------------------------------------------------------------------------------- |
 | `treefmt.nix`                            | Formatters and the shared exclude list                                           |
-| `ruff.toml`                              | `ruff check` rules for the generator and `mdm/cli/nixmagic_mdm.py`               |
+| `ruff.toml`                              | `ruff check` rules for the generator                                             |
 | `statix.toml`                            | statix ignores and disabled lints                                                |
 | `.github/workflows/ci.yml`               | `check` (ubuntu + macos), `eval-all-systems`, `format`, `lint`, `generator` jobs |
 | `.github/workflows/update-manifests.yml` | Daily ProfileManifests sync, opens a PR                                          |
