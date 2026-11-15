@@ -75,6 +75,15 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "script_payloads" = { children = { "boot_every" = { name = "boot-every"; }; "boot_once" = { name = "boot-once"; }; "login_every" = { name = "login-every"; }; "login_once" = { name = "login-once"; }; "login_privileged_every" = { name = "login-privileged-every"; }; "login_privileged_once" = { name = "login-privileged-once"; }; "login_window" = { name = "login-window"; }; "on_demand" = { name = "on-demand"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       ignored_users = lib.mkOption {
         type = types.nullOr (types.listOf (types.str));
         default = null;

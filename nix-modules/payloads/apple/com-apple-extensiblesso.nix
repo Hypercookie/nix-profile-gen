@@ -138,6 +138,13 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = { };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       ExtensionIdentifier = lib.mkOption {
         type = types.nullOr (types.enum [ "com.apple.AppSSOKerberos.KerberosExtension" "com.microsoft.azureauthenticator.ssoextension" "com.microsoft.CompanyPortalMac.ssoextension" ]);
         default = null;

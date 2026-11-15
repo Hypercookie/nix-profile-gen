@@ -247,6 +247,53 @@ in
       assert payloads[0]["PayloadType"] == "com.apple.dock", payloads[0]
     '';
 
+  # Option names are sanitized Nix identifiers; the plist must carry the real
+  # key names again (spaces, dashes), at top level, in nested dictionaries,
+  # and inside every element of an array of dictionaries.
+  key-renames = plistTest "key-renames"
+    [{
+      programs.appleProfile = {
+        profiles.default.enable = true;
+        profiles.default.organizationIdentifier = "com.example.test";
+        profiles.default.payloads."managed-apple-com-apple-assistant-support".default = {
+          enable = true;
+          Siri_Data_Sharing_Opt_In_Status = 2;
+        };
+        profiles.default.payloads."apple-com-apple-familycontrols-timelimits-v2".default = {
+          enable = true;
+          time_limits.weekday_allowance.enabled = true;
+        };
+        profiles.default.payloads."apple-com-apple-dock".default = {
+          enable = true;
+          tilesize = 48;
+          show_recents = false;
+          persistent_apps = [
+            { tile_type = "file-tile"; tile_data.file_label = "Safari"; }
+            { tile_type = "file-tile"; tile_data.file_label = "Mail"; }
+          ];
+        };
+      };
+    }]
+    ''
+      by_type = {p["PayloadType"]: p for p in payloads}
+
+      siri = by_type["com.apple.assistant.support"]
+      assert siri["Siri Data Sharing Opt-In Status"] == 2, siri
+      assert "Siri_Data_Sharing_Opt_In_Status" not in siri, siri
+
+      limits = by_type["com.apple.familycontrols.timelimits.v2"]
+      assert limits["time-limits"]["weekday-allowance"]["enabled"] is True, limits
+      assert "time_limits" not in limits, limits
+
+      dock = by_type["com.apple.dock"]
+      assert dock["tilesize"] == 48, dock
+      assert dock["show-recents"] is False, dock
+      apps = dock["persistent-apps"]
+      assert [a["tile-data"]["file-label"] for a in apps] == ["Safari", "Mail"], apps
+      assert all(a["tile-type"] == "file-tile" for a in apps), apps
+      assert not any("_" in k for k in dock), dock
+    '';
+
   # accounts.email is mapped, one payload per IMAP account.
   bridge-email = plistTest "bridge-email"
     [{

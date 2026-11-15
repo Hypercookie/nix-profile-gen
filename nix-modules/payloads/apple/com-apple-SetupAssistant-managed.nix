@@ -87,6 +87,13 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = { };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       SkipSetupItems = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "Accessibility" "ActionButton" "Android" "Appearance" "AppleID" "AppStore" "Biometric" "CameraButton" "DeviceToDeviceMigration" "Diagnostics" "DisplayTone" "EnableLockdownMode" "FileVault" "HomeButtonSensitivity" "iCloudDiagnostics" "iCloudStorage" "iMessageAndFaceTime" "Intelligence" "Keyboard" "Location" "MessagingActivationUsingPhoneNumber" "Multitasking" "OnBoarding" "OSShowcase" "Passcode" "Payment" "Privacy" "Restore" "RestoreCompleted" "Safety" "SafetyAndHandling" "ScreenTime" "SIMSetup" "Siri" "SpokenLanguage" "SoftwareUpdate" "TermsOfAddress" "TOS" "Tips" "UnlockWithWatch" "UpdateCompleted" "Wallpaper" "WatchMigration" "Welcome" "Zoom" ]));
         default = null;

@@ -75,6 +75,15 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "restrict_software_update_require_admin_to_install" = { name = "restrict-software-update-require-admin-to-install"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       CatalogURL = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;

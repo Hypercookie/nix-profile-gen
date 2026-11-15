@@ -75,6 +75,33 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "BBEditRegisteredOwner_11.0" = { name = "BBEditRegisteredOwner:11.0"; };
+          "BBEditSerialNumber_11.0" = { name = "BBEditSerialNumber:11.0"; };
+          "BBEditRegisteredOwner_12.0" = { name = "BBEditRegisteredOwner:12.0"; };
+          "BBEditSerialNumber_12.0" = { name = "BBEditSerialNumber:12.0"; };
+          "BBEditRegisteredOwner_13.0" = { name = "BBEditRegisteredOwner:13.0"; };
+          "BBEditSerialNumber_13.0" = { name = "BBEditSerialNumber:13.0"; };
+          "BBEditRegisteredOwner_14.0" = { name = "BBEditRegisteredOwner:14.0"; };
+          "BBEditSerialNumber_14.0" = { name = "BBEditSerialNumber:14.0"; };
+          "BBEditRegisteredOwner_15.0" = { name = "BBEditRegisteredOwner:15.0"; };
+          "BBEditSerialNumber_15.0" = { name = "BBEditSerialNumber:15.0"; };
+          "EditorTailMode_Log_File" = { name = "EditorTailMode_Log File"; };
+          "EnableFontLigatures_Cascadia_Mono_" = { name = "EnableFontLigatures_Cascadia Mono*"; };
+          "EnableFontLigatures_Fira_Code_" = { name = "EnableFontLigatures_Fira Code*"; };
+          "EnableFontLigatures_Hasklig_" = { name = "EnableFontLigatures_Hasklig*"; };
+          "EnableFontLigatures_JetBrains_Mono_" = { name = "EnableFontLigatures_JetBrains Mono*"; };
+          "EnableFontLigatures_MonoLisa_" = { name = "EnableFontLigatures_MonoLisa*"; };
+          "EnableFontLigatures_Monoid_" = { name = "EnableFontLigatures_Monoid*"; };
+          "EnableFontLigatures_Monoisome_" = { name = "EnableFontLigatures_Monoisome*"; };
+          "NSRecentDocumentsLimit_Shell_Worksheets" = { name = "NSRecentDocumentsLimit_Shell Worksheets"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       PFC_SegmentedControl_0 = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;

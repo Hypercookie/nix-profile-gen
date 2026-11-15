@@ -75,6 +75,17 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "Ironwood_Allowed" = { name = "Ironwood Allowed"; };
+          "Profanity_Allowed" = { name = "Profanity Allowed"; };
+          "Assistant_Allowed" = { name = "Assistant Allowed"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       Ironwood_Allowed = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;

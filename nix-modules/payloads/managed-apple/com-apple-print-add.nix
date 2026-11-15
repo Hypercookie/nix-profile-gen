@@ -75,6 +75,15 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "NSToolbar_Configuration_com.apple.print.add.toolbar" = { name = "NSToolbar Configuration com.apple.print.add.toolbar"; children = { "TB_Item_Identifiers" = { name = "TB Item Identifiers"; }; "TB_Display_Mode" = { name = "TB Display Mode"; }; "TB_Icon_Size_Mode" = { name = "TB Icon Size Mode"; }; "TB_Is_Shown" = { name = "TB Is Shown"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       "NSToolbar_Configuration_com.apple.print.add.toolbar" = lib.mkOption {
         type = types.nullOr (types.submodule {
           options = {

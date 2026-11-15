@@ -75,6 +75,17 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "com.apple.EnergySaver.desktop.ACPower" = { children = { "Display_Sleep_Timer" = { name = "Display Sleep Timer"; }; "System_Sleep_Timer" = { name = "System Sleep Timer"; }; "Disk_Sleep_Timer" = { name = "Disk Sleep Timer"; }; "Wake_on_LAN" = { name = "Wake on LAN"; }; "Wake_On_Modem_Ring" = { name = "Wake On Modem Ring"; }; "Automatic_Restart_On_Power_Loss" = { name = "Automatic Restart On Power Loss"; }; "Dynamic_Power_Step" = { name = "Dynamic Power Step"; }; "Reduce_Processor_Speed" = { name = "Reduce Processor Speed"; }; }; };
+          "com.apple.EnergySaver.portable.BatteryPower" = { children = { "Display_Sleep_Timer" = { name = "Display Sleep Timer"; }; "System_Sleep_Timer" = { name = "System Sleep Timer"; }; "Disk_Sleep_Timer" = { name = "Disk Sleep Timer"; }; "Wake_on_LAN" = { name = "Wake on LAN"; }; "Wake_On_Modem_Ring" = { name = "Wake On Modem Ring"; }; "Automatic_Restart_On_Power_Loss" = { name = "Automatic Restart On Power Loss"; }; "Dynamic_Power_Step" = { name = "Dynamic Power Step"; }; "Reduce_Processor_Speed" = { name = "Reduce Processor Speed"; }; }; };
+          "com.apple.EnergySaver.portable.ACPower" = { children = { "Display_Sleep_Timer" = { name = "Display Sleep Timer"; }; "System_Sleep_Timer" = { name = "System Sleep Timer"; }; "Disk_Sleep_Timer" = { name = "Disk Sleep Timer"; }; "Wake_on_LAN" = { name = "Wake on LAN"; }; "Wake_On_Modem_Ring" = { name = "Wake On Modem Ring"; }; "Automatic_Restart_On_Power_Loss" = { name = "Automatic Restart On Power Loss"; }; "Dynamic_Power_Step" = { name = "Dynamic Power Step"; }; "Reduce_Processor_Speed" = { name = "Reduce Processor Speed"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       PFC_SegmentedControl_0 = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;

@@ -75,6 +75,17 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "Assistant_Enabled" = { name = "Assistant Enabled"; };
+          "Siri_Data_Sharing_Opt_In_Status" = { name = "Siri Data Sharing Opt-In Status"; };
+          "Search_Queries_Data_Sharing_Status" = { name = "Search Queries Data Sharing Status"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       Assistant_Enabled = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;

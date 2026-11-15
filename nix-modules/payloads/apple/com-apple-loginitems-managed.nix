@@ -75,6 +75,15 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "AutoLaunchedApplicationDictionary_managed" = { name = "AutoLaunchedApplicationDictionary-managed"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       AutoLaunchedApplicationDictionary_managed = lib.mkOption {
         type = types.nullOr (types.listOf (types.submodule {
           options = {

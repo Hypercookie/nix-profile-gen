@@ -75,6 +75,46 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "static_apps" = { name = "static-apps"; children = { "tile_type" = { name = "tile-type"; }; "tile_data" = { name = "tile-data"; children = { "file_label" = { name = "file-label"; }; "file_type" = { name = "file-type"; }; "file_data" = { name = "file-data"; }; }; }; }; };
+          "static_others" = { name = "static-others"; children = { "tile_type" = { name = "tile-type"; }; "tile_data" = { name = "tile-data"; children = { "file_label" = { name = "file-label"; }; "file_type" = { name = "file-type"; }; "file_data" = { name = "file-data"; }; "home_directory_relative" = { name = "home directory relative"; }; }; }; }; };
+          "persistent_apps" = { name = "persistent-apps"; children = { "tile_type" = { name = "tile-type"; }; "tile_data" = { name = "tile-data"; children = { "file_label" = { name = "file-label"; }; "file_type" = { name = "file-type"; }; "file_data" = { name = "file-data"; }; }; }; }; };
+          "persistent_others" = { name = "persistent-others"; children = { "tile_type" = { name = "tile-type"; }; "tile_data" = { name = "tile-data"; children = { "file_label" = { name = "file-label"; }; "file_type" = { name = "file-type"; }; "file_data" = { name = "file-data"; }; "home_directory_relative" = { name = "home directory relative"; }; }; }; }; };
+          "size_immutable" = { name = "size-immutable"; };
+          "magnify_immutable" = { name = "magnify-immutable"; };
+          "magsize_immutable" = { name = "magsize-immutable"; };
+          "position_immutable" = { name = "position-immutable"; };
+          "mineffect_immutable" = { name = "mineffect-immutable"; };
+          "minimize_to_application" = { name = "minimize-to-application"; };
+          "minintoapp_immutable" = { name = "minintoapp-immutable"; };
+          "launchanim_immutable" = { name = "launchanim-immutable"; };
+          "autohide_immutable" = { name = "autohide-immutable"; };
+          "autohide_delay" = { name = "autohide-delay"; };
+          "autohide_time_modifier" = { name = "autohide-time-modifier"; };
+          "show_process_indicators" = { name = "show-process-indicators"; };
+          "show_recents" = { name = "show-recents"; };
+          "show_recent_count" = { name = "show-recent-count"; };
+          "static_only" = { name = "static-only"; };
+          "contents_immutable" = { name = "contents-immutable"; };
+          "wvous_tl_corner" = { name = "wvous-tl-corner"; };
+          "wvous_tl_modifier" = { name = "wvous-tl-modifier"; };
+          "wvous_tr_corner" = { name = "wvous-tr-corner"; };
+          "wvous_tr_modifier" = { name = "wvous-tr-modifier"; };
+          "wvous_bl_corner" = { name = "wvous-bl-corner"; };
+          "wvous_bl_modifier" = { name = "wvous-bl-modifier"; };
+          "wvous_br_corner" = { name = "wvous-br-corner"; };
+          "wvous_br_modifier" = { name = "wvous-br-modifier"; };
+          "windowtabbing_immutable" = { name = "windowtabbing-immutable"; };
+          "dblclickbehavior_immutable" = { name = "dblclickbehavior-immutable"; };
+          "showindicators_immutable" = { name = "showindicators-immutable"; };
+          "showrecents_immutable" = { name = "showrecents-immutable"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       static_apps = lib.mkOption {
         type = types.nullOr (types.listOf (types.submodule {
           options = {

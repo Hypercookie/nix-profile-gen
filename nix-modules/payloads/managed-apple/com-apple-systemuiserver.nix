@@ -75,6 +75,13 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = { };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       menuExtras = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "/System/Library/CoreServices/Menu Extras/AirPort.menu" "/System/Library/CoreServices/Menu Extras/Battery.menu" "/System/Library/CoreServices/Menu Extras/Bluetooth.menu" "/System/Library/CoreServices/Menu Extras/Clock.menu" "/System/Library/CoreServices/Menu Extras/Displays.menu" "/System/Library/CoreServices/Menu Extras/DwellControl.menu" "/System/Library/CoreServices/Menu Extras/Eject.menu" "/System/Library/CoreServices/Menu Extras/ExpressCard.menu" "/System/Library/CoreServices/Menu Extras/Ink.menu" "/System/Library/CoreServices/Menu Extras/IrDA.menu" "/System/Library/CoreServices/Menu Extras/PPP.menu" "/System/Library/CoreServices/Menu Extras/PPPoE.menu" "/System/Library/CoreServices/Menu Extras/SafeEjectGPUExtra.menu" "/System/Library/CoreServices/Menu Extras/Script" "/System/Library/CoreServices/Menu Extras/Menu.menu" "/System/Library/CoreServices/Menu Extras/TextInput.menu" "/System/Library/CoreServices/Menu Extras/TimeMachine.menu" "/System/Library/CoreServices/Menu Extras/UniversalAccess.menu" "/System/Library/CoreServices/Menu Extras/User.menu" "/System/Library/CoreServices/Menu Extras/VPN.menu" "/System/Library/CoreServices/Menu Extras/Volume.menu" "/System/Library/CoreServices/Menu Extras/WWAN.menu" "/System/Library/CoreServices/Menu Extras/iChat.menu" ]));
         default = null;

@@ -75,6 +75,26 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "License_Key" = { name = "License Key"; };
+          "iCloud_Allowed" = { name = "iCloud Allowed"; };
+          "Link_Sharing_Allowed" = { name = "Link Sharing Allowed"; };
+          "Note_Gallery_Allowed" = { name = "Note Gallery Allowed"; };
+          "GIF_Library_Allowed" = { name = "GIF Library Allowed"; };
+          "Photo_Library_Allowed" = { name = "Photo Library Allowed"; };
+          "Web_Clip_Allowed" = { name = "Web Clip Allowed"; };
+          "Locked_Folders_Allowed" = { name = "Locked Folders Allowed"; };
+          "Allowed_Export_Options" = { name = "Allowed Export Options"; };
+          "GoogleDrive_Allowed_Domains" = { name = "GoogleDrive Allowed Domains"; };
+          "OneDrive_Allowed_Domains" = { name = "OneDrive Allowed Domains"; };
+          "Box_Allowed_Domains" = { name = "Box Allowed Domains"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       License_Key = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;
