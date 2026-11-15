@@ -75,6 +75,16 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "_3rdparty" = { name = "3rdparty"; };
+          "Preferences" = { children = { "browser.newtabpage.activity_stream.default.sites" = { name = "browser.newtabpage.activity-stream.default.sites"; }; "media.gmp_gmpopenh264.enabled" = { name = "media.gmp-gmpopenh264.enabled"; }; "media.gmp_widevinecdm.enabled" = { name = "media.gmp-widevinecdm.enabled"; }; "security.tls.version.enable_deprecated" = { name = "security.tls.version.enable-deprecated"; }; "widget.content.gtk_theme_override" = { name = "widget.content.gtk-theme-override"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       EnterprisePoliciesEnabled = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;

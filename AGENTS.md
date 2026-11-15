@@ -253,6 +253,7 @@ Every instance carries these options emitted by the generator:
 | `_targets`                  | From `pfm_targets`; routes the instance to the User or System profile |
 | `_platforms`                | From `pfm_platforms`; checked against `platform` by an assertion      |
 | `_keyPlatforms`             | `[{ path; platforms; }]` for keys narrower than their manifest        |
+| `_keyRenames`               | `{ <nix name> = { name?; children?; }; }` back to the real plist keys |
 | `_allowUnsupportedPlatform` | User-facing; downgrades platform errors to warnings                   |
 | `_scope`                    | User-facing override for `_targets` (not internal)                    |
 
@@ -330,7 +331,7 @@ watchOS or visionOS, so they are not offered.
 - The generator uses only Python stdlib — do not add third-party dependencies.
 - `nix-modules/profile/` must not depend on Home Manager (no `lib.hm`, no `home.*`); `lib.mkProfile` and optnix evaluate it with plain `lib.evalModules`.
 - The inline Python script inside `nix-modules/profile/default.nix` must handle the JSON → binary plist conversion at Nix build time (it receives data via `pkgs.writeText` JSON, not via Python imports).
-- Nix identifiers with dots/dashes in Apple key names are sanitized by `sanitize_nix_identifier()` in the generator — follow the same convention if adding new keys manually.
+- Apple key names that are not valid identifiers (spaces, dashes, leading digits, Nix keywords) are sanitized by `sanitize_nix_identifier()` in the generator. `collect_key_renames()` records the real name in `_keyRenames`, and `renameKeys` in `nix-modules/profile/default.nix` restores it only when the plist is written; platform checks and `_keyNames` keep using the Nix names. `collect_key_renames()` walks the same tree as `generate_option()`; keep the two in sync. `{{key}}`/`{{value}}` placeholders (free-form dictionaries) are not renamed back.
 - `collect_key_names()` mirrors the skip/dedupe logic of `generate_option()`. If you change which subkeys are emitted, change both.
 - The generator **deletes** `.nix` files in an output directory that no manifest produced. Stale outputs from renamed upstream manifests would otherwise keep being imported by `all-payloads.nix` in an outdated format.
 - Bridges must guard with `hmConfig ? accounts && hmConfig.accounts ? <ns>` so they stay evaluable outside Home Manager (`hmConfig = { }`).

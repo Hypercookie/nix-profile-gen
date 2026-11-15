@@ -48,6 +48,7 @@ let
     "_targets"
     "_platforms"
     "_keyPlatforms"
+    "_keyRenames"
     "_allowUnsupportedPlatform"
     "_scope"
   ];
@@ -85,6 +86,26 @@ let
 
   contentOf = icfg: prune (removeAttrs icfg internalKeys);
 
+  # Option names are sanitized Nix identifiers, so a key such as
+  # "Siri Data Sharing Opt-In Status" is declared as
+  # Siri_Data_Sharing_Opt_In_Status. `_keyRenames` (generated, see
+  # collect_key_renames) maps them back to the real plist key. Lists are
+  # descended into, so keys inside an array of dictionaries are renamed in
+  # every element. Only applied when writing the plist: everything else
+  # (platform checks, legacy detection) works on the Nix names.
+  renameKeys = tree: value:
+    if tree == { } then value
+    else if builtins.isList value then map (renameKeys tree) value
+    else if builtins.isAttrs value then
+      lib.mapAttrs'
+        (k: v:
+          let node = tree.${k} or { }; in
+          lib.nameValuePair (node.name or k) (renameKeys (node.children or { }) v))
+        value
+    else value;
+
+  plistContentOf = icfg: renameKeys icfg._keyRenames (contentOf icfg);
+
   # Convert one payload instance into its plist representation.
   instanceToAttrs = instanceName: icfg:
     let
@@ -101,7 +122,7 @@ let
       PayloadDisplayName =
         if icfg._displayName != null then icfg._displayName else domain;
       PayloadVersion = 1;
-    } // contentOf icfg;
+    } // plistContentOf icfg;
 
   payloadsForScope = scope: lib.filter (x: x != null) (forEachInstance
     (_: instanceName: icfg:

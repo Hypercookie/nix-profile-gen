@@ -276,6 +276,73 @@ def collect_key_platforms(
     return found
 
 
+def is_placeholder_key(name: str) -> bool:
+    """`{{key}}` / `{{value}}` stand for arbitrary dictionary entries, not keys."""
+    return name.startswith("{{")
+
+
+def collect_key_renames(subkeys: list) -> dict:
+    """Map sanitized option names back to the real plist key names.
+
+    Returns a tree `{ <nix name>: { "name": <plist key>, "children": {...} } }`
+    holding only the keys that `sanitize_nix_identifier` changed, plus the
+    parents needed to reach them. `name` is left out when the key itself was
+    not renamed. Walks the same tree as `generate_option`, with the same
+    skip/dedupe rules per level. Placeholder keys are skipped: writing them
+    back would produce a literal `{{key}}` entry.
+    """
+    seen: set[str] = set()
+    found: dict = {}
+    for subkey in subkeys:
+        raw = subkey.get("pfm_name", "")
+        if not raw or raw.startswith("Payload"):
+            continue
+        nix_name = sanitize_nix_identifier(raw)
+        if nix_name in seen:
+            continue
+        seen.add(nix_name)
+        bare = nix_name.strip('"')
+        if is_placeholder_key(raw):
+            continue
+
+        pfm_type = subkey.get("pfm_type", "string")
+        children = subkey.get("pfm_subkeys")
+        nested: dict = {}
+        if pfm_type == "dictionary" and children:
+            nested = collect_key_renames(children)
+        elif (
+            pfm_type == "array"
+            and children
+            and children[0].get("pfm_type") == "dictionary"
+            and children[0].get("pfm_subkeys")
+        ):
+            nested = collect_key_renames(children[0]["pfm_subkeys"])
+
+        node: dict = {}
+        if bare != raw:
+            node["name"] = raw
+        if nested:
+            node["children"] = nested
+        if node:
+            found[bare] = node
+    return found
+
+
+def nix_rename_tree(tree: dict) -> str:
+    """Render a `collect_key_renames` tree as a Nix attribute set literal."""
+    if not tree:
+        return "{ }"
+    items = []
+    for nix_name, node in tree.items():
+        fields = []
+        if "name" in node:
+            fields.append(f"name = {nix_value(node['name'])};")
+        if "children" in node:
+            fields.append(f"children = {nix_rename_tree(node['children'])};")
+        items.append(f"{nix_value(nix_name)} = {{ {' '.join(fields)} }};")
+    return f"{{ {' '.join(items)} }}"
+
+
 def generate_nix_module(plist_path: Path, category: str = "") -> str:
     """Generate a complete NixOS module from a plist manifest without collisions.
 
@@ -310,6 +377,7 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     config_subkeys = [sk for sk in subkeys if not sk.get("pfm_name", "").startswith("Payload")]
     key_names = collect_key_names(config_subkeys)
     key_platforms = collect_key_platforms(config_subkeys, platforms)
+    key_renames = collect_key_renames(config_subkeys)
 
     # Use manifest file name for uniqueness, include category to avoid conflicts across directories
     manifest_base_name = plist_path.stem.replace(".", "-")
@@ -437,6 +505,25 @@ def generate_nix_module(plist_path: Path, category: str = "") -> str:
     lines.append(f"        default = {nix_value(key_names)};")
     lines.append(
         '        description = "Payload keys of this manifest, used to detect legacy flat syntax.";'
+    )
+    lines.append("      };")
+    lines.append("")
+
+    # Option names that differ from the real plist key (spaces, dashes, ...).
+    # The profile module renames them back when it writes the plist.
+    lines.append("      _keyRenames = lib.mkOption {")
+    lines.append("        internal = true;")
+    lines.append("        type = lib.types.attrs;")
+    if key_renames:
+        lines.append("        default = {")
+        for nix_name, node in key_renames.items():
+            inner = nix_rename_tree({nix_name: node})[2:-2]
+            lines.append(f"          {inner}")
+        lines.append("        };")
+    else:
+        lines.append("        default = { };")
+    lines.append(
+        '        description = "Plist key names of options whose Nix name was sanitized.";'
     )
     lines.append("      };")
     lines.append("")

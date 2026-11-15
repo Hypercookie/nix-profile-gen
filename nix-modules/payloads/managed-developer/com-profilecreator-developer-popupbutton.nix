@@ -75,6 +75,13 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = { };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       PopUpButton01 = lib.mkOption {
         type = types.nullOr (types.enum [ "Item 1" "Item 2" "Item 3" ]);
         default = null;

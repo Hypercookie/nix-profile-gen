@@ -75,6 +75,17 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "mount_controls" = { name = "mount-controls"; children = { "harddisk_external" = { name = "harddisk-external"; }; "harddisk_internal" = { name = "harddisk-internal"; }; "disk_image" = { name = "disk-image"; }; "all_media" = { name = "all-media"; }; }; };
+          "unmount_controls" = { name = "unmount-controls"; children = { "harddisk_external" = { name = "harddisk-external"; }; "harddisk_internal" = { name = "harddisk-internal"; }; "disk_image" = { name = "disk-image"; }; "all_media" = { name = "all-media"; }; }; };
+          "logout_eject" = { name = "logout-eject"; children = { "harddisk_external" = { name = "harddisk-external"; }; "harddisk_internal" = { name = "harddisk-internal"; }; "disk_image" = { name = "disk-image"; }; "all_media" = { name = "all-media"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       PFC_SegmentedControl_0 = lib.mkOption {
         type = types.nullOr (types.str);
         default = null;

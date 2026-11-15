@@ -117,6 +117,12 @@ if you need them:
 | `_targets`      | From `pfm_targets`; decides User vs System profile         |
 | `_platforms`    | From `pfm_platforms`; checked against `platform`           |
 | `_keyPlatforms` | Keys restricted to fewer platforms than their manifest     |
+| `_keyRenames`   | Real plist key of each option whose name was sanitized     |
+
+Key names that are not valid Nix identifiers are sanitized: every character
+outside `[A-Za-z0-9_.]` becomes `_`. Set `Siri_Data_Sharing_Opt_In_Status` or
+`persistent_apps`; the generated plist uses the real keys
+`Siri Data Sharing Opt-In Status` and `persistent-apps`.
 
 `_allowUnsupportedPlatform` is _not_ internal either: set it to emit an
 instance whose payload or keys the manifest marks as unavailable on the

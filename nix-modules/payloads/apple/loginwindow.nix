@@ -75,6 +75,15 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "AutoLaunchedApplicationDictionary_managed" = { name = "AutoLaunchedApplicationDictionary-managed"; children = { "MCX_NetworkHomeDirectoryItem" = { name = "MCX-NetworkHomeDirectoryItem"; }; }; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       DisableLoginItemsSuppression = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;

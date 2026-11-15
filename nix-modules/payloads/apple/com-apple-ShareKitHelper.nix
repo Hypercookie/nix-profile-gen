@@ -75,6 +75,13 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = { };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       SHKAllowedShareServices = lib.mkOption {
         type = types.nullOr (types.listOf (types.enum [ "com.apple.share.AirDrop" "com.apple.share.Facebook" "com.apple.share.LinkedIn.post" "com.apple.share.Twitter" "com.apple.share.Mail" "com.apple.share.Messages" "com.apple.Notes.SharingExtension" "com.apple.reminders.RemindersShareExtension" "com.apple.share.Video" "com.apple.share.addtoiphoto" "com.apple.share.addtoaperture" "com.apple.share.readlater" "com.apple.share.SinaWeibo" ]));
         default = null;

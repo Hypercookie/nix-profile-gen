@@ -75,6 +75,18 @@ let
         description = "Payload keys of this manifest, used to detect legacy flat syntax.";
       };
 
+      _keyRenames = lib.mkOption {
+        internal = true;
+        type = lib.types.attrs;
+        default = {
+          "restrict_store_require_admin_to_install" = { name = "restrict-store-require-admin-to-install"; };
+          "restrict_store_softwareupdate_only" = { name = "restrict-store-softwareupdate-only"; };
+          "restrict_store_disable_app_adoption" = { name = "restrict-store-disable-app-adoption"; };
+          "restrict_store_mdm_install_softwareupdate_only" = { name = "restrict-store-mdm-install-softwareupdate-only"; };
+        };
+        description = "Plist key names of options whose Nix name was sanitized.";
+      };
+
       restrict_store_require_admin_to_install = lib.mkOption {
         type = types.nullOr (types.bool);
         default = null;
